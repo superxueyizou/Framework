@@ -375,7 +375,7 @@ public class CALCULATION {
     	Waypoint dest = uas.getDestination();
 		double currentBearing = uas.getBearing();	
        	double destBearing = calculateAngle(uas.getLocation(), dest.getLocation());
-       	if (Math.abs(destBearing - currentBearing) < 1)
+       	if (Math.abs(destBearing - currentBearing) < 5)
        	{
        		System.out.println("destBearing == currentBearingdestBearing == currentBearingdestBearing == currentBearingdestBearing == currentBearing");
        		return null;

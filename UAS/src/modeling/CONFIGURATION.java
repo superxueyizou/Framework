@@ -47,6 +47,7 @@ public class CONFIGURATION {
 	public static double headOnViewingAngle = 60;
 	public static double headOnSensitivityForCollisions = 0.5;
 	public static double headOnSafetyRadius=1.667;
+	public static String headOnAvoidanceAlgorithmSelection = "None";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean crossingSelected = false;
 	public static int crossingTimes=1;
@@ -59,6 +60,7 @@ public class CONFIGURATION {
 	public static double crossingViewingAngle = 60;
 	public static double crossingSensitivityForCollisions = 0.5;
 	public static double crossingSafetyRadius=1.667;
+	public static String crossingAvoidanceAlgorithmSelection = "None";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean tailApproachSelected = false;
 	public static int tailApproachTimes=1;
@@ -71,6 +73,8 @@ public class CONFIGURATION {
 	public static double tailApproachViewingAngle = 60;
 	public static double tailApproachSensitivityForCollisions = 0.5;
 	public static double tailApproachSafetyRadius=1.667;
+	public static String tailApproachAvoidanceAlgorithmSelection = "None";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	
 	
 	
 }

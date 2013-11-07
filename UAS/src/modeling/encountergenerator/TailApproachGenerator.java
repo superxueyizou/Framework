@@ -11,7 +11,10 @@ import modeling.Destination;
 import modeling.UAS;
 import modeling.UASPerformance;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
+import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
+import modeling.subsystems.avoidance.RIPNAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.SimpleAvoidanceAlgorithm;
+import modeling.subsystems.avoidance.SmartTurnAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.TurnRightAvoidanceAlgorithm;
 import modeling.subsystems.sensor.Sensor;
 import modeling.subsystems.sensor.SimpleSensor;
@@ -75,7 +78,24 @@ public class TailApproachGenerator extends EncounterGenerator {
 		intruder.setBearing(self.getBearing());
 		intruder.setSpeed(intruderSpeed);
 		
-		AvoidanceAlgorithm aa = new TurnRightAvoidanceAlgorithm(state, intruder);
+		AvoidanceAlgorithm aa;
+		switch(CONFIGURATION.tailApproachAvoidanceAlgorithmSelection)
+		{
+			case "TurnRightAvoidanceAlgorithm":
+				aa= new TurnRightAvoidanceAlgorithm(state, intruder);
+				break;
+			case "SmartTurnAvoidanceAlgorithm":
+				aa= new SmartTurnAvoidanceAlgorithm(state, intruder);
+				break;
+			case "None":
+				aa= new AvoidanceAlgorithmAdapter();
+				break;
+			case "RIPNAvoidanceAlgorithm":
+				aa= new RIPNAvoidanceAlgorithm(state, intruder);
+				break;
+			default:
+				aa= new RIPNAvoidanceAlgorithm(state, intruder);
+		}
 		Sensor sensor = new SimpleSensor();
 		intruder.init(sensor, aa);
 		intruder.setSchedulable(true);
