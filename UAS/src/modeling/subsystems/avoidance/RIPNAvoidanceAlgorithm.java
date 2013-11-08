@@ -3,8 +3,6 @@
  */
 package modeling.subsystems.avoidance;
 
-import modeling.CALCULATION;
-import modeling.MathVector;
 import modeling.COModel;
 import modeling.Constants;
 import modeling.Destination;
@@ -17,6 +15,8 @@ import sim.field.continuous.Continuous2D;
 import sim.util.Bag;
 import sim.util.Double2D;
 import sim.util.MutableDouble2D;
+import tools.CALCULATION;
+import tools.MathVector;
 
 /**
  * @author Xueyi
@@ -76,8 +76,6 @@ public class RIPNAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		viewingAngle = hostUAS.getViewingAngle();
 		performance = hostUAS.getPerformance();
 		
-		
-		System.out.println("---------------RIPNAvoidanceAlgorithm--------------------------------------");
 		/* Find plane to avoid*/
 		ThreatContainer greatestThreatContainer =findGreatestThreat(hostUAS, uASBag);
 		UAS greatestThreat = greatestThreatContainer.getThreat();
@@ -86,16 +84,14 @@ public class RIPNAvoidanceAlgorithm extends AvoidanceAlgorithm{
 
 		if (greatestThreat != null) 
 		{
-			/* If there is a plane to avoid, then figure out which direction it 
-			should turn*/
+			/* If there is a plane to avoid, then figure out which direction it should turn*/
 			boolean turnRight = shouldTurnRight(hostUAS, greatestThreat);
 			/* Calculate turning radius to avoid collision*/
 			double turningRadius = calculateTurningRadius(threatZEM);
 			
 			double turningAngle = Math.toDegrees(hostUAS.getSpeed()/turningRadius);
 
-			/* Given turning radius and orientation of the plane, calculate 
-			next collision avoidance waypoint*/
+			/* Given turning angle and orientation of the UAS, calculate next collision avoidance waypoint*/
 			Waypoint wp = CALCULATION.calculateWaypoint(hostUAS, turningAngle, turnRight);
 
 			if (findGreatestThreat(greatestThreat, obstacles).getThreat() == hostUAS) 
@@ -120,20 +116,20 @@ public class RIPNAvoidanceAlgorithm extends AvoidanceAlgorithm{
 	public ThreatContainer findGreatestThreat(UAS self, Bag uASBag)
 	{
 		UAS greatestThreat =null;
-		/* Make a position vector representation of the current plane*/
+		double mostDangerousZEM = -1;		
+		double minimumTimeToGo = Double.MAX_VALUE; // Set the preliminary time-to-go to infinity
+		
+		/* Make a position vector representation of the current UAS*/
 		double selfMagnitude = new Double2D(0,0).distance(self.getLocation());
 		double selfDirection = CALCULATION.calculateAngle(new Double2D(0,0), self.getLocation());
 		MathVector p1 = new MathVector(selfMagnitude,selfDirection);
-		/* Make a heading vector representation of the current plane*/
-		MathVector d1= new MathVector(1.0,self.getBearing());
+		MathVector d1= new MathVector(1.0,self.getBearing());/* Make a heading vector representation of the current plane*/
 		
 		/* Declare variables needed for this loop*/
 		MathVector pDiff;
 		MathVector dDiff;
-		double timeToGo, zEM, distanceBetween, timeToDest;
-		double mostDangerousZEM = -1;		
-		double minimumTimeToGo = Double.MAX_VALUE; // Set the preliminary time-to-go to infinity
-		double V = MPS_SPEED;
+		double timeToGo, zEM, distanceBetween;		
+		double V = self.getSpeed();
 		
 		for(int i = 0; i < uASBag.size(); i++)
   		{
@@ -154,72 +150,44 @@ public class RIPNAvoidanceAlgorithm extends AvoidanceAlgorithm{
 			
 			if (distanceBetween > self.getViewingRange()) continue;
 
-//			else if (distanceBetween < MPS_SPEED)
-//			{
-//				greatestThreat=intruder;
-//				mostDangerousZEM = 0;
-//				minimumTimeToGo = 0.1;
-//				break;
-//			}	
-
-			/* Making a position vector representation of plane2*/						
+			/* Making a position vector representation of intruder*/						
 			double magnitude2 = new Double2D(0,0).distance(intruder.getLocation());
 			double direction2 = CALCULATION.calculateAngle(new Double2D(0,0), intruder.getLocation());
-			MathVector p2 = new MathVector(magnitude2,direction2);
-			/* Make a heading vector representation of the current plane*/
-			MathVector d2= new MathVector(1.0, intruder.getBearing());
+			MathVector p2 = new MathVector(magnitude2,direction2);			
+			MathVector d2= new MathVector(1.0, intruder.getBearing());/* Make a heading vector representation of the current plane*/
 			
 			pDiff = p1.minus(p2);
 			dDiff = d1.minus(d2);
 			/* Compute Time To Go*/			
 			timeToGo = -1*pDiff.dotProduct(dDiff)/(V*dDiff.dotProduct(dDiff));
-
 			/* Compute ZEM*/
 			zEM = Math.sqrt(pDiff.dotProduct(pDiff) + 
 				2*(V*timeToGo)* pDiff.dotProduct(dDiff) + 
 				Math.pow(V*timeToGo,2)*dDiff.dotProduct(dDiff));
 			
-			/* If the Zero Effort Miss is less than the minimum required 
-			separation, and the time to go is the least so far, then avoid this plane*/
+			/* If the ZEM is less than the minimum required separation, and the timeToGo is the least so far, then avoid this intruder*/
 			if((zEM <= DESIRED_SEPARATION) && (timeToGo < minimumTimeToGo) && (timeToGo > 0))
 			{
-				// If the plane is behind you, don't avoid it
-//				if ( Math.abs(intruder.findAngle(plane1)*180/PI - toCartesian(plane1.getCurrentBearing())) > 35.0)
-//				{
-//					
-//				}
-//				
-//				timeToDest = self.getLocation().distance(self.getDestination().getLocation());
-//				/* If you're close to your destination and the other plane isn't much of a threat, then don't avoid it */ 
-//				if ( timeToDest < 5.0 && zEM > 3.0*MPS_SPEED ) continue;
-
 				greatestThreat = intruder;
 				mostDangerousZEM = zEM;
 				minimumTimeToGo = timeToGo;			
 			}
 		}
-		
-		
+				
 		ThreatContainer greatestThreatContainer= new ThreatContainer(greatestThreat,mostDangerousZEM,minimumTimeToGo);
-
 		return greatestThreatContainer;
 	}
 
 
-	/* Returns true if the original plane (plane1) should turn right to avoid plane2, 
-	false if otherwise. Takes original plane and its greatest threat as parameters */
+	/* Returns true if the original UAS (self) should turn right to avoid intruder, false if otherwise. Takes original UAS and its greatest threat as parameters */
 	public boolean shouldTurnRight(UAS self, UAS intruder) 
-	{
-		
-		/* For checking whether the plane should turn right or left */
+	{		
+		/* For checking whether the  UAS (self) should turn right or left */
 		double theta_1, theta_2, theta, theta_dot, LOS;
 		double selfBearing = self.getBearing();
 		double intruderBearing = intruder.getBearing();
-		double V = MPS_SPEED;
-		
-		/* Calculate theta, theta1, and theta2. Theta is the cartesian angle
-		from 0 degrees (due East) to plane2 (using plane1 as the origin). This 
-		may be referred to as the LOS angle. */
+		double V = self.getSpeed();
+
 		theta = CALCULATION.calculateAngle(self.getLocation(), intruder.getLocation());
 		LOS = self.getLocation().distance(intruder.getLocation());
 		

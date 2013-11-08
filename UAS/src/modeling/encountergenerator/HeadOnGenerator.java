@@ -4,9 +4,9 @@
 package modeling.encountergenerator;
 
 import sim.util.Double2D;
-import modeling.CALCULATION;
+import tools.CALCULATION;
+import tools.CONFIGURATION;
 import modeling.COModel;
-import modeling.CONFIGURATION;
 import modeling.Destination;
 import modeling.UAS;
 import modeling.UASPerformance;

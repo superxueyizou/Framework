@@ -1,8 +1,11 @@
 /**
  * 
  */
-package modeling;
+package tools;
 
+import modeling.Obstacle;
+import modeling.UAS;
+import modeling.Waypoint;
 import sim.util.Bag;
 import sim.util.Double2D;
 import sim.util.MutableDouble2D;

@@ -8,6 +8,8 @@ import sim.engine.*;
 import sim.field.continuous.*;
 import sim.portrayal.Oriented2D;
 import sim.util.*;
+import tools.CALCULATION;
+import tools.CONFIGURATION;
 import ui.SAAConfigurator;
 
 /**

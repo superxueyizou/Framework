@@ -10,7 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import modeling.CONFIGURATION;
+import tools.CONFIGURATION;
+
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;

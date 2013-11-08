@@ -21,6 +21,8 @@ import modeling.subsystems.sensor.Sensor;
 import modeling.subsystems.sensor.SimpleSensor;
 
 import sim.util.*;
+import tools.CALCULATION;
+import tools.CONFIGURATION;
 /**
  *
  * @author Robert Lee

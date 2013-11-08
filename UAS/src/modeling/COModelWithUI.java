@@ -23,6 +23,7 @@ import sim.portrayal.simple.HexagonalPortrayal2D;
 import sim.portrayal.simple.ImagePortrayal2D;
 import sim.portrayal.simple.LabelledPortrayal2D;
 import sim.portrayal.simple.OrientedPortrayal2D;
+import tools.CONFIGURATION;
 
 /**
  * A class for running a simulation with a UI, run to see a simulation with a UI
@@ -133,7 +134,7 @@ public class COModelWithUI extends GUIState
 		(UAS.class, 
 				new CircledPortrayal2D(
 										//new OrientedPortrayal2D(
-																	(SimplePortrayal2D)new HexagonalPortrayal2D()
+																	(SimplePortrayal2D)new HexagonalPortrayal2D(0.7)
 																	{
 																		public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
 																		{
@@ -156,17 +157,25 @@ public class COModelWithUI extends GUIState
 				
 		);
 		
-		environmentPortrayal.setPortrayalForClass(Destination.class, new LabelledPortrayal2D( new HexagonalPortrayal2D()
+		environmentPortrayal.setPortrayalForClass(Destination.class, new LabelledPortrayal2D( new HexagonalPortrayal2D(0.7)
 		{
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
 			{
 				paint = new Color(0x0E, 0xEC, 0xF0);			
 			    super.draw(object, graphics, info);
 			}
-		}, "T", new Color(0, 0, 0), false) 
-				
+		}, "T", new Color(0, 0, 0), false) 				
 		
 		);
+		
+		environmentPortrayal.setPortrayalForClass(Waypoint.class, new HexagonalPortrayal2D(0.3)
+		{
+			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
+			{
+				paint = new Color(10, 10, 10);			
+			    super.draw(object, graphics, info);
+			}
+		});
 		
 		
 		obstaclesPortrayal.setField(simulation.obstacleMap);
@@ -209,6 +218,7 @@ public class COModelWithUI extends GUIState
         display = new Display2D(1500,1000,this);
         // turn off clipping
         display.setClipping(false);
+        display.setBackdrop(new Color(0,150,255));
 
         displayFrame = display.createFrame();
         displayFrame.setTitle("Environment Display");

@@ -3,7 +3,6 @@
  */
 package modeling.subsystems.avoidance;
 
-import modeling.CALCULATION;
 import modeling.COModel;
 import modeling.Constants;
 import modeling.Destination;
@@ -16,6 +15,7 @@ import sim.field.continuous.Continuous2D;
 import sim.util.Bag;
 import sim.util.Double2D;
 import sim.util.MutableDouble2D;
+import tools.CALCULATION;
 
 /**
  * @author Xueyi

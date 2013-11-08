@@ -143,11 +143,12 @@ public class COModel extends SimState
 	public void scheduleEntities()
 	{
 		//loop across all items in toSchedule and add them all to the schedule
-		for(int i = 0; i < toSchedule.size(); i++)
+		int i ;
+		for(i = 0; i < toSchedule.size(); i++)
 		{
-			schedule.scheduleRepeating((Entity) toSchedule.get(i));
+			schedule.scheduleRepeating((Entity) toSchedule.get(i), i, 1.0);
 		}	
-		schedule.scheduleRepeating(aDetector);
+		schedule.scheduleRepeating(aDetector,i+1, 1.0);
 	}
 	
 	/**
