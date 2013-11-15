@@ -358,12 +358,12 @@ public class CALCULATION {
 			yComponent = -1*uas.getSpeed()*Math.sin(Math.toRadians(CALCULATION.correctAngle(uas.getBearing()+turningAngle)));
 		}
 
-		//System.out.println("ccccccccccccccccccccccccccccc"+xComponent + " , "+ yComponent);
+		
 		coord.addIn(xComponent, yComponent);
 			
 		Waypoint wp = new Waypoint(uas.getState().getNewID(), uas.getDestination());
 		wp.setLocation(new Double2D(coord));
-		System.out.println("new waypoint's coordination is ("+coord.x + " , "+ coord.y +")");
+		//System.out.println("new waypoint's coordination is ("+coord.x + " , "+ coord.y +")");
 		return wp;
 	}
 
@@ -380,7 +380,7 @@ public class CALCULATION {
        	double destBearing = calculateAngle(uas.getLocation(), dest.getLocation());
        	if (Math.abs(destBearing - currentBearing) < 5)
        	{
-       		System.out.println("destBearing == currentBearingdestBearing == currentBearingdestBearing == currentBearingdestBearing == currentBearing");
+       		//System.out.println("destBearing == currentBearingdestBearing == currentBearingdestBearing == currentBearingdestBearing == currentBearing");
        		return null;
        	}
     	
@@ -433,8 +433,8 @@ public class CALCULATION {
     	/* If destination is inside circle, must fly opposite direction before we can reach destination*/
     	if ( minTurningRadius -cPlusCenter.distance(dest.getLocation()) > 0) 
     	{
-    		System.out.println("isDestOnRight = "+isDestOnRight);
-    		System.out.println("cPlusCenter.distance(dest.getLocation()) < minTurningRadius");
+//    		System.out.println("isDestOnRight = "+isDestOnRight);
+//    		System.out.println("cPlusCenter.distance(dest.getLocation()) < minTurningRadius");
 
     		return calculateWaypoint(uas, uas.getPerformance().getCurrentMaxTurning(), !isDestOnRight);
     	}

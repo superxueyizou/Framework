@@ -93,7 +93,7 @@ public class COModelBuilder
 				
 				Destination d = generateDestination(state.obstacles);
 				UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMaxAcceleration, CONFIGURATION.selfMaxDeceleration, CONFIGURATION.selfMaxTurning);
-				UAS self = new UAS(state.getNewID(), d, uasPerformance);	
+				UAS self = new UAS(state.getNewID(), d, uasPerformance, 1.667);	
 				self.setLocation(new Double2D(x,y));
 				self.setSpeed(CONFIGURATION.selfSpeed);
 				self.setViewingRange(CONFIGURATION.selfViewingRange);
@@ -122,13 +122,14 @@ public class COModelBuilder
 			d.setLocation(new Double2D(x+40,y-20));
 			d.setSchedulable(false);
 			state.allEntities.add(d);
+			
 			UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMaxAcceleration, CONFIGURATION.selfMaxDeceleration, CONFIGURATION.selfMaxTurning);
-			UAS self = new UAS(state.getNewID(), d, uasPerformance);	
+			UAS self = new UAS(state.getNewID(), d, uasPerformance, CONFIGURATION.selfSafetyRadius);	
 			self.setLocation(new Double2D(x,y));
 			self.setSpeed(CONFIGURATION.selfSpeed);
 			self.setViewingRange(CONFIGURATION.selfViewingRange);
 			self.setViewingAngle(CONFIGURATION.selfViewingAngle);
-			self.setSafetyRadius(CONFIGURATION.selfSafetyRadius);
+			//self.setSafetyRadius(CONFIGURATION.selfSafetyRadius);
 			AvoidanceAlgorithm aa;
 			switch(CONFIGURATION.avoidanceAlgorithmSelection)
 			{
@@ -151,52 +152,89 @@ public class COModelBuilder
 			self.init(sensor, aa);
 			self.setBearing(CALCULATION.calculateAngle(self.getLocation(), d.getLocation()));
 			//System.out.println("self's bearing:"+self.getBearing());
+						
 			
 		    if(CONFIGURATION.headOnSelected)
 		    {
-		    	double offset = 0;
-		    	boolean isRightSide = true;
-		    	double speedCoefficient=1;
-		    	for(int i=0; i<CONFIGURATION.headOnTimes; i++)
+		    	if(state.runningWithUI)
 		    	{
-		    		new HeadOnGenerator(state, self, offset, isRightSide, speedCoefficient*self.getSpeed()).execute();
-		    		offset = offset + 2;
-		    		isRightSide = !isRightSide;
-		    		speedCoefficient += 0.2;
+		    		double offset = 0;
+			    	boolean isRightSide = true;
+			    	double speedCoefficient=1;
+			    	for(int i=0; i<CONFIGURATION.headOnTimes; i++)
+			    	{
+			    		new HeadOnGenerator(state, self, offset, isRightSide, speedCoefficient*CONFIGURATION.headOnSpeed).execute();
+			    		offset = offset + 2;
+			    		isRightSide = !isRightSide;
+			    		speedCoefficient += 0.2;
+			    	}
 		    	}
+		    	else
+		    	{
+		    		double offset = CONFIGURATION.headOnOffset ;
+			    	boolean isRightSide = CONFIGURATION.headOnIsRightSide;
+			    	double speed= CONFIGURATION.headOnSpeed;
+			    	new HeadOnGenerator(state, self, offset, isRightSide, speed).execute();
+			    		
+		    	}
+		    
 		    }
 		    if(CONFIGURATION.crossingSelected)
 		    {
-		    	double distance = 30;
-		    	double encouterAngle = 180;
-		    	double speedCoefficient=1;
-		    	for(int i=0; i<CONFIGURATION.crossingTimes; i++)
+		       	if(state.runningWithUI)
 		    	{
-		    		new CrossingGenerator(state, self, distance, encouterAngle,speedCoefficient*self.getSpeed()).execute();
-		    		distance = distance+10;
-		    		encouterAngle = encouterAngle-20;
-		    		speedCoefficient += 0.2;
+		       		double distance = 30;
+			    	double encouterAngle = 180;
+			    	double speedCoefficient=1;
+			    	for(int i=0; i<CONFIGURATION.crossingTimes; i++)
+			    	{
+			    		new CrossingGenerator(state, self, distance, encouterAngle,speedCoefficient*CONFIGURATION.crossingSpeed).execute();
+			    		distance = distance+10;
+			    		encouterAngle = encouterAngle-20;
+			    		speedCoefficient += 0.2;
+			    	}
 		    	}
+		    	else
+		    	{
+		    		double distance = CONFIGURATION.crossingDistance;
+		    		double encounterAngle = CONFIGURATION.crossingEncounterAngle;
+		    		double speed= CONFIGURATION.crossingSpeed;
+		    		new CrossingGenerator(state, self, distance, encounterAngle,speed).execute();
+		    		
+		    	}
+		    	
 		    }
 		    if(CONFIGURATION.tailApproachSelected)
 		    {
-		    	double offset = 3;
-		    	boolean isRightSide = true;
-		    	double speedCoefficient=1.5;
-		    	for(int i=0; i<CONFIGURATION.tailApproachTimes; i++)
+		     	if(state.runningWithUI)
 		    	{
-		    		new TailApproachGenerator(state, self, offset, isRightSide, speedCoefficient*self.getSpeed()).execute();
-		    		offset = offset + 2;
-		    		isRightSide = !isRightSide;
-		    		speedCoefficient += 0.2;
+		     		double offset = 3;
+			    	boolean isRightSide = true;
+			    	double speedCoefficient=1.2;
+			    	for(int i=0; i<CONFIGURATION.tailApproachTimes; i++)
+			    	{
+			    		new TailApproachGenerator(state, self, offset, isRightSide, speedCoefficient*CONFIGURATION.tailApproachSpeed).execute();
+			    		offset = offset + 2;
+			    		isRightSide = !isRightSide;
+			    		speedCoefficient += 0.2;
+			    	}
 		    	}
+		    	else
+		    	{
+		    		double offset = CONFIGURATION.tailApproachOffset;
+			    	boolean isRightSide = CONFIGURATION.tailApproachIsRightSide;
+			    	double speed= CONFIGURATION.tailApproachSpeed;
+			    	new TailApproachGenerator(state, self, offset, isRightSide, speed).execute();
+		    	}
+		    	
 		    }
 			
 			state.uasBag.add(self);
+			state.obstacles.add(self);
 			state.allEntities.add(self);
 			self.setSchedulable(true);
 			state.toSchedule.add(self);
-			state.obstacles.add(self);
+			
 			//System.out.println("uas is at (" + Double.toString(x) + ", " + Double.toString(y) + ")ID is"+ uas.ID);
 			//System.out.println("COModelBuilder.genereteSimulation is called, uas's max speed is: " + state.uasStats.getMaxSpeed());
 		}

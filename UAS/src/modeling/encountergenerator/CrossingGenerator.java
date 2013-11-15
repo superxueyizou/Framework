@@ -66,8 +66,8 @@ public class CrossingGenerator extends EncounterGenerator {
 		double tY = middleY + intruderHalf* Math.sin(Math.toRadians(CALCULATION.correctAngle(180-encounterAngle))); // intruderDestination's y
 		intruderDestination.setLocation(new Double2D(tX , tY));
 		
-		UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMaxAcceleration, CONFIGURATION.selfMaxDeceleration, CONFIGURATION.selfMaxTurning);
-		intruder = new UAS(state.getNewID(), intruderDestination, uasPerformance);
+		UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.crossingMaxSpeed, CONFIGURATION.crossingMaxAcceleration, CONFIGURATION.crossingMaxDeceleration,CONFIGURATION.crossingMaxTurning);
+		intruder = new UAS(state.getNewID(), intruderDestination, uasPerformance,CONFIGURATION.crossingSafetyRadius);
 		double x = middleX + intruderHalf* Math.cos(Math.toRadians(CALCULATION.correctAngle(180-encounterAngle))); // intruder's x
 		double y = middleY - intruderHalf* Math.sin(Math.toRadians(CALCULATION.correctAngle(180-encounterAngle))); // intruder's y
 		intruder.setLocation(new Double2D(x,y));
@@ -94,14 +94,15 @@ public class CrossingGenerator extends EncounterGenerator {
 		}
 		Sensor sensor = new SimpleSensor();
 		intruder.init(sensor, aa);
-		intruder.setSchedulable(true);
-		System.out.println("intruder:"+intruder);
-				
+		
+		
+		state.uasBag.add(intruder);
+		state.obstacles.add(intruder);			
 		state.allEntities.add(intruderDestination);
 		state.allEntities.add(intruder);
+		intruder.setSchedulable(true);
 		state.toSchedule.add(intruder);
-		state.uasBag.add(intruder);
-		state.obstacles.add(intruder);		
+	
 	}
 
 }

@@ -37,6 +37,8 @@ public class CONFIGURATION {
 	
 	
 	public static boolean headOnSelected = true;
+	public static boolean headOnIsRightSide = true;
+	public static double headOnOffset=0;
 	public static int headOnTimes=1;
 	public static double headOnMaxSpeed =2.235;
 	public static double headOnMaxAcceleration = 0.05;
@@ -50,6 +52,8 @@ public class CONFIGURATION {
 	public static String headOnAvoidanceAlgorithmSelection = "None";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean crossingSelected = false;
+	public static double crossingDistance=20;
+	public static double crossingEncounterAngle=150;
 	public static int crossingTimes=1;
 	public static double crossingMaxSpeed =2.235;
 	public static double crossingMaxAcceleration = 0.05;
@@ -63,6 +67,8 @@ public class CONFIGURATION {
 	public static String crossingAvoidanceAlgorithmSelection = "None";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean tailApproachSelected = false;
+	public static double tailApproachOffset = 2;
+    public static boolean tailApproachIsRightSide =true;
 	public static int tailApproachTimes=1;
 	public static double tailApproachMaxSpeed =2.235;
 	public static double tailApproachMaxAcceleration = 0.05;

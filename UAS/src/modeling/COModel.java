@@ -21,12 +21,8 @@ public class COModel extends SimState
 	
 	public Bag uasBag = new Bag();
 	public Bag obstacles= new Bag();
-	
-	public int noObstacles=0;
-	public int noUAS=0;
-	
-	
-	private boolean runningWithUI = false; 
+		
+	public boolean runningWithUI = false; 
 	
     private int newID = 0;	
     
@@ -322,25 +318,6 @@ public class COModel extends SimState
     
     
 	
-	
-	public int getNoObstacles() {
-		return this.noObstacles;
-	}
-
-	public void setNoObstacles(int noObstacles) {
-		this.noObstacles = noObstacles;
-	}
-
-	public int getNoUAS() {
-		return this.noUAS;
-	}
-
-	public void setNoUAS(int noUAS) {
-		this.noUAS = noUAS;
-	}
-
-
-
 	public Bag getUasBag() {
 		return uasBag;
 	}

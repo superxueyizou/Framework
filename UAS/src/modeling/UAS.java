@@ -42,7 +42,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 	private LinkedList wpQueueP;
 	
 	//parameters for recording information about simulation
-	private double distanceToDanger = Double.MAX_VALUE; //records the closest distance to danger experienced by the uas
+	private double distanceToDanger =110;// Double.MAX_VALUE; //records the closest distance to danger experienced by the uas
 	
 	public boolean isActive= true;
 	
@@ -52,11 +52,12 @@ public class UAS extends CircleObstacle implements Oriented2D
 
 
 
-	public UAS(int idNo, Destination destination, UASPerformance uasPerformance)
+	public UAS(int idNo, Destination destination, UASPerformance uasPerformance, double safetyRadius)
 	{
-		super(idNo,1.667, Constants.EntityType.TUAS);
+		super(idNo,safetyRadius, Constants.EntityType.TUAS);
 		this.destination = destination;
 		this.performance = uasPerformance;
+		this.safetyRadius= safetyRadius;
 		nextWp=null;
 		wpQueue=new LinkedList();
 		wpQueue.offer(destination);
@@ -77,7 +78,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 		if(this.isActive == true)
 		{
 			state = (COModel) simState;
-			//this.performance = new UASPerformance(state.getUasMaxSpeed(),state.getUasMaxAcceleration(), state.getUasMaxDecceleration(), state.getUasMaxTurning());
+			
 			if (CONFIGURATION.avoidanceAlgorithmEnabler)
 			{
 				Waypoint wp = aa.execute();
@@ -90,26 +91,18 @@ public class UAS extends CircleObstacle implements Oriented2D
 				
 				
 			}
-			
-//			if(CALCULATION.takeDubinsPath(this) != null)
-//			{
-//				wpQueueP.offer(CALCULATION.takeDubinsPath(this));
-//				System.out.println("wpQueueP's size is :" + wpQueueP.size());
-//			}
-			
-			
+		
 						
 			{			
 				nextWp= this.getNextWp();
 				if (nextWp != null)
 				{
 					setDirection(this.location, nextWp.getLocation());
-					System.out.println("UAS (" + this.toString()+")'s bearing is: "+bearing + ", it's next waypoint is: (" +nextWp.location.x + ","+ nextWp.location.y + ")     wpQueueP elements:" + wpQueueP.size() +"     wpQueue elements:" + wpQueue.size()) ;
+					//System.out.println("UAS (" + this.toString()+")'s bearing is: "+bearing + ", it's next waypoint is: (" +nextWp.location.x + ","+ nextWp.location.y + ")     wpQueueP elements:" + wpQueueP.size() +"     wpQueue elements:" + wpQueue.size()) ;
 					
 				}
 				else
 				{
-					//this.isActive = false;
 					System.out.println("approaching the destination!");
 				}
 				
@@ -123,7 +116,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 		        
 				state.environment.setObjectLocation(this, new Double2D(sumForces));
 				this.setLocation( new Double2D(sumForces));
-				proximityToDanger(state.obstacles, new Double2D(sumForces));
+				proximityToDanger(new Double2D(sumForces), state.obstacles);
 				//System.out.println("sssssssssssssssssssssssssssssssssssssss");
 				
 				if (this.location.distance(nextWp.location)<1)
@@ -136,15 +129,14 @@ public class UAS extends CircleObstacle implements Oriented2D
 					{
 						wpQueue.poll();
 					}
-					System.out.println("delete waypoint: ("+ nextWp.location.x + ","+ nextWp.location.y + ")!");
+					//System.out.println("delete waypoint: ("+ nextWp.location.x + ","+ nextWp.location.y + ")!");
 				}
 				
 				if (this.location.distance(destination.location)<1)
 				{
 					this.isActive = false;
-					System.out.println("arrived at the destination!");
-//					state.obstacles.remove(this);
-//					state.toSchedule.remove(this);
+					//System.out.println("arrived at the destination!");
+
 				}
 				
 			}
@@ -156,7 +148,8 @@ public class UAS extends CircleObstacle implements Oriented2D
 		{
 			state.dealWithTermination();
 		}
-		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		
+		//System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 	
 	
@@ -387,20 +380,32 @@ public class UAS extends CircleObstacle implements Oriented2D
 	 * 
 	 * @param obstacles 
 	 */
-	private void proximityToDanger(Bag obstacles, Double2D coord)
+	private void proximityToDanger( Double2D coord, Bag obstacles)
 	{
-		double check;
+		double tempproximityToDanger;
 		
 		for (int i = 0; i < obstacles.size(); i++)
 		{
-			check = ((Obstacle) obstacles.get(i)).obstacleToPoint(coord);
-			if (check < distanceToDanger)
+			Obstacle obstacle = (Obstacle) obstacles.get(i);
+		    if(obstacle.equals(this))
 			{
-				distanceToDanger = check;
-				this.setDistanceToDanger(distanceToDanger);
+				//System.out.println(obstacles.get(i)+"this obstacle is myself, don't mind!");
+				continue;
+			}
+    		if(!((UAS)obstacle).isActive)
+			{
+				//System.out.println(obstacles.get(i)+"this obstacle is dead, don't mind!");
+				continue;
+			}
+			tempproximityToDanger = obstacle.obstacleToPoint(coord);
+			if (tempproximityToDanger < distanceToDanger)
+			{
+				distanceToDanger = tempproximityToDanger;
+				
 			}
 		}
 		
+		//System.out.println(distanceToDanger);
 	}
 /*****************************************
  * overide method extended from Obstacle
@@ -416,6 +421,30 @@ public class UAS extends CircleObstacle implements Oriented2D
 			return false;
 		}
 	}
+	
+//	/**
+//	 * Returns the distance from the provided coordinate to the closest part of
+//	 * the obstacle to that point.
+//	 * 
+//	 * @param coord
+//	 * @return 
+//	 */
+//	@Override
+//	public double obstacleToPoint(Double2D coord)
+//	{
+//		//as the shape of this obstacle is a circle the closest point is the edge
+//		//of the circle to the point.
+//		double val = this.location.distance(coord);
+//		
+//		if (val < 0)
+//		{
+//			return 0;
+//		} 
+//		else 
+//		{
+//			return val;
+//		}
+//	}
 	
 	
 	/*************

@@ -68,7 +68,7 @@ public class AccidentDetector implements Constants,Steppable {
         outerLoop:
 	    for(int i=0; i<trackedUASBag.size(); i++)
 		{	
-	    	//System.out.println(trackedUASBag.size()+"jjjjjjjjjjjjjjjjjjjjjjjjjjjjjj"+i);
+	    	
 			uas1= (UAS)trackedUASBag.get(i);
 			if(!uas1.isActive)
 			{
@@ -86,7 +86,7 @@ public class AccidentDetector implements Constants,Steppable {
 						continue;
 				}
 				
-				//System.out.println("Obstacle"+obstacle.getID());
+				
 				if(detectCollisionWithObstacle(uas1, obstacle))
 				{
 					addLog(Constants.AccidentType.CLASHWITHOBSTACLE, uas1.getID(), state.schedule.getSteps(), uas1.getLocation(), "with octacle id = "+ obstacle.getID() );
@@ -129,10 +129,10 @@ public class AccidentDetector implements Constants,Steppable {
 			}
 			
 		}
-		System.out.println("AccidentDetector is running, has found " + noAccidents + " accidents; The present trackedUASBag's size is "+trackedUASBag.size()+ " and the No. of Obstacles is "+state.obstacles.size());
-		System.out.println("***************************************************************************************************************************************");
-		System.out.println();
-		System.out.println();
+//		System.out.println("AccidentDetector is running, has found " + noAccidents + " accidents; The present trackedUASBag's size is "+trackedUASBag.size()+ " and the No. of Obstacles is "+state.obstacles.size());
+//		System.out.println("***************************************************************************************************************************************");
+//		System.out.println();
+//		System.out.println();
 	}
 	
 	public void addLog(AccidentType t, int uasID, long step, Double2D coor, String str)

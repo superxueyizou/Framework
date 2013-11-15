@@ -53,11 +53,11 @@ public class COModelWithUI extends GUIState
     }
     
     
-    public COModelWithUI(SimState state) 
-    {
-    	super(state); 
-    	System.out.println("COModelWithUI(SimState state) is being called!"+ "it's state(model)is: "+ state.toString());    
-    }    
+//    public COModelWithUI(SimState state) 
+//    {
+//    	super(state); 
+//    	System.out.println("COModelWithUI(SimState state) is being called!"+ "it's state(model)is: "+ state.toString());    
+//    }    
     
     public static String getName() { return "UAS-SAA-Sim"; } 
   

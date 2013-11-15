@@ -89,14 +89,14 @@ public class SmartTurnAvoidanceAlgorithm extends AvoidanceAlgorithm{
 					  	    	
 				if(CALCULATION.onCourse(hostUAS, CALCULATION.correctAngle(bearing+delta), obstacle))
 				{
-					System.out.println("turning right of SmartTurnAvoidanceAlgorithm has beed executed!");
+					//System.out.println("turning right of SmartTurnAvoidanceAlgorithm has beed executed!");
 					return CALCULATION.calculateWaypoint(hostUAS, performance.getCurrentMaxTurning(), true); //turn right
 					
 					
 				}
 				else if(CALCULATION.onCourse(hostUAS, CALCULATION.correctAngle(bearing-delta), obstacle))
 				{
-					System.out.println("turning left of SmartTurnAvoidanceAlgorithm has beed executed!");
+					//System.out.println("turning left of SmartTurnAvoidanceAlgorithm has beed executed!");
 					return CALCULATION.calculateWaypoint(hostUAS, performance.getCurrentMaxTurning(), false); //turn left
 									
 				}
@@ -108,53 +108,4 @@ public class SmartTurnAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		
 	}
 	
-	/****************************************************************************************************************************************/
-
-//
-//	/**
-//	 * Method which adds a Waypoint for the UAS to travel via on it's path to
-//	 * prevent it from hitting an obstacle in it's way
-//	 * 
-//	 * @param self The hostUAS
-//	 *
-//	 */
-//	public void turnRight(UAS self)
-//	{
-//		Double2D myLocation = self.getLocation();		
-//		MutableDouble2D coord = new MutableDouble2D(myLocation);
-//		double turnAngle = performance.getCurrentMaxTurning();
-//		double xComponent = speed*Math.cos(Math.toRadians(CALCULATION.correctAngle(bearing-turnAngle)));
-//		double yComponent = -1*speed*Math.sin(Math.toRadians(CALCULATION.correctAngle(bearing-turnAngle)));
-//		//System.out.println("ccccccccccccccccccccccccccccc"+xComponent + " , "+ yComponent);
-//		coord.addIn(xComponent, yComponent);
-//			
-//		Waypoint wp = new Waypoint(state.getNewID(), destination);
-//		wp.setLocation(new Double2D(coord));
-//		self.getWpQueueP().offer(wp);
-//		state.environment.setObjectLocation(wp, new Double2D(coord));			
-//	}
-//	
-//	/**
-//	 * Method which adds a Waypoint for the UAS to travel via on it's path to
-//	 * prevent it from hitting an obstacle in it's way
-//	 * 
-//	 * @param self The hostUAS
-//	 * 
-//	 */
-//	public void turnLeft(UAS self)
-//	{
-//		Double2D myLocation = self.getLocation();		
-//		MutableDouble2D coord = new MutableDouble2D(myLocation);
-//		double turnAngle = performance.getCurrentMaxTurning();
-//		double xComponent = speed*Math.cos(Math.toRadians(CALCULATION.correctAngle(bearing+turnAngle)));
-//		double yComponent = -1*speed*Math.sin(Math.toRadians(CALCULATION.correctAngle(bearing+turnAngle)));
-//		//System.out.println("ccccccccccccccccccccccccccccc"+xComponent + " , "+ yComponent);
-//		coord.addIn(xComponent, yComponent);
-//			
-//		Waypoint wp = new Waypoint(state.getNewID(), destination);
-//		wp.setLocation(new Double2D(coord));
-//		self.getWpQueueP().offer(wp);
-//		state.environment.setObjectLocation(wp, new Double2D(coord));			
-//	}
-		
 }

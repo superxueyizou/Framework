@@ -61,8 +61,8 @@ public class HeadOnGenerator extends EncounterGenerator {
 		double tY = tMY + intruderHalf* Math.sin(Math.toRadians(self.getBearing()));// intruderDestination's y
 		intruderDestination.setLocation(new Double2D(tX , tY));
 		
-		UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMaxAcceleration, CONFIGURATION.selfMaxDeceleration, CONFIGURATION.selfMaxTurning);
-		intruder = new UAS(state.getNewID(), intruderDestination, uasPerformance);
+		UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.headOnMaxAcceleration, CONFIGURATION.headOnMaxDeceleration, CONFIGURATION.headOnMaxTurning);
+		intruder = new UAS(state.getNewID(), intruderDestination, uasPerformance, CONFIGURATION.headOnSafetyRadius);
 		double x = tMX + intruderHalf* Math.cos(Math.toRadians(self.getBearing())); // intruder's x
 		double y = tMY - intruderHalf* Math.sin(Math.toRadians(self.getBearing())); // intruder's y
 		intruder.setLocation(new Double2D(x,y));
@@ -90,14 +90,14 @@ public class HeadOnGenerator extends EncounterGenerator {
 		}
 		Sensor sensor = new SimpleSensor();
 		intruder.init(sensor, aa);
-		intruder.setSchedulable(true);
-		//System.out.println("intruder:"+intruder);
-				
-		state.allEntities.add(intruderDestination);
-		state.allEntities.add(intruder);
-		state.toSchedule.add(intruder);
+		
 		state.uasBag.add(intruder);
 		state.obstacles.add(intruder);		
+		state.allEntities.add(intruderDestination);
+		state.allEntities.add(intruder);
+		intruder.setSchedulable(true);
+		state.toSchedule.add(intruder);
+				
 		
 		
 	}

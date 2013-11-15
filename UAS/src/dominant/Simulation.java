@@ -33,12 +33,12 @@ public class Simulation {
 		EvolutionState eState= Evolve.initialize(database, 0);
 		eState.startFresh();
 		int result=EvolutionState.R_NOTDONE;
-		int i=0;
+		int i=1;
 		while(result == EvolutionState.R_NOTDONE)
 		{
 			result=eState.evolve();
-			System.out.println("run "+" finished :)&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-			
+			System.out.println("run "+i +" finished :)&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+			i++;
 		}
 		eState.finish(result);
 		Evolve.cleanup(eState);		

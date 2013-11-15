@@ -199,7 +199,6 @@ public class SAAConfigurator extends JFrame {
 		
 		JRadioButton rdbtnTurnrightavoidancealgorithm = new JRadioButton("TurnRight");
 		AvoidanceAlgorithmSelectionPanel.add(rdbtnTurnrightavoidancealgorithm);
-		rdbtnTurnrightavoidancealgorithm.setSelected(true);
 		selfAvoidanceAlgorithmGroup.add(rdbtnTurnrightavoidancealgorithm);
 		rdbtnTurnrightavoidancealgorithm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -210,6 +209,7 @@ public class SAAConfigurator extends JFrame {
 		
 		
 		JRadioButton rdbtnSmartturnavoidancealgorithm = new JRadioButton("SmartTurn");
+		rdbtnSmartturnavoidancealgorithm.setSelected(true);
 		AvoidanceAlgorithmSelectionPanel.add(rdbtnSmartturnavoidancealgorithm);
 		selfAvoidanceAlgorithmGroup.add(rdbtnSmartturnavoidancealgorithm);
 		
@@ -489,7 +489,6 @@ public class SAAConfigurator extends JFrame {
 				encounterConfigPanel.add(AvoidanceAlgorithmSelectionPanel1);
 				
 				JRadioButton rdbtnNone1 = new JRadioButton("None");
-				rdbtnNone1.setSelected(true);
 				AvoidanceAlgorithmSelectionPanel1.add(rdbtnNone1);
 				headOnAvoidanceAlgorithmGroup.add(rdbtnNone1);
 				rdbtnNone1.addActionListener(new ActionListener() {
@@ -500,7 +499,6 @@ public class SAAConfigurator extends JFrame {
 				
 				JRadioButton rdbtnTurnrightavoidancealgorithm1 = new JRadioButton("TurnRight");
 				AvoidanceAlgorithmSelectionPanel1.add(rdbtnTurnrightavoidancealgorithm1);
-				rdbtnTurnrightavoidancealgorithm1.setSelected(true);
 				headOnAvoidanceAlgorithmGroup.add(rdbtnTurnrightavoidancealgorithm1);
 				rdbtnTurnrightavoidancealgorithm1.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -511,6 +509,7 @@ public class SAAConfigurator extends JFrame {
 				
 				
 				JRadioButton rdbtnSmartturnavoidancealgorithm1 = new JRadioButton("SmartTurn");
+				rdbtnSmartturnavoidancealgorithm1.setSelected(true);
 				AvoidanceAlgorithmSelectionPanel1.add(rdbtnSmartturnavoidancealgorithm1);
 				headOnAvoidanceAlgorithmGroup.add(rdbtnSmartturnavoidancealgorithm1);
 				

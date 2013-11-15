@@ -237,8 +237,8 @@ public class IntruderConfig extends JDialog {
 							CONFIGURATION.headOnMaxSpeed = new Double(maxSpeedTextField.getText());
 							CONFIGURATION.headOnMaxAcceleration = new Double(maxAccelerationTextField.getText());
 							CONFIGURATION.headOnMaxDeceleration = new Double(maxDecelerationTextField.getText());
-							CONFIGURATION.headOnMaxTurning = new Double(maxSpeedTextField.getText());
-							CONFIGURATION.headOnSpeed = new Double(maxTurningTextField.getText());
+							CONFIGURATION.headOnMaxTurning = new Double(maxTurningTextField.getText());
+							CONFIGURATION.headOnSpeed =  new Double(speedTextField.getText());
 							CONFIGURATION.headOnViewingRange = new Double(viewingRangeTextField.getText());
 							CONFIGURATION.headOnViewingAngle = new Double(viewingAngleTextField.getText());
 							CONFIGURATION.headOnSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
@@ -251,8 +251,8 @@ public class IntruderConfig extends JDialog {
 							CONFIGURATION.crossingMaxSpeed = new Double(maxSpeedTextField.getText());
 							CONFIGURATION.crossingMaxAcceleration = new Double(maxAccelerationTextField.getText());
 							CONFIGURATION.crossingMaxDeceleration = new Double(maxDecelerationTextField.getText());
-							CONFIGURATION.crossingMaxTurning = new Double(maxSpeedTextField.getText());
-							CONFIGURATION.crossingSpeed = new Double(maxTurningTextField.getText());
+							CONFIGURATION.crossingMaxTurning = new Double(maxTurningTextField.getText());
+							CONFIGURATION.crossingSpeed = new Double(speedTextField.getText());
 							CONFIGURATION.crossingViewingRange = new Double(viewingRangeTextField.getText());
 							CONFIGURATION.crossingViewingAngle = new Double(viewingAngleTextField.getText());
 							CONFIGURATION.crossingSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
@@ -264,8 +264,8 @@ public class IntruderConfig extends JDialog {
 							CONFIGURATION.tailApproachMaxSpeed = new Double(maxSpeedTextField.getText());
 							CONFIGURATION.tailApproachMaxAcceleration = new Double(maxAccelerationTextField.getText());
 							CONFIGURATION.tailApproachMaxDeceleration = new Double(maxDecelerationTextField.getText());
-							CONFIGURATION.tailApproachMaxTurning = new Double(maxSpeedTextField.getText());
-							CONFIGURATION.tailApproachSpeed = new Double(maxTurningTextField.getText());
+							CONFIGURATION.tailApproachMaxTurning = new Double(maxTurningTextField.getText());
+							CONFIGURATION.tailApproachSpeed =  new Double(speedTextField.getText());
 							CONFIGURATION.tailApproachViewingRange = new Double(viewingRangeTextField.getText());
 							CONFIGURATION.tailApproachViewingAngle = new Double(viewingAngleTextField.getText());
 							CONFIGURATION.tailApproachSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
@@ -277,7 +277,7 @@ public class IntruderConfig extends JDialog {
 							
 						}
 						
-						System.exit(0);
+						
 						
 					}
 				});
@@ -288,8 +288,9 @@ public class IntruderConfig extends JDialog {
 			{
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						System.exit(0);
+					public void actionPerformed(ActionEvent e) {
+						//System.exit(0);
+						
 					}
 				});
 				cancelButton.setActionCommand("Cancel");

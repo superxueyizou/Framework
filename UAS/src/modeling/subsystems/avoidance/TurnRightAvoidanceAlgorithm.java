@@ -91,31 +91,4 @@ public class TurnRightAvoidanceAlgorithm extends AvoidanceAlgorithm{
 			
 	}
 	
-	/****************************************************************************************************************************************/
-
-//
-//	/**
-//	 * Method which adds a Waypoint for the UAS to travel via on it's path to
-//	 * prevent it from hitting an obstacle in it's way
-//	 * 
-//	 * @param self The hostUAS
-//	 */
-//	public Waypoint alterCourse(UAS self)
-//	{
-//		Double2D myLocation = self.getLocation();		
-//		MutableDouble2D coord = new MutableDouble2D(myLocation);
-//		double turnAngle = performance.getCurrentMaxTurning();
-//		double xComponent = speed*Math.cos(Math.toRadians(CALCULATION.correctAngle(bearing-turnAngle)));
-//		double yComponent = -1*speed*Math.sin(Math.toRadians(CALCULATION.correctAngle(bearing-turnAngle)));
-//		//System.out.println("ccccccccccccccccccccccccccccc"+xComponent + " , "+ yComponent);
-//		coord.addIn(xComponent, yComponent);
-//			
-//		Waypoint wp = new Waypoint(state.getNewID(), destination);
-//		wp.setLocation(new Double2D(coord));
-//		return wp;
-////		self.getWpQueueP().offer(wp);
-////		state.environment.setObjectLocation(wp, new Double2D(coord));
-//			
-//	}
-		
 }
