@@ -1,0 +1,1 @@
+CLASHWITHOTHERUAS:uas3; time:17steps; location: (75.68836891930812 , 54.62636668825909)the other UAS's ID is1

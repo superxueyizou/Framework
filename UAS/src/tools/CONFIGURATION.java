@@ -18,12 +18,13 @@ public class CONFIGURATION {
 	
 	public static boolean avoidanceAlgorithmEnabler = true;
 	public static boolean staticAvoidance = false;
-	public static boolean dynamicAvoidance= !staticAvoidance;
-	public static String encounterSelection = "HeadOnEncounter";// "HeadOnEncounter", "CrossingEncounter","TailApproachEncounter";
-	public static String avoidanceAlgorithmSelection = "TurnRightAvoidanceAlgorithm"; //"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
-
+	
 	public static int sUASNo = 8;
 	public static int sObstacleNo = 20;
+	
+	
+	public static boolean dynamicAvoidance= !staticAvoidance;
+	public static String encounterSelection = "HeadOnEncounter";// "HeadOnEncounter", "CrossingEncounter","TailApproachEncounter";
 	
 	public static double selfMaxSpeed =2.235;
 	public static double selfMaxAcceleration = 0.05;
@@ -34,6 +35,8 @@ public class CONFIGURATION {
 	public static double selfViewingAngle = 60;
 	public static double selfSensitivityForCollisions = 0.5;
 	public static double selfSafetyRadius=1.667;
+	public static String avoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm"; //"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+
 	
 	
 	public static boolean headOnSelected = true;
@@ -49,7 +52,7 @@ public class CONFIGURATION {
 	public static double headOnViewingAngle = 60;
 	public static double headOnSensitivityForCollisions = 0.5;
 	public static double headOnSafetyRadius=1.667;
-	public static String headOnAvoidanceAlgorithmSelection = "None";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String headOnAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean crossingSelected = false;
 	public static double crossingDistance=20;
@@ -64,7 +67,7 @@ public class CONFIGURATION {
 	public static double crossingViewingAngle = 60;
 	public static double crossingSensitivityForCollisions = 0.5;
 	public static double crossingSafetyRadius=1.667;
-	public static String crossingAvoidanceAlgorithmSelection = "None";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String crossingAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean tailApproachSelected = false;
 	public static double tailApproachOffset = 2;
@@ -79,7 +82,7 @@ public class CONFIGURATION {
 	public static double tailApproachViewingAngle = 60;
 	public static double tailApproachSensitivityForCollisions = 0.5;
 	public static double tailApproachSafetyRadius=1.667;
-	public static String tailApproachAvoidanceAlgorithmSelection = "None";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String tailApproachAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	
 	

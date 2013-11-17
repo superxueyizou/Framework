@@ -118,11 +118,20 @@ public class SAAConfigurator extends JFrame {
 		
 		ButtonGroup collisionSelection = new ButtonGroup();
 		JRadioButton staticAvoidanceRadioButton = new JRadioButton("staticAvoidance");
+		staticAvoidanceRadioButton.setSelected(CONFIGURATION.staticAvoidance);
 		staticAvoidanceRadioButton.setBounds(0, 7, 134, 51);
 		staticAvoidanceRadioButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CONFIGURATION.staticAvoidance = true;
-				CONFIGURATION.dynamicAvoidance = false;
+				if(((JRadioButton)e.getSource()).isSelected())
+				{
+					CONFIGURATION.staticAvoidance = true;
+					CONFIGURATION.dynamicAvoidance = false;
+				}
+				else
+				{
+					CONFIGURATION.staticAvoidance = false;
+					CONFIGURATION.dynamicAvoidance = true;
+				}
 			}
 		});
 		collisionSelection.add(staticAvoidanceRadioButton);
@@ -172,12 +181,23 @@ public class SAAConfigurator extends JFrame {
 
 		
 		/*******************************************dynamic avoidance Setting***********************************************************************/	
-		JRadioButton dynamicAvoidanceRadioButton = new JRadioButton("dynamicAvoidance",true);
+		JRadioButton dynamicAvoidanceRadioButton = new JRadioButton("dynamicAvoidance");
+		dynamicAvoidanceRadioButton.setSelected(CONFIGURATION.dynamicAvoidance);
 		dynamicAvoidanceRadioButton.setBounds(0, 135, 156, 23);
 		dynamicAvoidanceRadioButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				CONFIGURATION.staticAvoidance = false;
-				CONFIGURATION.dynamicAvoidance = true;
+			public void actionPerformed(ActionEvent e) {
+				if(((JRadioButton)e.getSource()).isSelected())
+				{
+					CONFIGURATION.staticAvoidance = false;
+					CONFIGURATION.dynamicAvoidance = true;
+					
+				}
+				else
+				{
+					CONFIGURATION.staticAvoidance = true;
+					CONFIGURATION.dynamicAvoidance = false;
+				}
+				
 			}
 		});
 		collisionSelection.add(dynamicAvoidanceRadioButton);
@@ -189,44 +209,62 @@ public class SAAConfigurator extends JFrame {
 		avoidanceConfigPanel.add(AvoidanceAlgorithmSelectionPanel);
 		
 		JRadioButton rdbtnNone = new JRadioButton("None");
+		rdbtnNone.setSelected(CONFIGURATION.avoidanceAlgorithmSelection == "None");
 		AvoidanceAlgorithmSelectionPanel.add(rdbtnNone);
 		selfAvoidanceAlgorithmGroup.add(rdbtnNone);
 		rdbtnNone.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				CONFIGURATION.avoidanceAlgorithmSelection = "None";
+			public void actionPerformed(ActionEvent e) {
+				if(((JRadioButton)e.getSource()).isSelected())
+				{
+					CONFIGURATION.avoidanceAlgorithmSelection = "None";
+				}
 			}
 		});
 		
 		JRadioButton rdbtnTurnrightavoidancealgorithm = new JRadioButton("TurnRight");
+		rdbtnTurnrightavoidancealgorithm.setSelected(CONFIGURATION.avoidanceAlgorithmSelection == "TurnRightAvoidanceAlgorithm");
 		AvoidanceAlgorithmSelectionPanel.add(rdbtnTurnrightavoidancealgorithm);
 		selfAvoidanceAlgorithmGroup.add(rdbtnTurnrightavoidancealgorithm);
 		rdbtnTurnrightavoidancealgorithm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CONFIGURATION.avoidanceAlgorithmSelection = "TurnRightAvoidanceAlgorithm";
+				if(((JRadioButton)e.getSource()).isSelected())
+				{
+					CONFIGURATION.avoidanceAlgorithmSelection = "TurnRightAvoidanceAlgorithm";
+				}
 			}
 		});
 		
 		
 		
 		JRadioButton rdbtnSmartturnavoidancealgorithm = new JRadioButton("SmartTurn");
+		rdbtnSmartturnavoidancealgorithm.setSelected(CONFIGURATION.avoidanceAlgorithmSelection == "SmartTurnAvoidanceAlgorithm");
 		rdbtnSmartturnavoidancealgorithm.setSelected(true);
 		AvoidanceAlgorithmSelectionPanel.add(rdbtnSmartturnavoidancealgorithm);
-		selfAvoidanceAlgorithmGroup.add(rdbtnSmartturnavoidancealgorithm);
+		selfAvoidanceAlgorithmGroup.add(rdbtnSmartturnavoidancealgorithm);		
+		rdbtnSmartturnavoidancealgorithm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(((JRadioButton)e.getSource()).isSelected())
+				{
+					CONFIGURATION.avoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";
+				}
+			}
+		});
+		
+		
 		
 		JRadioButton rdbtnRIPNAvoidanceAlgorithm = new JRadioButton("RIPN");
+		rdbtnRIPNAvoidanceAlgorithm.setSelected(CONFIGURATION.avoidanceAlgorithmSelection == "RIPNAvoidanceAlgorithm");
 		AvoidanceAlgorithmSelectionPanel.add(rdbtnRIPNAvoidanceAlgorithm);
 		selfAvoidanceAlgorithmGroup.add(rdbtnRIPNAvoidanceAlgorithm);
 		rdbtnRIPNAvoidanceAlgorithm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CONFIGURATION.avoidanceAlgorithmSelection = "RIPNAvoidanceAlgorithm";
+				if(((JRadioButton)e.getSource()).isSelected())
+				{
+					CONFIGURATION.avoidanceAlgorithmSelection = "RIPNAvoidanceAlgorithm";
+				}
 			}
 		});
-		rdbtnSmartturnavoidancealgorithm.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CONFIGURATION.avoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";
-			}
-		});
-		
+
 		JSeparator separator_1 = new JSeparator();
 		separator_1.setBounds(20, 265, 303, 2);
 		avoidanceConfigPanel.add(separator_1);
@@ -265,9 +303,13 @@ public class SAAConfigurator extends JFrame {
 		lblSensitivityForCollisions.setBounds(27, 551, 143, 14);
 		avoidanceConfigPanel.add(lblSensitivityForCollisions);
 		
+		JLabel lblSafetyradius = new JLabel("SafetyRadius");
+		lblSafetyradius.setBounds(27, 588, 107, 14);
+		avoidanceConfigPanel.add(lblSafetyradius);
+		
 		
 		maxSpeedTextField = new JTextField();
-		maxSpeedTextField.setText("2.235");
+		maxSpeedTextField.setText(String.valueOf(CONFIGURATION.selfMaxSpeed));
 		maxSpeedTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -276,15 +318,13 @@ public class SAAConfigurator extends JFrame {
 			}
 		});
 		
-		JLabel lblSafetyradius = new JLabel("SafetyRadius");
-		lblSafetyradius.setBounds(27, 588, 107, 14);
-		avoidanceConfigPanel.add(lblSafetyradius);
+		
 		maxSpeedTextField.setBounds(208, 278, 86, 20);
 		avoidanceConfigPanel.add(maxSpeedTextField);
 		maxSpeedTextField.setColumns(10);
 		
 		maxAccelerationTextField = new JTextField();
-		maxAccelerationTextField.setText("0.05");
+		maxAccelerationTextField.setText(String.valueOf(CONFIGURATION.selfMaxAcceleration));
 		maxAccelerationTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -297,7 +337,7 @@ public class SAAConfigurator extends JFrame {
 		maxAccelerationTextField.setColumns(10);
 		
 		maxDecelerationTextField = new JTextField();
-		maxDecelerationTextField.setText("0.05");
+		maxDecelerationTextField.setText(String.valueOf(CONFIGURATION.selfMaxDeceleration));
 		maxDecelerationTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -310,7 +350,7 @@ public class SAAConfigurator extends JFrame {
 		maxDecelerationTextField.setColumns(10);
 		
 		maxTurningTextField = new JTextField();
-		maxTurningTextField.setText("5");
+		maxTurningTextField.setText(String.valueOf(CONFIGURATION.selfMaxTurning));
 		maxTurningTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -323,7 +363,7 @@ public class SAAConfigurator extends JFrame {
 		maxTurningTextField.setColumns(10);
 		
 		speedTextField = new JTextField();
-		speedTextField.setText("1.5");
+		speedTextField.setText(String.valueOf(CONFIGURATION.selfSpeed));
 		speedTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -336,7 +376,7 @@ public class SAAConfigurator extends JFrame {
 		speedTextField.setColumns(10);
 		
 		viewingRangeTextField = new JTextField();
-		viewingRangeTextField.setText("38.89");
+		viewingRangeTextField.setText(String.valueOf(CONFIGURATION.selfViewingRange));
 		viewingRangeTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -349,7 +389,7 @@ public class SAAConfigurator extends JFrame {
 		viewingRangeTextField.setColumns(10);
 		
 		viewingAngleTextField = new JTextField();
-		viewingAngleTextField.setText("60");
+		viewingAngleTextField.setText(String.valueOf(CONFIGURATION.selfViewingAngle));
 		viewingAngleTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -362,7 +402,7 @@ public class SAAConfigurator extends JFrame {
 		viewingAngleTextField.setColumns(10);
 		
 		sensitivityForCollisionTextField = new JTextField();
-		sensitivityForCollisionTextField.setText("0.5");
+		sensitivityForCollisionTextField.setText(String.valueOf(CONFIGURATION.selfSensitivityForCollisions));
 		sensitivityForCollisionTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -375,6 +415,7 @@ public class SAAConfigurator extends JFrame {
 		sensitivityForCollisionTextField.setColumns(10);
 		
 		safetyRadiusTextField = new JTextField();
+		safetyRadiusTextField.setText(String.valueOf(CONFIGURATION.selfSafetyRadius));
 		safetyRadiusTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -382,7 +423,6 @@ public class SAAConfigurator extends JFrame {
 				CONFIGURATION.selfSafetyRadius = new Double(safetyRadiusTextField.getText());
 			}
 		});
-		safetyRadiusTextField.setText("1.667");
 		safetyRadiusTextField.setBounds(208, 582, 86, 20);
 		avoidanceConfigPanel.add(safetyRadiusTextField);
 		safetyRadiusTextField.setColumns(10);
@@ -396,35 +436,7 @@ public class SAAConfigurator extends JFrame {
 		JPanel encounterConfigPanel = new JPanel();
 		tabbedPane.addTab("EncounterConfig", null, encounterConfigPanel, null);
 		encounterConfigPanel.setLayout(null);
-		
-//		final RadioButtonPanel encounterPanel = new RadioButtonPanel("Encounter Selection", new String[]{"HeadOnEncounter", "CrossingEncounter","TailApproachEncounter" }); 
-//		encounterPanel.setBounds(10, 11, 196, 104);
-//		//		JCheckBox chckbxNewCheckBox = new JCheckBox("HeadOnEncounter");
-//		//		chckbxNewCheckBox.setBounds(6, 34, 184, 23);
-//		//		encounterConfigPanel.add(chckbxNewCheckBox);
-//		//		
-//		//		JCheckBox chckbxNewCheckBox_1 = new JCheckBox("CrossingEncounter");
-//		//		chckbxNewCheckBox_1.setBounds(6, 80, 138, 23);
-//		//		encounterConfigPanel.add(chckbxNewCheckBox_1);
-//		//		
-//		//		JCheckBox chckbxTailapproachencounter = new JCheckBox("TailApproachEncounter");
-//		//		chckbxTailapproachencounter.setBounds(6, 126, 184, 23);
-//		//		encounterConfigPanel.add(chckbxTailapproachencounter);
-//				encounterConfigPanel.add(encounterPanel);
-//				
-//				JButton btnOk = new JButton("OK");
-//				btnOk.addActionListener(new ActionListener() {
-//					public void actionPerformed(ActionEvent arg0) {
-//						CONFIGURATION.encounterSelection=encounterPanel.getSelection();
-//					}
-//				});
-//				btnOk.setBounds(216, 86, 89, 23);
-//				encounterConfigPanel.add(btnOk);
-//				
-//				JButton btnReset = new JButton("Reset");
-//				btnReset.setBounds(216, 39, 89, 23);
-//				encounterConfigPanel.add(btnReset);
-	/***************************************************************************************************************************/			
+				
 		{   
 				JSplitPane splitPane = new JSplitPane();
 				splitPane.setBounds(10, 11, 339, 25);
@@ -463,19 +475,24 @@ public class SAAConfigurator extends JFrame {
 				splitPane_2.setLeftComponent(txtHeadontimes);
 				txtHeadontimes.setColumns(5);
 				
-				JButton btnConfig = new JButton("Config");
+				JButton btnConfig = new JButton("Config");			
 				btnConfig.setHorizontalAlignment(SwingConstants.RIGHT);
 				btnConfig.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						try {
-							IntruderConfig dialog = new IntruderConfig();
-							dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-							dialog.setName("HeadonEncounter--IntruderConfig");
-							dialog.setModal(true);
-							dialog.setVisible(true);
+						try 
+						{
+							System.out.println(e.getActionCommand());
+								IntruderConfig dialog = new IntruderConfig();
+								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+								dialog.setName("HeadOnEncounter--IntruderConfig");
+								dialog.textFieldInit("HeadOnEncounter--IntruderConfig");
+								dialog.setModal(true);
+								//dialog.setBounds(x, y, width, height)
+								dialog.setVisible(true);
+						}
 							
-		
-						} catch (Exception ex) {
+						catch (Exception ex)
+						{
 							ex.printStackTrace();
 						}
 						
@@ -483,23 +500,27 @@ public class SAAConfigurator extends JFrame {
 				});
 				splitPane_2.setRightComponent(btnConfig);
 				
+				
+				
 				JPanel AvoidanceAlgorithmSelectionPanel1 = new JPanel();
 				AvoidanceAlgorithmSelectionPanel1.setBorder(new TitledBorder(null, "Intruder's Avoidance Algorithm Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 				AvoidanceAlgorithmSelectionPanel1.setBounds(20, 47, 314, 80);
 				encounterConfigPanel.add(AvoidanceAlgorithmSelectionPanel1);
 				
 				JRadioButton rdbtnNone1 = new JRadioButton("None");
+				rdbtnNone1.setSelected(CONFIGURATION.headOnAvoidanceAlgorithmSelection == "None");
 				AvoidanceAlgorithmSelectionPanel1.add(rdbtnNone1);
 				headOnAvoidanceAlgorithmGroup.add(rdbtnNone1);
 				rdbtnNone1.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
+					public void actionPerformed(ActionEvent e) {
 						CONFIGURATION.headOnAvoidanceAlgorithmSelection = "None";
 					}
 				});
 				
 				JRadioButton rdbtnTurnrightavoidancealgorithm1 = new JRadioButton("TurnRight");
-				AvoidanceAlgorithmSelectionPanel1.add(rdbtnTurnrightavoidancealgorithm1);
+				rdbtnTurnrightavoidancealgorithm1.setSelected(CONFIGURATION.headOnAvoidanceAlgorithmSelection == "TurnRightAvoidanceAlgorithm");
 				headOnAvoidanceAlgorithmGroup.add(rdbtnTurnrightavoidancealgorithm1);
+				AvoidanceAlgorithmSelectionPanel1.add(rdbtnTurnrightavoidancealgorithm1);
 				rdbtnTurnrightavoidancealgorithm1.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						CONFIGURATION.headOnAvoidanceAlgorithmSelection = "TurnRightAvoidanceAlgorithm";
@@ -509,11 +530,18 @@ public class SAAConfigurator extends JFrame {
 				
 				
 				JRadioButton rdbtnSmartturnavoidancealgorithm1 = new JRadioButton("SmartTurn");
-				rdbtnSmartturnavoidancealgorithm1.setSelected(true);
+				rdbtnSmartturnavoidancealgorithm1.setSelected(CONFIGURATION.headOnAvoidanceAlgorithmSelection == "SmartTurnAvoidanceAlgorithm");
 				AvoidanceAlgorithmSelectionPanel1.add(rdbtnSmartturnavoidancealgorithm1);
 				headOnAvoidanceAlgorithmGroup.add(rdbtnSmartturnavoidancealgorithm1);
+				rdbtnSmartturnavoidancealgorithm1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						CONFIGURATION.headOnAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";
+					}
+				});
+				
 				
 				JRadioButton rdbtnRIPNAvoidanceAlgorithm1 = new JRadioButton("RIPN");
+				rdbtnRIPNAvoidanceAlgorithm1.setSelected(CONFIGURATION.headOnAvoidanceAlgorithmSelection == "RIPNAvoidanceAlgorithm");
 				AvoidanceAlgorithmSelectionPanel1.add(rdbtnRIPNAvoidanceAlgorithm1);
 				headOnAvoidanceAlgorithmGroup.add(rdbtnRIPNAvoidanceAlgorithm1);
 				rdbtnRIPNAvoidanceAlgorithm1.addActionListener(new ActionListener() {
@@ -521,11 +549,7 @@ public class SAAConfigurator extends JFrame {
 						CONFIGURATION.headOnAvoidanceAlgorithmSelection = "RIPNAvoidanceAlgorithm";
 					}
 				});
-				rdbtnSmartturnavoidancealgorithm1.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						CONFIGURATION.headOnAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";
-					}
-				});
+				
 		}
 			
 			
@@ -573,6 +597,7 @@ public class SAAConfigurator extends JFrame {
 						IntruderConfig dialog = new IntruderConfig();
 						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						dialog.setName("CrossingEncounter--IntruderConfig");
+						dialog.textFieldInit("CrossingEncounter--IntruderConfig");
 						dialog.setModal(true);
 						dialog.setVisible(true);
 						
@@ -591,7 +616,7 @@ public class SAAConfigurator extends JFrame {
 			encounterConfigPanel.add(AvoidanceAlgorithmSelectionPanel1);
 			
 			JRadioButton rdbtnNone1 = new JRadioButton("None");
-			rdbtnNone1.setSelected(true);
+			rdbtnNone1.setSelected(CONFIGURATION.crossingAvoidanceAlgorithmSelection == "None");
 			AvoidanceAlgorithmSelectionPanel1.add(rdbtnNone1);
 			crossingAvoidanceAlgorithmGroup.add(rdbtnNone1);
 			rdbtnNone1.addActionListener(new ActionListener() {
@@ -601,8 +626,8 @@ public class SAAConfigurator extends JFrame {
 			});
 			
 			JRadioButton rdbtnTurnrightavoidancealgorithm1 = new JRadioButton("TurnRight");
+			rdbtnTurnrightavoidancealgorithm1.setSelected(CONFIGURATION.crossingAvoidanceAlgorithmSelection == "TurnRightAvoidanceAlgorithm");
 			AvoidanceAlgorithmSelectionPanel1.add(rdbtnTurnrightavoidancealgorithm1);
-			rdbtnTurnrightavoidancealgorithm1.setSelected(true);
 			crossingAvoidanceAlgorithmGroup.add(rdbtnTurnrightavoidancealgorithm1);
 			rdbtnTurnrightavoidancealgorithm1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -613,10 +638,18 @@ public class SAAConfigurator extends JFrame {
 			
 			
 			JRadioButton rdbtnSmartturnavoidancealgorithm1 = new JRadioButton("SmartTurn");
+			rdbtnSmartturnavoidancealgorithm1.setSelected(CONFIGURATION.crossingAvoidanceAlgorithmSelection == "SmartTurnAvoidanceAlgorithm");
 			AvoidanceAlgorithmSelectionPanel1.add(rdbtnSmartturnavoidancealgorithm1);
 			crossingAvoidanceAlgorithmGroup.add(rdbtnSmartturnavoidancealgorithm1);
+			rdbtnSmartturnavoidancealgorithm1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					CONFIGURATION.crossingAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";
+				}
+			});
+			
 			
 			JRadioButton rdbtnRIPNAvoidanceAlgorithm1 = new JRadioButton("RIPN");
+			rdbtnRIPNAvoidanceAlgorithm1.setSelected(CONFIGURATION.crossingAvoidanceAlgorithmSelection == "RIPNAvoidanceAlgorithm");
 			AvoidanceAlgorithmSelectionPanel1.add(rdbtnRIPNAvoidanceAlgorithm1);
 			crossingAvoidanceAlgorithmGroup.add(rdbtnRIPNAvoidanceAlgorithm1);
 			rdbtnRIPNAvoidanceAlgorithm1.addActionListener(new ActionListener() {
@@ -624,11 +657,7 @@ public class SAAConfigurator extends JFrame {
 					CONFIGURATION.crossingAvoidanceAlgorithmSelection = "RIPNAvoidanceAlgorithm";
 				}
 			});
-			rdbtnSmartturnavoidancealgorithm1.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					CONFIGURATION.crossingAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";
-				}
-			});
+			
 	}
 		
 		
@@ -678,6 +707,7 @@ public class SAAConfigurator extends JFrame {
 					IntruderConfig dialog = new IntruderConfig();
 					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 					dialog.setName("TailApproachEncounter--IntruderConfig");
+					dialog.textFieldInit("TailApproachEncounter--IntruderConfig");
 					dialog.setModal(true);
 					dialog.setVisible(true);
 					
@@ -700,7 +730,7 @@ public class SAAConfigurator extends JFrame {
 	encounterConfigPanel.add(AvoidanceAlgorithmSelectionPanel1);
 	
 	JRadioButton rdbtnNone1 = new JRadioButton("None");
-	rdbtnNone1.setSelected(true);
+	rdbtnNone1.setSelected(CONFIGURATION.tailApproachAvoidanceAlgorithmSelection == "None");
 	AvoidanceAlgorithmSelectionPanel1.add(rdbtnNone1);
 	tailApproachAvoidanceAlgorithmGroup.add(rdbtnNone1);
 	rdbtnNone1.addActionListener(new ActionListener() {
@@ -710,8 +740,8 @@ public class SAAConfigurator extends JFrame {
 	});
 	
 	JRadioButton rdbtnTurnrightavoidancealgorithm1 = new JRadioButton("TurnRight");
+	rdbtnTurnrightavoidancealgorithm1.setSelected(CONFIGURATION.tailApproachAvoidanceAlgorithmSelection == "TurnRightAvoidanceAlgorithm");
 	AvoidanceAlgorithmSelectionPanel1.add(rdbtnTurnrightavoidancealgorithm1);
-	rdbtnTurnrightavoidancealgorithm1.setSelected(true);
 	tailApproachAvoidanceAlgorithmGroup.add(rdbtnTurnrightavoidancealgorithm1);
 	rdbtnTurnrightavoidancealgorithm1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -722,10 +752,18 @@ public class SAAConfigurator extends JFrame {
 	
 	
 	JRadioButton rdbtnSmartturnavoidancealgorithm1 = new JRadioButton("SmartTurn");
+	rdbtnSmartturnavoidancealgorithm1.setSelected(CONFIGURATION.tailApproachAvoidanceAlgorithmSelection == "SmartTurnAvoidanceAlgorithm");
 	AvoidanceAlgorithmSelectionPanel1.add(rdbtnSmartturnavoidancealgorithm1);
 	tailApproachAvoidanceAlgorithmGroup.add(rdbtnSmartturnavoidancealgorithm1);
+	rdbtnSmartturnavoidancealgorithm1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			CONFIGURATION.tailApproachAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";
+		}
+	});
+	
 	
 	JRadioButton rdbtnRIPNAvoidanceAlgorithm1 = new JRadioButton("RIPN");
+	rdbtnRIPNAvoidanceAlgorithm1.setSelected(CONFIGURATION.tailApproachAvoidanceAlgorithmSelection == "RIPNAvoidanceAlgorithm");
 	AvoidanceAlgorithmSelectionPanel1.add(rdbtnRIPNAvoidanceAlgorithm1);
 	tailApproachAvoidanceAlgorithmGroup.add(rdbtnRIPNAvoidanceAlgorithm1);
 	rdbtnRIPNAvoidanceAlgorithm1.addActionListener(new ActionListener() {
@@ -733,10 +771,6 @@ public class SAAConfigurator extends JFrame {
 			CONFIGURATION.tailApproachAvoidanceAlgorithmSelection = "RIPNAvoidanceAlgorithm";
 		}
 	});
-	rdbtnSmartturnavoidancealgorithm1.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			CONFIGURATION.tailApproachAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";
-		}
-	});
+
   }
 }

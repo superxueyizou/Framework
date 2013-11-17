@@ -2,7 +2,7 @@
 # Licensed under the Academic Free License version 3.0
 # See the file "LICENSE" for more information
 
-parent.0		= D:/MyLibrary/KLive/EclipseWorkspace/ECJ/ecj/ec/simple/simple.params
+parent.0		= D:/MyLibrary/EclipseWorkspace/ECJ/ecj/ec/simple/simple.params
 pop.subpop.0.size = 20
 generations = 50
 
