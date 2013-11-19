@@ -22,16 +22,15 @@ public class SimulationWithUI {
     public static void main(String[] args)
     {
     	COModelWithUI vid = new COModelWithUI();
-    	Console.DEFAULT_WIDTH=380;
-    	Console.DEFAULT_HEIGHT=380;
-    	Console c = new Console(vid);    	
+    	Console c = new Console(vid); 
+    	c.setBounds(1500+80, 0, 340, 380); // for windows: c.setBounds(1500+40, 0, 380, 380);
 		c.setVisible(true);
 		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					SAAConfigurator frame = new SAAConfigurator();
-					frame.setBounds(1500+40, 380, 380, 700);
+					frame.setBounds(1500+80, 400, 340,690); // for windows: frame.setBounds(1500+40, 380, 380,700);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

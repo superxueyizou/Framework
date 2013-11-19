@@ -87,7 +87,7 @@ public class SAAConfigurator extends JFrame {
 	 */
 	public SAAConfigurator() {
 		super("SAA Configurator");
-		this.setBounds(1500+40, 380, 380, 700);
+		this.setBounds(1500+70, 380, 380, 700);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		
@@ -481,10 +481,10 @@ public class SAAConfigurator extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						try 
 						{
-							System.out.println(e.getActionCommand());
+							    //System.out.println(e.getActionCommand());
 								IntruderConfig dialog = new IntruderConfig();
 								dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-								dialog.setName("HeadOnEncounter--IntruderConfig");
+								dialog.setName("HeadonEncounter--IntruderConfig");
 								dialog.textFieldInit("HeadOnEncounter--IntruderConfig");
 								dialog.setModal(true);
 								//dialog.setBounds(x, y, width, height)

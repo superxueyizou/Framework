@@ -452,6 +452,6 @@ public class UAS extends CircleObstacle implements Oriented2D
 	 */
 	public double orientation2D()
 	{
-		return this.bearing;
+		return Math.toRadians(this.bearing);
 	}
 }

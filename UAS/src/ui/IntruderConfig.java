@@ -52,7 +52,7 @@ public class IntruderConfig extends JDialog
 	public IntruderConfig() 
 	{
 		setModal(true);
-		setBounds(1160, 380, 347, 474);
+		setBounds(1236, 400, 347, 474); // for windows: setBounds(1160, 380, 347, 474); 
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
