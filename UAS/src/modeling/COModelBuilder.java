@@ -14,6 +14,8 @@ import modeling.encountergenerator.TailApproachGenerator;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
 import modeling.subsystems.avoidance.RIPNAvoidanceAlgorithm;
+import modeling.subsystems.avoidance.ORCAAvoidanceAlgorithm;
+import modeling.subsystems.avoidance.RVOAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.SimpleAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.SmartTurnAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.TurnRightAvoidanceAlgorithm;
@@ -145,12 +147,24 @@ public class COModelBuilder
 				case "RIPNAvoidanceAlgorithm":
 					aa= new RIPNAvoidanceAlgorithm(state, self);
 					break;
+				case "ORCAAvoidanceAlgorithm":
+					aa= new ORCAAvoidanceAlgorithm(state, self);
+					break;
+				case "RVOAvoidanceAlgorithm":
+					aa= new RVOAvoidanceAlgorithm(state, self);
+					break;
 				default:
 					aa= new RIPNAvoidanceAlgorithm(state, self);
 			}
 			Sensor sensor = new SimpleSensor();
 			self.init(sensor, aa);
 			self.setBearing(CALCULATION.calculateAngle(self.getLocation(), d.getLocation()));
+			
+			state.uasBag.add(self);
+			state.obstacles.add(self);
+			state.allEntities.add(self);
+			self.setSchedulable(true);
+			state.toSchedule.add(self);
 			//System.out.println("self's bearing:"+self.getBearing());
 						
 			
@@ -228,12 +242,14 @@ public class COModelBuilder
 		    	}
 		    	
 		    }
+		
+		    for(Object o : state.uasBag)
+		    {
+		    	UAS uas = (UAS)o;
+		    	uas.getAa().init();		    	
+		    }
 			
-			state.uasBag.add(self);
-			state.obstacles.add(self);
-			state.allEntities.add(self);
-			self.setSchedulable(true);
-			state.toSchedule.add(self);
+		
 			
 			//System.out.println("uas is at (" + Double.toString(x) + ", " + Double.toString(y) + ")ID is"+ uas.ID);
 			//System.out.println("COModelBuilder.genereteSimulation is called, uas's max speed is: " + state.uasStats.getMaxSpeed());

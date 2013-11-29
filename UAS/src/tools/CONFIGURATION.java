@@ -35,7 +35,7 @@ public class CONFIGURATION {
 	public static double selfViewingAngle = 60;
 	public static double selfSensitivityForCollisions = 0.5;
 	public static double selfSafetyRadius=1.667;
-	public static String avoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm"; //"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String avoidanceAlgorithmSelection = "RVOAvoidanceAlgorithm"; //"RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 
 	
 	
@@ -52,7 +52,7 @@ public class CONFIGURATION {
 	public static double headOnViewingAngle = 60;
 	public static double headOnSensitivityForCollisions = 0.5;
 	public static double headOnSafetyRadius=1.667;
-	public static String headOnAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String headOnAvoidanceAlgorithmSelection = "RVOAvoidanceAlgorithm";//"RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean crossingSelected = false;
 	public static double crossingDistance=20;
@@ -67,7 +67,7 @@ public class CONFIGURATION {
 	public static double crossingViewingAngle = 60;
 	public static double crossingSensitivityForCollisions = 0.5;
 	public static double crossingSafetyRadius=1.667;
-	public static String crossingAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String crossingAvoidanceAlgorithmSelection = "RVOAvoidanceAlgorithm";//"RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean tailApproachSelected = false;
 	public static double tailApproachOffset = 2;
@@ -82,7 +82,7 @@ public class CONFIGURATION {
 	public static double tailApproachViewingAngle = 60;
 	public static double tailApproachSensitivityForCollisions = 0.5;
 	public static double tailApproachSafetyRadius=1.667;
-	public static String tailApproachAvoidanceAlgorithmSelection = "SmartTurnAvoidanceAlgorithm";//"TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String tailApproachAvoidanceAlgorithmSelection = "RVOAvoidanceAlgorithm";//"RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	
 	

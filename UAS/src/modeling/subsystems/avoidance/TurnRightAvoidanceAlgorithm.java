@@ -54,7 +54,10 @@ public class TurnRightAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		destinationCoor = destination.getLocation();
 	}
 	
-	
+	public void init()
+	{
+		
+	}
 	/**
 	 * @return ****************************************************************************************************************************************/
 	public Waypoint execute()

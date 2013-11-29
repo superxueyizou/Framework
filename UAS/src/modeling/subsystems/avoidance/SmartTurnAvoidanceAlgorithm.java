@@ -54,7 +54,10 @@ public class SmartTurnAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		destinationCoor = destination.getLocation();
 	}
 	
-	
+	public void init()
+	{
+		
+	}
 	/******************************************************************************************************************************************/
 	public Waypoint execute()
 	{

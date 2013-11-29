@@ -218,7 +218,7 @@ public class COModelWithUI extends GUIState
         display = new Display2D(1500,1000,this);
         // turn off clipping
         display.setClipping(false);
-        display.setBackdrop(new Color(0,150,255));
+       //display.setBackdrop(new Color(0,150,255,150));
 
         displayFrame = display.createFrame();
         displayFrame.setTitle("Environment Display");

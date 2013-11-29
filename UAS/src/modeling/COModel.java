@@ -52,7 +52,7 @@ public class COModel extends SimState
 	 * @param y the height of the simulation environment
 	 * @param UI pass true if the simulation is being ran with a UI false if it is not.
 	 */
-    public COModel(long seed, double x, double y, boolean UI)
+	public COModel(long seed, double x, double y, boolean UI)
     {
 		super(seed);
 		environment = new Continuous2D(1.0, x, y);

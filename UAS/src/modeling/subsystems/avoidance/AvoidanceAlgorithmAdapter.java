@@ -48,5 +48,10 @@ public class AvoidanceAlgorithmAdapter extends AvoidanceAlgorithm
 		
 	}
 	
+	public void init()
+	{
+		
+	}
+	
 
 }

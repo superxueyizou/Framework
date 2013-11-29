@@ -59,6 +59,11 @@ public class RIPNAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		destinationCoor = destination.getLocation();
 	}
 	
+	public void init()
+	{
+		
+	}
+	
 	
 	/**
 	 * @return ****************************************************************************************************************************************/

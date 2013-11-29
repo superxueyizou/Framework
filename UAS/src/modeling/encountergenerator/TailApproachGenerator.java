@@ -13,6 +13,8 @@ import modeling.UASPerformance;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
 import modeling.subsystems.avoidance.RIPNAvoidanceAlgorithm;
+import modeling.subsystems.avoidance.ORCAAvoidanceAlgorithm;
+import modeling.subsystems.avoidance.RVOAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.SimpleAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.SmartTurnAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.TurnRightAvoidanceAlgorithm;
@@ -92,6 +94,12 @@ public class TailApproachGenerator extends EncounterGenerator {
 				break;
 			case "RIPNAvoidanceAlgorithm":
 				aa= new RIPNAvoidanceAlgorithm(state, intruder);
+				break;
+			case "ORCAAvoidanceAlgorithm":
+				aa= new ORCAAvoidanceAlgorithm(state, intruder);
+				break;
+			case "RVOAvoidanceAlgorithm":
+				aa= new RVOAvoidanceAlgorithm(state, intruder);
 				break;
 			default:
 				aa= new RIPNAvoidanceAlgorithm(state, intruder);

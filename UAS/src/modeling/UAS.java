@@ -20,6 +20,14 @@ public class UAS extends CircleObstacle implements Oriented2D
 {
 	//parameters for subsystems
 	private AvoidanceAlgorithm aa;
+	public AvoidanceAlgorithm getAa() {
+		return aa;
+	}
+
+	public void setAa(AvoidanceAlgorithm aa) {
+		this.aa = aa;
+	}
+
 	private Sensor sensor;
 	
 	//parameters for UAS movement
@@ -38,8 +46,8 @@ public class UAS extends CircleObstacle implements Oriented2D
 	//parameters for navigation
 	private Destination destination;
 	private Waypoint nextWp;
-	private LinkedList wpQueue;
-	private LinkedList wpQueueP;
+	private LinkedList<Waypoint> wpQueue;
+	private LinkedList<Waypoint> wpQueueP;
 	
 	//parameters for recording information about simulation
 	private double distanceToDanger =110;// Double.MAX_VALUE; //records the closest distance to danger experienced by the uas
@@ -59,9 +67,9 @@ public class UAS extends CircleObstacle implements Oriented2D
 		this.performance = uasPerformance;
 		this.safetyRadius= safetyRadius;
 		nextWp=null;
-		wpQueue=new LinkedList();
+		wpQueue=new LinkedList<Waypoint>();
 		wpQueue.offer(destination);
-		wpQueueP=new LinkedList();
+		wpQueueP=new LinkedList<Waypoint>();
 
 	}
 	
@@ -117,7 +125,10 @@ public class UAS extends CircleObstacle implements Oriented2D
 				state.environment.setObjectLocation(this, new Double2D(sumForces));
 				this.setLocation( new Double2D(sumForces));
 				proximityToDanger(new Double2D(sumForces), state.obstacles);
-				//System.out.println("sssssssssssssssssssssssssssssssssssssss");
+
+//				state.environment.setObjectLocation(this, nextWp.getLocation());
+//				this.setLocation( nextWp.getLocation());
+//				proximityToDanger(nextWp.getLocation(), state.obstacles);
 				
 				if (this.location.distance(nextWp.location)<1)
 				{
@@ -235,20 +246,20 @@ public class UAS extends CircleObstacle implements Oriented2D
 		this.distanceToDanger = distanceToDanger;
 	}
 	
-	public LinkedList getWpQueue() {
+	public LinkedList<Waypoint> getWpQueue() {
 		return wpQueue;
 	}
 
-	public void setWpQueue(LinkedList wpQueue) {
+	public void setWpQueue(LinkedList<Waypoint> wpQueue) {
 		this.wpQueue = wpQueue;
 	}
 
 	
-	public LinkedList getWpQueueP() {
+	public LinkedList<Waypoint> getWpQueueP() {
 		return wpQueueP;
 	}
 
-	public void setWpQueueP(LinkedList wpQueueP) {
+	public void setWpQueueP(LinkedList<Waypoint> wpQueueP) {
 		this.wpQueueP = wpQueueP;
 	}
 	

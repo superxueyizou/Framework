@@ -43,5 +43,7 @@ public abstract class AvoidanceAlgorithm {
 	
 	public abstract Waypoint execute();
 	
+	public abstract void init();
+	
 
 }
