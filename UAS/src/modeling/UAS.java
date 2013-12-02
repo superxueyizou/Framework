@@ -96,8 +96,6 @@ public class UAS extends CircleObstacle implements Oriented2D
 					state.environment.setObjectLocation(wp, wp.getLocation());	
 					
 				}
-				
-				
 			}
 		
 						
