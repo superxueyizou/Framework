@@ -12,6 +12,7 @@ import modeling.UAS;
 import modeling.UASPerformance;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
+import modeling.subsystems.avoidance.HRVOAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.RIPNAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.ORCAAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.RVOAvoidanceAlgorithm;
@@ -92,6 +93,9 @@ public class HeadOnGenerator extends EncounterGenerator {
 				break;
 			case "RVOAvoidanceAlgorithm":
 				aa= new RVOAvoidanceAlgorithm(state, intruder);
+				break;
+			case "HRVOAvoidanceAlgorithm":
+				aa= new HRVOAvoidanceAlgorithm(state, intruder);
 				break;
 			default:
 				aa= new AvoidanceAlgorithmAdapter();

@@ -13,6 +13,7 @@ import modeling.encountergenerator.HeadOnGenerator;
 import modeling.encountergenerator.TailApproachGenerator;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
+import modeling.subsystems.avoidance.HRVOAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.RIPNAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.ORCAAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.RVOAvoidanceAlgorithm;
@@ -142,6 +143,9 @@ public class SAAModelBuilder
 					break;
 				case "RVOAvoidanceAlgorithm":
 					aa= new RVOAvoidanceAlgorithm(state, self);
+					break;
+				case "HRVOAvoidanceAlgorithm":
+					aa= new HRVOAvoidanceAlgorithm(state, self);
 					break;
 				default:
 					aa= new AvoidanceAlgorithmAdapter();
