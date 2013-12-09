@@ -26,7 +26,7 @@ public class AccidentDetector implements Constants,Steppable {
 	 * 
 	 */
 	private File accidentLog = new File("AccidentLog.txt");
-	private COModel state;
+	private SAAModel state;
 	private PrintStream ps;
 	private Bag trackedUASBag=new Bag();
 	private int noAccidents=0;
@@ -51,7 +51,7 @@ public class AccidentDetector implements Constants,Steppable {
 	@Override
 	public void step(SimState simState) {
 		// TODO Auto-generated method stub
-		this.state = (COModel)simState;
+		this.state = (SAAModel)simState;
 		trackedUASBag.clear();
 		for (int i=0; i<state.uasBag.size(); i++)
 		{  

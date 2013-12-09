@@ -6,19 +6,14 @@ package modeling.subsystems.avoidance;
 import edu.unc.cs.gamma.rvo.RVO;
 import edu.unc.cs.gamma.rvo.RVOSimulator;
 import edu.unc.cs.gamma.rvo.Vector2;
-import modeling.COModel;
-import modeling.Constants;
+import modeling.SAAModel;
 import modeling.Destination;
-import modeling.Obstacle;
 import modeling.UAS;
-import modeling.UASPerformance;
 import modeling.Waypoint;
 import sim.engine.SimState;
-import sim.field.continuous.Continuous2D;
-import sim.util.Bag;
 import sim.util.Double2D;
-import sim.util.MutableDouble2D;
 import tools.CALCULATION;
+import tools.CONFIGURATION;
 
 /**
  * @author Xueyi
@@ -30,7 +25,7 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 	/**
 	 * 
 	 */
-	private COModel state; 
+	private SAAModel state; 
 	private UAS hostUAS;
 
 	private Destination destination;
@@ -47,7 +42,7 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 	
 	public RVOAvoidanceAlgorithm(SimState simstate, UAS uas) {
 		// TODO Auto-generated constructor stub
-		state = (COModel) simstate;
+		state = (SAAModel) simstate;
 		hostUAS = uas;
 		
 		destination = hostUAS.getDestination();
@@ -85,12 +80,12 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 		 * double prefSpeedDefault,
 		 * double maxSpeedDefault, 
 		 * double safetyFactorDefault, 
+		 * double alfaDefault,
 		 * double maxAccelDefault)
 		 * */
-		rvoSimulator.setAgentDefaults( 250, 15.0, 10, 1.667, 1.0, 1.5, 2.235, 7.5, 1.2);
+		rvoSimulator.setAgentDefaults( 250, hostUAS.getViewingRange(), 10, hostUAS.getRadius(), 1.0, hostUAS.getSpeed(), hostUAS.getPerformance().getCurrentMaxSpeed(), 7.5, CONFIGURATION.selfAlfa, hostUAS.getPerformance().getCurrentMaxAccel());
 		//rvoSimulator.setAgentDefaults( 250, 15.0, 10, hostUAS.getRadius(), 1.0, 1.5, hostUAS.getPerformance().getCurrentMaxSpeed(), 7.5, hostUAS.getPerformance().getCurrentMaxAccel());
 		// Specify default parameters for agents that are subsequently added.
-//		rvoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15.0, 15.0,hostUAS.getRadius(), hostUAS.getPerformance().getCurrentMaxSpeed()); //rvoSimulator.setAgentDefaults(1.0f, 8, 10.0f, 20.0f, 0.5f, 8.0f);
 
 		for(int i=0; i<state.uasBag.size(); i++)
 		{
@@ -120,39 +115,9 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 		double speed= velDouble2D.length();
 		double bearing= CALCULATION.calculateAngle(new Double2D(0,0), velDouble2D);
 		
-		
-//		if(speed > performance.getCurrentMaxSpeed())
-//		{
-//			speed = performance.getCurrentMaxSpeed();
-//		}
-//		
-//		boolean isTurnRight;
-//		double bearingChange = CALCULATION.correctAngle(bearing-hostUAS.getBearing());
-//		if(bearingChange > 0)
-//		{
-//			isTurnRight=false;
-//		}
-//		else
-//		{
-//			isTurnRight= true;
-//		}
-//		
-//		if(bearingChange > performance.getCurrentMaxTurning())
-//		{
-//			bearing= CALCULATION.correctAngle(hostUAS.getBearing()+performance.getCurrentMaxTurning());
-//			bearingChange = performance.getCurrentMaxTurning();
-//		}
-//		else if(bearingChange < -performance.getCurrentMaxTurning())
-//		{
-//			bearing= CALCULATION.correctAngle(hostUAS.getBearing()-performance.getCurrentMaxTurning());
-//			bearingChange = performance.getCurrentMaxTurning();
-//			
-//		}
-		
 		hostUAS.setSpeed(speed);
 		hostUAS.setBearing(bearing);
 		
-//		return CALCULATION.calculateWaypoint(hostUAS, bearingChange, isTurnRight);
 		
 		Vector2 loc = rvoSimulator.getAgentPosition(hostUASIDInRVOSimulator);
 		Double2D newLocation = new Double2D(loc.x(), loc.y());
@@ -165,7 +130,7 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 	}
 
 	
-	public void updateRVOSimulator(COModel state)
+	public void updateRVOSimulator(SAAModel state)
 	{
 		for(int i=0; i<state.uasBag.size(); i++)
 		{
@@ -207,7 +172,7 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 
 	}
 	
-	public void setPreferredVelocity(COModel state) 
+	public void setPreferredVelocity(SAAModel state) 
 	{
 		if (!isGoalReached) 
 		{
@@ -225,15 +190,5 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 			}
 		}
 	}
-	
-//	public Vector2 getTargetPosInRVOSimulator() {
-//		return targetPosInRVOSimulator;
-//	}
-//
-//
-//	public void setTargetPosInRVOSimulator(Vector2 targetPosInRVOSimulator) {
-//		this.targetPosInRVOSimulator = targetPosInRVOSimulator;
-//	}
-
 
 }

@@ -31,14 +31,14 @@ import tools.CONFIGURATION;
  * This class is used to build/initiate the simulation.
  * Called for by simulationWithUI.class
  */
-public class COModelBuilder
+public class SAAModelBuilder
 {
 	private static String simLength = "1000";
 	
-	public  COModel state;
+	public  SAAModel state;
 	
 	public static double worldXVal = 150;
-	public static double worldYVal = 100;
+	public static double worldYVal = 105;
 	//private int noUAS=3;
 	
 		
@@ -49,22 +49,12 @@ public class COModelBuilder
 //	}
 	
 	
-	public COModelBuilder(COModel simState)
+	public SAAModelBuilder(SAAModel simState)
 	{
 		state = simState;
 		System.out.println("COModelBuilder(COModel simState) is being called!!!!!!!!!! the simstate is：" + state.toString());
 	}
 	
-	
-//	private void setUpSim(long initSeed)
-//	{
-//		System.out.println("COModelBuilder.setUpSim is called!!!!!!!! ");
-//		state = new COModel(initSeed, worldXVal, worldYVal, false);
-//		
-//	}
-	
-	
-
 	public  void generateSimulation(int noObstacles, int noUAS)
 	{		
 		
@@ -154,7 +144,7 @@ public class COModelBuilder
 					aa= new RVOAvoidanceAlgorithm(state, self);
 					break;
 				default:
-					aa= new RIPNAvoidanceAlgorithm(state, self);
+					aa= new AvoidanceAlgorithmAdapter();
 			}
 			Sensor sensor = new SimpleSensor();
 			self.init(sensor, aa);
@@ -288,7 +278,7 @@ public class COModelBuilder
 	}
 	
 	
-	public COModel getSim() {return state;}
+	public SAAModel getSim() {return state;}
 	
 	public Destination generateDestination(Bag obstacles)
 	{

@@ -14,7 +14,7 @@ import sim.field.continuous.*;
 import sim.engine.*;
 import sim.field.grid.IntGrid2D;
 
-public class COModel extends SimState
+public class SAAModel extends SimState
 {
 	public Bag toSchedule = new Bag(); // entities to schedule, important
 	public Bag allEntities = new Bag(); // entities to load into the environment, important
@@ -52,7 +52,7 @@ public class COModel extends SimState
 	 * @param y the height of the simulation environment
 	 * @param UI pass true if the simulation is being ran with a UI false if it is not.
 	 */
-	public COModel(long seed, double x, double y, boolean UI)
+	public SAAModel(long seed, double x, double y, boolean UI)
     {
 		super(seed);
 		environment = new Continuous2D(1.0, x, y);

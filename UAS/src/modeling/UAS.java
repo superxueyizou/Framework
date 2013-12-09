@@ -55,7 +55,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 	public boolean isActive= true;
 	
 
-	private COModel state;	
+	private SAAModel state;	
 
 
 
@@ -85,7 +85,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 	{
 		if(this.isActive == true)
 		{
-			state = (COModel) simState;
+			state = (SAAModel) simState;
 			
 			if (CONFIGURATION.avoidanceAlgorithmEnabler)
 			{
@@ -262,11 +262,11 @@ public class UAS extends CircleObstacle implements Oriented2D
 	}
 	
 	
-	public COModel getState() {
+	public SAAModel getState() {
 		return state;
 	}
 
-	public void setState(COModel state) {
+	public void setState(SAAModel state) {
 		this.state = state;
 	}
 	

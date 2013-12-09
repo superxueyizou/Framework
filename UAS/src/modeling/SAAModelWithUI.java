@@ -31,12 +31,17 @@ import tools.CONFIGURATION;
  * 
  * @author Robert Lee
  */
-public class COModelWithUI extends GUIState
+public class SAAModelWithUI extends GUIState
 {	
-	protected COModelBuilder sBuilder; // = new COModelBuilder((COModel) state);	
+	protected SAAModelBuilder sBuilder; // = new COModelBuilder((COModel) state);	
 	
 	public Display2D display;
 	public JFrame displayFrame;
+	
+	private double displayX = SAAModelBuilder.worldXVal;
+	private double displayY = SAAModelBuilder.worldYVal;
+	
+	
 	ContinuousPortrayal2D environmentPortrayal = new ContinuousPortrayal2D();
 	FastValueGridPortrayal2D obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle", true);  // immutable
 	FastValueGridPortrayal2D terrainPortrayal = new FastValueGridPortrayal2D("Terrain", true);  // immutable
@@ -44,12 +49,12 @@ public class COModelWithUI extends GUIState
 	    
 	
    
-    public COModelWithUI() 
+    public SAAModelWithUI() 
     {   
-        super(new COModel(785945568, COModelBuilder.worldXVal, COModelBuilder.worldYVal, true)); 	
+        super(new SAAModel(785945568, SAAModelBuilder.worldXVal, SAAModelBuilder.worldYVal, true)); 	
     	//super(new COModel(System.nanoTime(), COModelBuilder.worldXVal, COModelBuilder.worldYVal, true)); 
     	System.out.println("COModelWithUI() is being called!"+ "it's state(model)is: "+ state.toString());
-    	sBuilder = new COModelBuilder((COModel) state);
+    	sBuilder = new SAAModelBuilder((SAAModel) state);
     }
     
     
@@ -60,6 +65,12 @@ public class COModelWithUI extends GUIState
 //    }    
     
     public static String getName() { return "UAS-SAA-Sim"; } 
+    
+    public void setDisplayBound(double x, double y)
+    {
+    	this.displayX = x;
+    	this.displayY = y;
+    }
   
     
 	public void start()
@@ -100,7 +111,7 @@ public class COModelWithUI extends GUIState
 	 */
 	public void setupPortrayals()
 	{		
-		COModel simulation = (COModel) state;
+		SAAModel simulation = (SAAModel) state;
 
 		// tell the portrayals what to portray and how to portray them
 		environmentPortrayal.setField( simulation.environment );
@@ -211,17 +222,17 @@ public class COModelWithUI extends GUIState
 	
 
     public void init(Controller c)
-        {
+    {
         super.init(c);
 
         // make the displayer
-        display = new Display2D(1500,1000,this);
+        display = new Display2D(displayX,displayY,this);
         // turn off clipping
         display.setClipping(false);
        //display.setBackdrop(new Color(0,150,255,150));
 
         displayFrame = display.createFrame();
-        displayFrame.setTitle("Environment Display");
+        displayFrame.setTitle("SAA Simulation");
         c.registerFrame(displayFrame);   // register the frame so it appears in the "Display" list
         displayFrame.setVisible(true);
 		
@@ -232,7 +243,7 @@ public class COModelWithUI extends GUIState
         display.attach(wallPortrayal,"Wall");	
         
         System.out.println("COModelWithUI.init is called!");
-        }
+    }
     
     
     

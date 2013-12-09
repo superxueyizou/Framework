@@ -3,7 +3,7 @@
  */
 package modeling.subsystems.avoidance;
 
-import modeling.COModel;
+import modeling.SAAModel;
 import modeling.Constants;
 import modeling.Destination;
 import modeling.Obstacle;
@@ -27,7 +27,7 @@ public class RIPNAvoidanceAlgorithm extends AvoidanceAlgorithm{
 	/**
 	 * 
 	 */
-	private COModel state; 
+	private SAAModel state; 
 	private UAS hostUAS;
 	
 	
@@ -51,7 +51,7 @@ public class RIPNAvoidanceAlgorithm extends AvoidanceAlgorithm{
 
 	public RIPNAvoidanceAlgorithm(SimState simstate, UAS uas) {
 		// TODO Auto-generated constructor stub
-		state = (COModel) simstate;
+		state = (SAAModel) simstate;
 		hostUAS = uas;
 		
 		destination = hostUAS.getDestination();

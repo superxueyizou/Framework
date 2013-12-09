@@ -3,17 +3,9 @@
  */
 package dominant;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import ec.*;
 import ec.util.*;
-
-import modeling.*;
 
 /**
  * @author xueyi

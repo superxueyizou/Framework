@@ -6,7 +6,7 @@ package modeling.encountergenerator;
 import sim.util.Double2D;
 import tools.CALCULATION;
 import tools.CONFIGURATION;
-import modeling.COModel;
+import modeling.SAAModel;
 import modeling.Destination;
 import modeling.UAS;
 import modeling.UASPerformance;
@@ -31,7 +31,7 @@ public class TailApproachGenerator extends EncounterGenerator {
 	 * 
 	 */
 	private UAS intruder;
-	private COModel state;
+	private SAAModel state;
 	private UAS self;
 	private double offset;
 	private double intruderSpeed;
@@ -45,7 +45,7 @@ public class TailApproachGenerator extends EncounterGenerator {
 	 * @param intruderSpeed
 	 * 
 	 */
-	public TailApproachGenerator(COModel state, UAS uas, double offset, boolean isRightSide, double intruderSpeed) {
+	public TailApproachGenerator(SAAModel state, UAS uas, double offset, boolean isRightSide, double intruderSpeed) {
 		// TODO Auto-generated constructor stub
 		this.state=state;
 		this.self=uas;
@@ -102,7 +102,7 @@ public class TailApproachGenerator extends EncounterGenerator {
 				aa= new RVOAvoidanceAlgorithm(state, intruder);
 				break;
 			default:
-				aa= new RIPNAvoidanceAlgorithm(state, intruder);
+				aa= new AvoidanceAlgorithmAdapter();
 		}
 		Sensor sensor = new SimpleSensor();
 		intruder.init(sensor, aa);

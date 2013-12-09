@@ -32,6 +32,7 @@ public class IntruderConfig extends JDialog
 	private JTextField viewingAngleTextField;
 	private JTextField sensitivityForCollisionTextField;
 	private JTextField safetyRadiusTextField;
+	private JTextField alfaTextField;
 
 	/**
 	 * Launch the application.
@@ -52,23 +53,23 @@ public class IntruderConfig extends JDialog
 	public IntruderConfig() 
 	{
 		setModal(true);
-		setBounds(1236, 400, 347, 474); // for windows: setBounds(1160, 380, 347, 474); 
+		setBounds(1236, 401, 347, 474); // for windows: setBounds(1160, 380, 347, 474); 
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
 			
-		JLabel lblMaxspeed = new JLabel("MaxSpeed:");
+		JLabel lblMaxspeed = new JLabel("MaxSpeed");
 		lblMaxspeed.setBounds(10, 30, 96, 14);
 		contentPanel.add(lblMaxspeed);
 		
 		JLabel lblMaxacceleration = new JLabel("MaxAcceleration");
-		lblMaxacceleration.setBounds(10, 72, 96, 14);
+		lblMaxacceleration.setBounds(10, 72, 179, 14);
 		contentPanel.add(lblMaxacceleration);
 		
 		JLabel lblMaxdecceleration = new JLabel("MaxDeceleration");
-		lblMaxdecceleration.setBounds(10, 111, 107, 14);
+		lblMaxdecceleration.setBounds(10, 111, 169, 14);
 		contentPanel.add(lblMaxdecceleration);
 		
 		JLabel lblMaxturning = new JLabel("MaxTurning");
@@ -88,7 +89,7 @@ public class IntruderConfig extends JDialog
 		contentPanel.add(lblViewingAngle);
 		
 		JLabel lblSensitivityForCollisions = new JLabel("SensitivityForCollisions");
-		lblSensitivityForCollisions.setBounds(10, 306, 143, 14);
+		lblSensitivityForCollisions.setBounds(10, 306, 179, 14);
 		contentPanel.add(lblSensitivityForCollisions);
 		
 
@@ -96,115 +97,60 @@ public class IntruderConfig extends JDialog
 		lblSafetyradius.setBounds(10, 342, 107, 14);
 		contentPanel.add(lblSafetyradius);
 		
+		JLabel lblAlfa = new JLabel("Alfa");
+		lblAlfa.setBounds(10, 383, 70, 15);
+		contentPanel.add(lblAlfa);
+		
 		
 		maxSpeedTextField = new JTextField();
-		maxSpeedTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-//					JTextField maxSpeedTextField = (JTextField) e.getSource();
-//					intruderMaxSpeed = new Double(maxSpeedTextField.getText());
-			}
-		});
-		
 		maxSpeedTextField.setBounds(197, 27, 86, 20);
 		contentPanel.add(maxSpeedTextField);
 		maxSpeedTextField.setColumns(10);
 		
 		maxAccelerationTextField = new JTextField();		
-		maxAccelerationTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-//					JTextField maxAccelerationTextField = (JTextField) e.getSource();
-//					intruderMaxAcceleration = new Double(maxAccelerationTextField.getText());
-			}
-		});
 		maxAccelerationTextField.setBounds(197, 66, 86, 20);
 		contentPanel.add(maxAccelerationTextField);
 		maxAccelerationTextField.setColumns(10);
 		
 		maxDecelerationTextField = new JTextField();
-		maxDecelerationTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-//					JTextField maxDecelerationTextField = (JTextField) e.getSource();
-//					intruderMaxDeceleration = new Double(maxDecelerationTextField.getText());
-			}
-		});
 		maxDecelerationTextField.setBounds(197, 108, 86, 20);
 		contentPanel.add(maxDecelerationTextField);
 		maxDecelerationTextField.setColumns(10);
 		
 		maxTurningTextField = new JTextField();
-		maxTurningTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-//					JTextField maxTurningTextField = (JTextField) e.getSource();
-//					intruderMaxTurning = new Double(maxTurningTextField.getText());
-			}
-		});
 		maxTurningTextField.setBounds(197, 145, 86, 20);
 		contentPanel.add(maxTurningTextField);
 		maxTurningTextField.setColumns(10);
 		
 		speedTextField = new JTextField();
-		speedTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-//					JTextField speedTextField = (JTextField) e.getSource();
-//					intruderSpeed = new Double(speedTextField.getText());
-			}
-		});
 		speedTextField.setBounds(197, 182, 86, 20);
 		contentPanel.add(speedTextField);
 		speedTextField.setColumns(10);
 		
 		viewingRangeTextField = new JTextField();		
-		viewingRangeTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-//					JTextField viewingRangeTextField = (JTextField) e.getSource();
-//					intruderViewingRange = new Double(viewingRangeTextField.getText());
-			}
-		});
 		viewingRangeTextField.setBounds(197, 221, 86, 20);
 		contentPanel.add(viewingRangeTextField);
 		viewingRangeTextField.setColumns(10);
 		
 		viewingAngleTextField = new JTextField();		
-		viewingAngleTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-//					JTextField viewingAngleTextField = (JTextField) e.getSource();
-//					intruderViewingAngle = new Double(viewingAngleTextField.getText());
-			}
-		});
 		viewingAngleTextField.setBounds(197, 264, 86, 20);
 		contentPanel.add(viewingAngleTextField);
 		viewingAngleTextField.setColumns(10);
 		
 		sensitivityForCollisionTextField = new JTextField();		
-		sensitivityForCollisionTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-//					JTextField sensitivityForCollisionTextField = (JTextField) e.getSource();
-//					intruderSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
-			}
-		});
 		sensitivityForCollisionTextField.setBounds(197, 303, 86, 20);
 		contentPanel.add(sensitivityForCollisionTextField);
 		sensitivityForCollisionTextField.setColumns(10);
 		
-		safetyRadiusTextField = new JTextField();
-		safetyRadiusTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-//					JTextField safetyRadiusTextField = (JTextField) e.getSource();
-				
-			}
-		});
+		safetyRadiusTextField = new JTextField();		
 		safetyRadiusTextField.setBounds(197, 339, 86, 20);
 		contentPanel.add(safetyRadiusTextField);
 		safetyRadiusTextField.setColumns(10);
+				
+		alfaTextField = new JTextField();
+		alfaTextField.setBounds(197, 379, 86, 20);
+		contentPanel.add(alfaTextField);
+		alfaTextField.setColumns(10);
 
 
 		JPanel buttonPane = new JPanel();
@@ -227,7 +173,8 @@ public class IntruderConfig extends JDialog
 					CONFIGURATION.headOnViewingRange = new Double(viewingRangeTextField.getText());
 					CONFIGURATION.headOnViewingAngle = new Double(viewingAngleTextField.getText());
 					CONFIGURATION.headOnSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
-					CONFIGURATION.headOnSafetyRadius= new Double(safetyRadiusTextField.getText());
+					CONFIGURATION.headOnSafetyRadius= new Double(safetyRadiusTextField.getText()); 
+					CONFIGURATION.headOnAlfa= new Double(alfaTextField.getText()); 					
 					System.out.println("777777777777777777777");
 					
 				}
@@ -242,6 +189,7 @@ public class IntruderConfig extends JDialog
 					CONFIGURATION.crossingViewingAngle = new Double(viewingAngleTextField.getText());
 					CONFIGURATION.crossingSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
 					CONFIGURATION.crossingSafetyRadius= new Double(safetyRadiusTextField.getText());
+					CONFIGURATION.crossingAlfa= new Double(alfaTextField.getText()); 
 					System.out.println("88888888888888888");
 				}
 				else if(getRootPane().getParent().getName() == "TailApproachEncounter--IntruderConfig")
@@ -255,6 +203,7 @@ public class IntruderConfig extends JDialog
 					CONFIGURATION.tailApproachViewingAngle = new Double(viewingAngleTextField.getText());
 					CONFIGURATION.tailApproachSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
 					CONFIGURATION.tailApproachSafetyRadius= new Double(safetyRadiusTextField.getText());
+					CONFIGURATION.tailApproachAlfa= new Double(alfaTextField.getText());
 					System.out.println("99999999999999999999999");
 				}
 				else
@@ -305,6 +254,7 @@ public class IntruderConfig extends JDialog
 			viewingAngleTextField.setText(String.valueOf(CONFIGURATION.headOnViewingAngle));
 			sensitivityForCollisionTextField.setText(String.valueOf(CONFIGURATION.headOnSensitivityForCollisions));
 			safetyRadiusTextField.setText(String.valueOf(CONFIGURATION.headOnSafetyRadius));
+			alfaTextField.setText(String.valueOf(CONFIGURATION.headOnAlfa));
 			break;
 			
 		case "CrossingEncounter--IntruderConfig":
@@ -317,6 +267,7 @@ public class IntruderConfig extends JDialog
 			viewingAngleTextField.setText(String.valueOf(CONFIGURATION.crossingViewingAngle));
 			sensitivityForCollisionTextField.setText(String.valueOf(CONFIGURATION.crossingSensitivityForCollisions));
 			safetyRadiusTextField.setText(String.valueOf(CONFIGURATION.crossingSafetyRadius));
+			alfaTextField.setText(String.valueOf(CONFIGURATION.crossingAlfa));
 			break;
 			
 		case "TailApproachEncounter--IntruderConfig":
@@ -329,6 +280,7 @@ public class IntruderConfig extends JDialog
 			viewingAngleTextField.setText(String.valueOf(CONFIGURATION.tailApproachViewingAngle));
 			sensitivityForCollisionTextField.setText(String.valueOf(CONFIGURATION.tailApproachSensitivityForCollisions));
 			safetyRadiusTextField.setText(String.valueOf(CONFIGURATION.tailApproachSafetyRadius));
+			alfaTextField.setText(String.valueOf(CONFIGURATION.tailApproachAlfa));
 			break;
 			
 			default:

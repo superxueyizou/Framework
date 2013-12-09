@@ -4,8 +4,8 @@
 package dominant;
 
 import tools.CONFIGURATION;
-import modeling.COModel;
-import modeling.COModelBuilder;
+import modeling.SAAModel;
+import modeling.SAAModelBuilder;
 import modeling.UAS;
 import ec.EvolutionState;
 import ec.Individual;
@@ -43,14 +43,14 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
         for(int i=0;i<times; i++)
         {
         	long time = System.nanoTime();
-    		COModel simState= new COModel(time, 150, 100, false); 	
+    		SAAModel simState= new SAAModel(time, 150, 100, false); 	
     		
     		CONFIGURATION.headOnSelected = true;
     		CONFIGURATION.headOnIsRightSide= isRightSide;
     		CONFIGURATION.headOnOffset=offset;
     		CONFIGURATION.headOnSpeed =speed;
     		
- 	   		COModelBuilder sBuilder = new COModelBuilder(simState);
+ 	   		SAAModelBuilder sBuilder = new SAAModelBuilder(simState);
     		sBuilder.generateSimulation(1,1);
     		simState.start();		
     		do

@@ -6,7 +6,7 @@ package modeling.encountergenerator;
 import sim.util.Double2D;
 import tools.CALCULATION;
 import tools.CONFIGURATION;
-import modeling.COModel;
+import modeling.SAAModel;
 import modeling.Destination;
 import modeling.UAS;
 import modeling.UASPerformance;
@@ -31,7 +31,7 @@ public class CrossingGenerator extends EncounterGenerator {
 	 * 
 	 */
 	private UAS intruder;
-	private COModel state;
+	private SAAModel state;
 	private UAS self;
 	private double distance;
 	private double encounterAngle;
@@ -44,7 +44,7 @@ public class CrossingGenerator extends EncounterGenerator {
 	 * @param encounterAngle It's ABSOLUTE value is supposed to belong to (0,180). 0 -- tail approach, 180 -- head on
 	 * @param intruderSpeed
 	 */
-	public CrossingGenerator(COModel state, UAS uas, double distance, double encounterAngle, double intruderSpeed) {
+	public CrossingGenerator(SAAModel state, UAS uas, double distance, double encounterAngle, double intruderSpeed) {
 		// TODO Auto-generated constructor stub
 		this.state=state;
 		this.self=uas;
@@ -98,7 +98,7 @@ public class CrossingGenerator extends EncounterGenerator {
 				aa= new RVOAvoidanceAlgorithm(state, intruder);
 				break;
 			default:
-				aa= new RIPNAvoidanceAlgorithm(state, intruder);
+				aa= new AvoidanceAlgorithmAdapter();
 		}
 		Sensor sensor = new SimpleSensor();
 		intruder.init(sensor, aa);

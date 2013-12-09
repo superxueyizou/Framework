@@ -3,7 +3,7 @@
  */
 package modeling.subsystems.avoidance;
 
-import modeling.COModel;
+import modeling.SAAModel;
 import modeling.Destination;
 import modeling.UAS;
 import modeling.UASPerformance;
@@ -21,7 +21,7 @@ public class AvoidanceAlgorithmAdapter extends AvoidanceAlgorithm
 	/**
 	 * 
 	 */
-	private COModel state; 
+	private SAAModel state; 
 	private UAS hostUAS;
 	
 	
