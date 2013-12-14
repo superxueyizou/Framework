@@ -32,7 +32,7 @@ public class IntruderConfig extends JDialog
 	private JTextField viewingAngleTextField;
 	private JTextField sensitivityForCollisionTextField;
 	private JTextField safetyRadiusTextField;
-	private JTextField alfaTextField;
+	private JTextField alphaTextField;
 
 	/**
 	 * Launch the application.
@@ -97,9 +97,9 @@ public class IntruderConfig extends JDialog
 		lblSafetyradius.setBounds(10, 342, 107, 14);
 		contentPanel.add(lblSafetyradius);
 		
-		JLabel lblAlfa = new JLabel("Alfa");
-		lblAlfa.setBounds(10, 383, 70, 15);
-		contentPanel.add(lblAlfa);
+		JLabel lblAlpha = new JLabel("Alpha");
+		lblAlpha.setBounds(10, 383, 70, 15);
+		contentPanel.add(lblAlpha);
 		
 		
 		maxSpeedTextField = new JTextField();
@@ -147,10 +147,10 @@ public class IntruderConfig extends JDialog
 		contentPanel.add(safetyRadiusTextField);
 		safetyRadiusTextField.setColumns(10);
 				
-		alfaTextField = new JTextField();
-		alfaTextField.setBounds(197, 379, 86, 20);
-		contentPanel.add(alfaTextField);
-		alfaTextField.setColumns(10);
+		alphaTextField = new JTextField();
+		alphaTextField.setBounds(197, 379, 86, 20);
+		contentPanel.add(alphaTextField);
+		alphaTextField.setColumns(10);
 
 
 		JPanel buttonPane = new JPanel();
@@ -168,14 +168,14 @@ public class IntruderConfig extends JDialog
 					CONFIGURATION.headOnMaxSpeed = new Double(maxSpeedTextField.getText());
 					CONFIGURATION.headOnMaxAcceleration = new Double(maxAccelerationTextField.getText());
 					CONFIGURATION.headOnMaxDeceleration = new Double(maxDecelerationTextField.getText());
-					CONFIGURATION.headOnMaxTurning = new Double(maxTurningTextField.getText());
+					CONFIGURATION.headOnMaxTurning = Math.toRadians(new Double(maxTurningTextField.getText()));
 					CONFIGURATION.headOnSpeed =  new Double(speedTextField.getText());
 					CONFIGURATION.headOnViewingRange = new Double(viewingRangeTextField.getText());
-					CONFIGURATION.headOnViewingAngle = new Double(viewingAngleTextField.getText());
+					CONFIGURATION.headOnViewingAngle = Math.toRadians(new Double(viewingAngleTextField.getText()));
 					CONFIGURATION.headOnSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
 					CONFIGURATION.headOnSafetyRadius= new Double(safetyRadiusTextField.getText()); 
-					CONFIGURATION.headOnAlfa= new Double(alfaTextField.getText()); 					
-					System.out.println("777777777777777777777");
+					CONFIGURATION.headOnAlpha= new Double(alphaTextField.getText()); 					
+					System.out.println(viewingRangeTextField.getText()+"777777777777777777777");
 					
 				}
 				else if(getRootPane().getParent().getName() == "CrossingEncounter--IntruderConfig")
@@ -183,13 +183,13 @@ public class IntruderConfig extends JDialog
 					CONFIGURATION.crossingMaxSpeed = new Double(maxSpeedTextField.getText());
 					CONFIGURATION.crossingMaxAcceleration = new Double(maxAccelerationTextField.getText());
 					CONFIGURATION.crossingMaxDeceleration = new Double(maxDecelerationTextField.getText());
-					CONFIGURATION.crossingMaxTurning = new Double(maxTurningTextField.getText());
+					CONFIGURATION.crossingMaxTurning = Math.toRadians(new Double(maxTurningTextField.getText()));
 					CONFIGURATION.crossingSpeed = new Double(speedTextField.getText());
 					CONFIGURATION.crossingViewingRange = new Double(viewingRangeTextField.getText());
-					CONFIGURATION.crossingViewingAngle = new Double(viewingAngleTextField.getText());
+					CONFIGURATION.crossingViewingAngle = Math.toRadians(new Double(viewingAngleTextField.getText()));
 					CONFIGURATION.crossingSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
 					CONFIGURATION.crossingSafetyRadius= new Double(safetyRadiusTextField.getText());
-					CONFIGURATION.crossingAlfa= new Double(alfaTextField.getText()); 
+					CONFIGURATION.crossingAlpha= new Double(alphaTextField.getText()); 
 					System.out.println("88888888888888888");
 				}
 				else if(getRootPane().getParent().getName() == "TailApproachEncounter--IntruderConfig")
@@ -197,13 +197,13 @@ public class IntruderConfig extends JDialog
 					CONFIGURATION.tailApproachMaxSpeed = new Double(maxSpeedTextField.getText());
 					CONFIGURATION.tailApproachMaxAcceleration = new Double(maxAccelerationTextField.getText());
 					CONFIGURATION.tailApproachMaxDeceleration = new Double(maxDecelerationTextField.getText());
-					CONFIGURATION.tailApproachMaxTurning = new Double(maxTurningTextField.getText());
+					CONFIGURATION.tailApproachMaxTurning = Math.toRadians(new Double(maxTurningTextField.getText()));
 					CONFIGURATION.tailApproachSpeed =  new Double(speedTextField.getText());
 					CONFIGURATION.tailApproachViewingRange = new Double(viewingRangeTextField.getText());
-					CONFIGURATION.tailApproachViewingAngle = new Double(viewingAngleTextField.getText());
+					CONFIGURATION.tailApproachViewingAngle = Math.toRadians(new Double(viewingAngleTextField.getText()));
 					CONFIGURATION.tailApproachSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
 					CONFIGURATION.tailApproachSafetyRadius= new Double(safetyRadiusTextField.getText());
-					CONFIGURATION.tailApproachAlfa= new Double(alfaTextField.getText());
+					CONFIGURATION.tailApproachAlpha= new Double(alphaTextField.getText());
 					System.out.println("99999999999999999999999");
 				}
 				else
@@ -248,39 +248,39 @@ public class IntruderConfig extends JDialog
 			maxSpeedTextField.setText(String.valueOf(CONFIGURATION.headOnMaxSpeed));
 			maxAccelerationTextField.setText(String.valueOf(CONFIGURATION.headOnMaxAcceleration));
 			maxDecelerationTextField.setText(String.valueOf(CONFIGURATION.headOnMaxDeceleration));
-			maxTurningTextField.setText(String.valueOf(CONFIGURATION.headOnMaxTurning));
+			maxTurningTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.headOnMaxTurning))));
 			speedTextField.setText(String.valueOf(CONFIGURATION.headOnSpeed));
 			viewingRangeTextField.setText(String.valueOf(CONFIGURATION.headOnViewingRange));
-			viewingAngleTextField.setText(String.valueOf(CONFIGURATION.headOnViewingAngle));
+			viewingAngleTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.headOnViewingAngle))));
 			sensitivityForCollisionTextField.setText(String.valueOf(CONFIGURATION.headOnSensitivityForCollisions));
 			safetyRadiusTextField.setText(String.valueOf(CONFIGURATION.headOnSafetyRadius));
-			alfaTextField.setText(String.valueOf(CONFIGURATION.headOnAlfa));
+			alphaTextField.setText(String.valueOf(CONFIGURATION.headOnAlpha));
 			break;
 			
 		case "CrossingEncounter--IntruderConfig":
 			maxSpeedTextField.setText(String.valueOf(CONFIGURATION.crossingMaxSpeed));
 			maxAccelerationTextField.setText(String.valueOf(CONFIGURATION.crossingMaxAcceleration));
 			maxDecelerationTextField.setText(String.valueOf(CONFIGURATION.crossingMaxDeceleration));
-			maxTurningTextField.setText(String.valueOf(CONFIGURATION.crossingMaxTurning));
+			maxTurningTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.crossingMaxTurning))));
 			speedTextField.setText(String.valueOf(CONFIGURATION.crossingSpeed));
 			viewingRangeTextField.setText(String.valueOf(CONFIGURATION.crossingViewingRange));
-			viewingAngleTextField.setText(String.valueOf(CONFIGURATION.crossingViewingAngle));
+			viewingAngleTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.crossingViewingAngle))));
 			sensitivityForCollisionTextField.setText(String.valueOf(CONFIGURATION.crossingSensitivityForCollisions));
 			safetyRadiusTextField.setText(String.valueOf(CONFIGURATION.crossingSafetyRadius));
-			alfaTextField.setText(String.valueOf(CONFIGURATION.crossingAlfa));
+			alphaTextField.setText(String.valueOf(CONFIGURATION.crossingAlpha));
 			break;
 			
 		case "TailApproachEncounter--IntruderConfig":
 			maxSpeedTextField.setText(String.valueOf(CONFIGURATION.tailApproachMaxSpeed));
 			maxAccelerationTextField.setText(String.valueOf(CONFIGURATION.tailApproachMaxAcceleration));
 			maxDecelerationTextField.setText(String.valueOf(CONFIGURATION.tailApproachMaxDeceleration));
-			maxTurningTextField.setText(String.valueOf(CONFIGURATION.tailApproachMaxTurning));
+			maxTurningTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.tailApproachMaxTurning))));
 			speedTextField.setText(String.valueOf(CONFIGURATION.tailApproachSpeed));
 			viewingRangeTextField.setText(String.valueOf(CONFIGURATION.tailApproachViewingRange));
-			viewingAngleTextField.setText(String.valueOf(CONFIGURATION.tailApproachViewingAngle));
+			viewingAngleTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.tailApproachViewingAngle))));
 			sensitivityForCollisionTextField.setText(String.valueOf(CONFIGURATION.tailApproachSensitivityForCollisions));
 			safetyRadiusTextField.setText(String.valueOf(CONFIGURATION.tailApproachSafetyRadius));
-			alfaTextField.setText(String.valueOf(CONFIGURATION.tailApproachAlfa));
+			alphaTextField.setText(String.valueOf(CONFIGURATION.tailApproachAlpha));
 			break;
 			
 			default:

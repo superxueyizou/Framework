@@ -70,7 +70,7 @@ public class SmartTurnAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		
 		viewingRange = hostUAS.getViewingRange();
 		viewingAngle = hostUAS.getViewingAngle();
-		performance = hostUAS.getPerformance();
+		performance = hostUAS.getUasPerformance();
 		
 		
 		double delta = 0.0;					

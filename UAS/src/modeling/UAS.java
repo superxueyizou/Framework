@@ -1,16 +1,13 @@
 package modeling;
-//MASON imports
-import java.util.LinkedList;
 
+import java.util.LinkedList;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
 import modeling.subsystems.sensor.Sensor;
 import sim.engine.*;
-import sim.field.continuous.*;
 import sim.portrayal.Oriented2D;
 import sim.util.*;
 import tools.CALCULATION;
 import tools.CONFIGURATION;
-import ui.SAAConfigurator;
 
 /**
  *
@@ -20,28 +17,17 @@ public class UAS extends CircleObstacle implements Oriented2D
 {
 	//parameters for subsystems
 	private AvoidanceAlgorithm aa;
-	public AvoidanceAlgorithm getAa() {
-		return aa;
-	}
-
-	public void setAa(AvoidanceAlgorithm aa) {
-		this.aa = aa;
-	}
-
 	private Sensor sensor;
 	
 	//parameters for UAS movement
-	private double bearing = 0; //will be a value between -180(inc) and 180(exc)
-	private double speed=1.5; //the speed the vehicle is travelling at = 150/100
-	private UASPerformance performance;//the set performance for the uas;
+	private UASVelocity uasVelocity;
+	private UASPerformance uasPerformance;//the set performance for the uas;
 	
 	//parameters for UAS's sensing capability. They are the result of the sensor subsystem.
-	private double viewingRange=38.89; //how many units in front of the uas it can see obstacles 3889/100
-	private double viewingAngle=60; //220 this is the angle for the viewing in front of the uas, viewingAngle / 2 in both directions from right in front of the uas
-	private double sensitivityForCollisions=0.5; //this is used to see if the uas will collide with obstacles on it's current heading
-	private double safetyRadius = 1.667;
+	private SenseParas senseParas;
 	
-
+	//parameters for UAS's avoiding capability. 
+	private AvoidParas avoidParas;	
 
 	//parameters for navigation
 	private Destination destination;
@@ -50,26 +36,31 @@ public class UAS extends CircleObstacle implements Oriented2D
 	private LinkedList<Waypoint> wpQueueP;
 	
 	//parameters for recording information about simulation
-	private double distanceToDanger =110;// Double.MAX_VALUE; //records the closest distance to danger experienced by the uas
+	private double distanceToDanger = Double.MAX_VALUE; //records the closest distance to danger experienced by the uas
 	
-	public boolean isActive= true;
-	
+	private double safetyRadius;
+	public boolean isActive;	
 
 	private SAAModel state;	
 
 
-
-
-	public UAS(int idNo, Destination destination, UASPerformance uasPerformance, double safetyRadius)
+	public UAS(int idNo, double safetyRadius, Double2D location, Destination destination, UASVelocity uasVelocity, UASPerformance uasPerformance, SenseParas senseParas, AvoidParas avoidParas)
 	{
 		super(idNo,safetyRadius, Constants.EntityType.TUAS);
-		this.destination = destination;
-		this.performance = uasPerformance;
 		this.safetyRadius= safetyRadius;
+		this.location=location;
+		this.destination = destination;
+		this.uasPerformance = uasPerformance;
+		this.uasVelocity = uasVelocity; //new UASVelocity(new Double2D(0.0,0.0));
+		this.senseParas = senseParas;
+		this.avoidParas = avoidParas;
+		
 		nextWp=null;
 		wpQueue=new LinkedList<Waypoint>();
 		wpQueue.offer(destination);
 		wpQueueP=new LinkedList<Waypoint>();
+		
+		this.isActive=true;
 
 	}
 	
@@ -83,75 +74,68 @@ public class UAS extends CircleObstacle implements Oriented2D
 	@Override
 	public void step(SimState simState)
 	{
+		state = (SAAModel) simState;
+		
 		if(this.isActive == true)
-		{
-			state = (SAAModel) simState;
-			
+		{			
 			if (CONFIGURATION.avoidanceAlgorithmEnabler)
 			{
 				Waypoint wp = aa.execute();
 				if(wp != null)
 				{
 					this.getWpQueueP().offer(wp);
-					state.environment.setObjectLocation(wp, wp.getLocation());	
-					
+					state.environment.setObjectLocation(wp, wp.getLocation());						
 				}
 			}
-		
-						
-			{			
-				nextWp= this.getNextWp();
-				if (nextWp != null)
+								
+			nextWp= this.getNextWp();
+			if (nextWp != null)
+			{
+//					System.out.println(bearing);
+//					setUASDirection(this.location, nextWp.getLocation());
+//					System.out.println("UAS (" + this.toString()+")'s bearing is: "+bearing + ", it's next waypoint is: (" +nextWp.location.x + ","+ nextWp.location.y + ")     wpQueueP elements:" + wpQueueP.size() +"     wpQueue elements:" + wpQueue.size()) ;
+				
+			}
+			else
+			{
+				System.out.println("approaching the destination!");
+			}
+			
+			
+			MutableDouble2D sumForces = new MutableDouble2D(); //used to record the changes to be made to the location of the uas
+			sumForces.addIn(this.location);
+			double moveX = uasVelocity.getVelocity().x; //CALCULATION.xMovement(bearing, speed);
+			double moveY = uasVelocity.getVelocity().y; //CALCULATION.yMovement(bearing, speed);
+			sumForces.addIn(new Double2D(moveX, moveY));						        
+			state.environment.setObjectLocation(this, new Double2D(sumForces));
+			this.setLocation( new Double2D(sumForces));
+			proximityToDanger(new Double2D(sumForces), state.obstacles);
+
+//			state.environment.setObjectLocation(this, nextWp.getLocation());
+//			this.setLocation( nextWp.getLocation());
+//			proximityToDanger(nextWp.getLocation(), state.obstacles);
+			
+			if (this.location.distance(nextWp.location)<1)
+			{
+				if(wpQueueP.size() != 0)
 				{
-					setDirection(this.location, nextWp.getLocation());
-					//System.out.println("UAS (" + this.toString()+")'s bearing is: "+bearing + ", it's next waypoint is: (" +nextWp.location.x + ","+ nextWp.location.y + ")     wpQueueP elements:" + wpQueueP.size() +"     wpQueue elements:" + wpQueue.size()) ;
-					
+					wpQueueP.poll();
 				}
 				else
 				{
-					System.out.println("approaching the destination!");
+					wpQueue.poll();
 				}
-				
-				
-				MutableDouble2D sumForces = new MutableDouble2D(); //used to record the changes to be made to the location of the uas
-				sumForces.addIn(this.location);
-				double moveX = CALCULATION.xMovement(bearing, speed);
-				double moveY = CALCULATION.yMovement(bearing, speed);
-				sumForces.addIn(new Double2D(moveX, moveY));
-				//System.out.println(sumForces.x + "ddd" + sumForces.y);
-		        
-				state.environment.setObjectLocation(this, new Double2D(sumForces));
-				this.setLocation( new Double2D(sumForces));
-				proximityToDanger(new Double2D(sumForces), state.obstacles);
-
-//				state.environment.setObjectLocation(this, nextWp.getLocation());
-//				this.setLocation( nextWp.getLocation());
-//				proximityToDanger(nextWp.getLocation(), state.obstacles);
-				
-				if (this.location.distance(nextWp.location)<1)
-				{
-					if(wpQueueP.size() != 0)
-					{
-						wpQueueP.poll();
-					}
-					else
-					{
-						wpQueue.poll();
-					}
-					//System.out.println("delete waypoint: ("+ nextWp.location.x + ","+ nextWp.location.y + ")!");
-				}
-				
-				if (this.location.distance(destination.location)<1)
-				{
-					this.isActive = false;
-					//System.out.println("arrived at the destination!");
-
-				}
-				
+				//System.out.println("delete waypoint: ("+ nextWp.location.x + ","+ nextWp.location.y + ")!");
 			}
 			
-		}
-		
+			if (this.location.distance(destination.location)<1)
+			{
+				this.isActive = false;
+				//System.out.println("arrived at the destination!");
+
+			}			
+			
+		}		
 		
 		if(state!=null)
 		{
@@ -164,13 +148,21 @@ public class UAS extends CircleObstacle implements Oriented2D
 	
 	//**************************************************************************
 
+	public AvoidanceAlgorithm getAa() {
+		return aa;
+	}
+
+	public void setAa(AvoidanceAlgorithm aa) {
+		this.aa = aa;
+	}
+
 	public UASPerformance getStats() {
-		return performance;
+		return uasPerformance;
 	}
 
 
 	public void setStats(UASPerformance stats) {
-		this.performance = stats;
+		this.uasPerformance = stats;
 	}
 
 
@@ -184,29 +176,53 @@ public class UAS extends CircleObstacle implements Oriented2D
 	}
 
 	public double getViewingRange() {
-		return viewingRange;
+		return this.senseParas.getViewingRange();
 	}
 
 	public void setViewingRange(double viewingRange) {
-		this.viewingRange = viewingRange;
+		this.senseParas.setViewingRange(viewingRange);
 	}
 	
+	public double getViewingAngle() {
+		return this.senseParas.getViewingAngle();
+	}
+
+	public void setViewingAngle(double viewingAngle) {
+		this.senseParas.setViewingAngle(viewingAngle);
+	}
+	
+	public double getSensitivityForCollisions() {
+		return this.senseParas.getSensitivityForCollisions();
+	}
+	
+	public void setSensitivityForCollisions(double sensitivityForCollisions) {
+		this.senseParas.setSensitivityForCollisions(sensitivityForCollisions);
+	}
+
 	public double getBearing() {
-		return bearing;
+		return uasVelocity.getBearing();
 	}
 
 	public void setBearing(double bearing) {
-		this.bearing = bearing;
+		this.uasVelocity.setBearing(bearing);
 	}
 	
 	public double getSpeed() {
-		return speed;
+		return uasVelocity.getSpeed();
 	}
 
 	public void setSpeed(double speed) {
-		this.speed = speed;
+		this.uasVelocity.setSpeed(speed);
 	}
 	
+	public Double2D getVelocity() {
+		return uasVelocity.getVelocity();
+	}
+
+	public void setVelocity(Double2D velocity) {
+		this.uasVelocity.setVelocity(velocity);
+	}
+
 	public double getSafetyRadius() {
 		return safetyRadius;
 	}
@@ -216,24 +232,22 @@ public class UAS extends CircleObstacle implements Oriented2D
 		this.radius=safetyRadius;
 	}
 
-	public UASPerformance getPerformance() {
-		return performance;
+	public UASPerformance getUasPerformance() {
+		return uasPerformance;
 	}
 
-	public void setPerformance(UASPerformance performance) {
-		this.performance = performance;
+	public void setUasPerformance(UASPerformance performance) {
+		this.uasPerformance = performance;
 	}
 	
-	public double getViewingAngle() {
-		return viewingAngle;
+
+
+	public double getAlpha() {
+		return this.avoidParas.getAlpha();
 	}
 
-	public void setViewingAngle(double viewingAngle) {
-		this.viewingAngle = viewingAngle;
-	}
-
-	public double getSensitivityForCollisions() {
-		return sensitivityForCollisions;
+	public void setAlpha(double alpha) {
+		this.avoidParas.setAlpha(alpha);
 	}
 
 	public double getDistanceToDanger() {
@@ -297,41 +311,41 @@ public class UAS extends CircleObstacle implements Oriented2D
 	 * @param loc the location of the UAS
 	 * @param targ the waypoint location for the UAS
 	 */
-	public void setDirection(Double2D loc, Double2D targ)
+	public void setUASDirection(Double2D loc, Double2D targ)
 	{
-			double idealDirection = CALCULATION.calculateAngle(loc, targ);
+			double idealDirection = targ.subtract(loc).angle(); // CALCULATION.calculateAngle(loc, targ);
 			
 			//first the ideal bearing for the UAS to get to it's target must be calculated
 			//now based on the ideal bearing for the UAS to get to it's position it
 			//must be determined if the UAS needs to be changed from the bearing it's
 			//on at all
-			if (idealDirection != bearing)
+			if (idealDirection != uasVelocity.getBearing())
 			{
 				//then the course that the UAS is on needs correcting
 				//check if it would be quicker to turn left or right
-				double delta = idealDirection - bearing;
+				double delta = idealDirection - uasVelocity.getBearing();
 				if(delta>0)
 				{
-					if(delta <= 180)
+					if(delta <= Math.PI)
 					{
 						turnLeft(delta);
 					}
 
-					else if (delta >180 )
+					else if (delta >Math.PI )
 					{
-						turnRight(360 - delta);
+						turnRight(2.0*Math.PI - delta);
 					}
 					
 				}
 				else
 				{
-					if (delta >= -180)
+					if (delta >= -Math.PI)
 					{
 						turnRight(-delta);
 					}
 					else
 					{
-						turnLeft(360+delta);
+						turnLeft(2.0*Math.PI+delta);
 					}
 				}
 				
@@ -346,17 +360,17 @@ public class UAS extends CircleObstacle implements Oriented2D
 	 */
 	private void turnLeft(double theta)
 	{
-		double direction =bearing;
-		if(theta <= performance.getCurrentMaxTurning())
+		double direction = uasVelocity.getBearing();
+		if(theta <= Math.toRadians(uasPerformance.getCurrentMaxTurning()))
 		{
 			direction += theta;
 		}
 		else
 		{
-			direction += performance.getCurrentMaxTurning();
+			direction += Math.toRadians(uasPerformance.getCurrentMaxTurning());
 		}
-		bearing = CALCULATION.correctAngle(direction);
-		
+		uasVelocity.setBearing(CALCULATION.correctAngle(direction));
+				
 	}
 	
 	
@@ -368,17 +382,17 @@ public class UAS extends CircleObstacle implements Oriented2D
 	
 	private void turnRight(double theta)
 	{
-		double direction =bearing;
-		if(theta <= this.performance.getCurrentMaxTurning())
+		double direction = uasVelocity.getBearing();
+		if(theta <= Math.toRadians(uasPerformance.getCurrentMaxTurning()))
 		{
 			direction -= theta;
 		}
 		else
 		{
-			direction -= this.performance.getCurrentMaxTurning();
+			direction -= Math.toRadians(uasPerformance.getCurrentMaxTurning());
 		}
 		
-		bearing = CALCULATION.correctAngle(direction);
+		uasVelocity.setBearing(CALCULATION.correctAngle(direction));
 		
 	}
 	
@@ -389,7 +403,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 	 * 
 	 * @param obstacles 
 	 */
-	private void proximityToDanger( Double2D coord, Bag obstacles)
+	private void proximityToDanger(Double2D coord, Bag obstacles)
 	{
 		double tempproximityToDanger;
 		
@@ -461,6 +475,8 @@ public class UAS extends CircleObstacle implements Oriented2D
 	 */
 	public double orientation2D()
 	{
-		return Math.toRadians(this.bearing);
+		return this.uasVelocity.getBearing();
 	}
+
+
 }

@@ -79,7 +79,7 @@ public class RIPNAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		
 		viewingRange = hostUAS.getViewingRange();
 		viewingAngle = hostUAS.getViewingAngle();
-		performance = hostUAS.getPerformance();
+		performance = hostUAS.getUasPerformance();
 		
 		/* Find plane to avoid*/
 		ThreatContainer greatestThreatContainer =findGreatestThreat(hostUAS, uASBag);

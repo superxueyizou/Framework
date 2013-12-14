@@ -72,7 +72,7 @@ public class SimpleAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		sensitivityForCollisions = hostUAS.getSensitivityForCollisions();
 		viewingRange = hostUAS.getViewingRange();
 		viewingAngle = hostUAS.getViewingAngle();
-		performance = hostUAS.getPerformance();
+		performance = hostUAS.getUasPerformance();
 		distanceToDanger =hostUAS.getDistanceToDanger();
 		bearing = hostUAS.getBearing();
 		

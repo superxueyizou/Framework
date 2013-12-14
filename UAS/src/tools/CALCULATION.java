@@ -35,75 +35,78 @@ public class CALCULATION {
 	public static double calculateAngle(Double2D point1, Double2D point2)
 	{
 		Double2D vector = point2.subtract(point1);
-		double absX=Math.abs(vector.x);
-		double absY=Math.abs(vector.y);
-		double angle;
+		return vector.angle();
 		
-		if(absX != 0)
-		{
-			angle = Math.toDegrees(Math.atan(absY/absX));
-			
-			if(vector.x >0)
-			{
-				if (vector.y >0) 
-				{	
-					angle =  - angle;
-					
-				} 
-				
-				
-			}
-			else
-			{
-				if (vector.y <0) 
-				{	
-					angle = 180 - angle;
-					
-				}
-				else
-				{
-					angle = angle - 180;
-				}
-			}
-			
-			
 		
-		} 
-		else 
-		{
-			//the UAS is either in line with the destination horizontally or vertically
-			if (vector.y >0)
-			{
-			    angle = -90;			    
-			}
-			else
-			{
-				angle = 90;
-			}
-		}
-		
-		return angle;
+//		double absX=Math.abs(vector.x);
+//		double absY=Math.abs(vector.y);
+//		double angle;
+//		
+//		if(absX != 0)
+//		{
+//			angle = Math.toDegrees(Math.atan(absY/absX));
+//			
+//			if(vector.x >0)
+//			{
+//				if (vector.y >0) 
+//				{	
+//					angle =  - angle;
+//					
+//				} 
+//				
+//				
+//			}
+//			else
+//			{
+//				if (vector.y <0) 
+//				{	
+//					angle = 180 - angle;
+//					
+//				}
+//				else
+//				{
+//					angle = angle - 180;
+//				}
+//			}
+//			
+//			
+//		
+//		} 
+//		else 
+//		{
+//			//the UAS is either in line with the destination horizontally or vertically
+//			if (vector.y >0)
+//			{
+//			    angle = -90;			    
+//			}
+//			else
+//			{
+//				angle = 90;
+//			}
+//		}
+//		
+//		return angle;
 }
 
 
 /****************************************************************************************************************************************/
 	
 		/** 
-	 * A method which changes a bearing to be in the range of -180 (EXclusive) to 180 (INclusive)
+	 * A method which changes a bearing to be in the range of -pi (EXclusive) to pi (INclusive)
 	 * 
 	 * @param b the bearing to be corrected
 	 * @return a bearing equivalent to b which has been converted to be in the correct range
 	 */
 	public static double correctAngle(double b)
 	{
-		if (b > 180)
+		if (b > Math.PI)
 		{
-			return (b - 360);
+			return (b - 2.0*Math.PI);
 		}
 		
-		if (b <= -180)
+		if (b <= -Math.PI)
 		{
-			return (b + 360);
+			return (b + 2.0*Math.PI);
 		}
 		
 		return b;
@@ -122,15 +125,15 @@ public class CALCULATION {
 	{
 		double xChange;
 		
-		if (angle >=0 && angle <= 90) 
+		if (angle >=0 && angle <= 0.5*Math.PI) 
 		{
-			xChange = (speed * Math.cos(Math.toRadians(angle)));
-		} else if (angle >90 && angle <= 180) {
-			xChange = (-1*speed * Math.cos(Math.toRadians(180 - angle)));
-		} else if (angle < 0 && angle >= -90) {
-			xChange = (speed * Math.cos(Math.toRadians(-angle)));
+			xChange = (speed * Math.cos(angle));
+		} else if (angle >0.5*Math.PI && angle <= Math.PI) {
+			xChange = (-1*speed * Math.cos(Math.PI - angle));
+		} else if (angle < 0 && angle >= -0.5*Math.PI) {
+			xChange = (speed * Math.cos(-angle));
 		} else {
-			xChange = (-1 * speed * Math.cos(Math.toRadians(180 + angle)));
+			xChange = (-1 * speed * Math.cos(Math.PI + angle));
 		}	
 		return xChange;
     }
@@ -144,15 +147,15 @@ public class CALCULATION {
 	public static double yMovement(double angle, double speed)
 	{
 		double yChange;
-		if (angle >=0 && angle <= 90) 
+		if (angle >=0 && angle <= 0.5*Math.PI) 
 		{
-			yChange = (-1 * speed * Math.sin(Math.toRadians(angle)));
-		} else if (angle >90 && angle <= 180) {
-			yChange = (-1 * speed * Math.sin(Math.toRadians(180 - angle)));
-		} else if (angle < 0 && angle >= -90) {
-			yChange = (speed * Math.sin(Math.toRadians(-angle)));
+			yChange = (-1 * speed * Math.sin(angle));
+		} else if (angle >0.5*Math.PI && angle <= Math.PI) {
+			yChange = (-1 * speed * Math.sin(Math.PI - angle));
+		} else if (angle < 0 && angle >= -0.5*Math.PI) {
+			yChange = (speed * Math.sin(-angle));
 		} else {
-			yChange = (speed * Math.sin(Math.toRadians(180+ angle)));
+			yChange = (speed * Math.sin(Math.PI+ angle));
 		}	
 		return yChange;
     }
@@ -256,8 +259,8 @@ public class CALCULATION {
 					return true;
 				}
 	  		}
-			delta += 3.0;
-		} while(delta <= 0.5*self.getViewingAngle());
+			delta += Math.toRadians(3.0);
+		} while(delta <= 0.5*Math.toRadians(self.getViewingAngle()));
 	
   		return false;
   	}
@@ -298,8 +301,8 @@ public class CALCULATION {
   					return true;
   				}
   	  		}
-  			delta += 3.0;
-  		} while(delta <= 0.5*self.getViewingAngle());
+  			delta += Math.toRadians(3.0);
+  		} while(delta <= 0.5*Math.toRadians(self.getViewingAngle()));
   	
     	return false;
   	}
@@ -348,14 +351,14 @@ public class CALCULATION {
 		double xComponent, yComponent;
 		if(isTurnRight)
 		{
-			xComponent = uas.getSpeed()*Math.cos(Math.toRadians(CALCULATION.correctAngle(uas.getBearing()-turningAngle)));
-			yComponent = -1*uas.getSpeed()*Math.sin(Math.toRadians(CALCULATION.correctAngle(uas.getBearing()-turningAngle)));
+			xComponent = uas.getSpeed()*Math.cos(CALCULATION.correctAngle(uas.getBearing()-turningAngle));
+			yComponent = -1*uas.getSpeed()*Math.sin(CALCULATION.correctAngle(uas.getBearing()-turningAngle));
 			
 		}
 		else
 		{
-			xComponent = uas.getSpeed()*Math.cos(Math.toRadians(CALCULATION.correctAngle(uas.getBearing()+turningAngle)));
-			yComponent = -1*uas.getSpeed()*Math.sin(Math.toRadians(CALCULATION.correctAngle(uas.getBearing()+turningAngle)));
+			xComponent = uas.getSpeed()*Math.cos(CALCULATION.correctAngle(uas.getBearing()+turningAngle));
+			yComponent = -1*uas.getSpeed()*Math.sin(CALCULATION.correctAngle(uas.getBearing()+turningAngle));
 		}
 
 		
@@ -378,7 +381,7 @@ public class CALCULATION {
     	Waypoint dest = uas.getDestination();
 		double currentBearing = uas.getBearing();	
        	double destBearing = calculateAngle(uas.getLocation(), dest.getLocation());
-       	if (Math.abs(destBearing - currentBearing) < 5)
+       	if (Math.abs(destBearing - currentBearing) < Math.toRadians(5.0))
        	{
        		//System.out.println("destBearing == currentBearingdestBearing == currentBearingdestBearing == currentBearingdestBearing == currentBearing");
        		return null;
@@ -388,7 +391,7 @@ public class CALCULATION {
     	if(currentBearing>=0)
     	{
     		double delta = currentBearing-destBearing;
-    		if ((delta > 0) && (delta < 180.0))
+    		if ((delta > 0) && (delta < Math.PI))
         	{
         		//System.out.println("(destBearing < currentBearing) && (destBearing > correctAngle(currentBearing + 180.0))(destBearing < currentBearing) & (destBearing > correctAngle(currentBearing + 180.0))");
         		isDestOnRight = true;
@@ -401,8 +404,8 @@ public class CALCULATION {
     	}
     	else
     	{
-    		double delta = currentBearing+180-destBearing;
-    		if ((delta > 0) && (delta < 180.0))
+    		double delta = currentBearing+Math.PI-destBearing;
+    		if ((delta > 0) && (delta < Math.PI))
         	{
         		//System.out.println("(destBearing < currentBearing) && (destBearing > correctAngle(currentBearing + 180.0))(destBearing < currentBearing) & (destBearing > correctAngle(currentBearing + 180.0))");
         		isDestOnRight = false;
@@ -416,17 +419,17 @@ public class CALCULATION {
     	
       	/* Calculate the center of the circle of minimum turning radius on the side that the waypoint is on*/	
     	Double2D cPlusCenter;
-    	double minTurningRadius = uas.getSpeed()/Math.toRadians(uas.getPerformance().getCurrentMaxTurning());
+    	double minTurningRadius = uas.getSpeed()/Math.toRadians(uas.getUasPerformance().getCurrentMaxTurning());
     	double x, y;
     	if (isDestOnRight) 
     	{
-    		x =uas.getLocation().x + minTurningRadius*Math.sin(Math.toRadians(uas.getBearing()));
-    		y =uas.getLocation().y + minTurningRadius*Math.cos(Math.toRadians(uas.getBearing()));
+    		x =uas.getLocation().x + minTurningRadius*Math.sin(uas.getBearing());
+    		y =uas.getLocation().y + minTurningRadius*Math.cos(uas.getBearing());
        	}
     	else 
     	{
-    		x =uas.getLocation().x - minTurningRadius*Math.sin(Math.toRadians(uas.getBearing()));
-    		y =uas.getLocation().y - minTurningRadius*Math.cos(Math.toRadians(uas.getBearing()));
+    		x =uas.getLocation().x - minTurningRadius*Math.sin(uas.getBearing());
+    		y =uas.getLocation().y - minTurningRadius*Math.cos(uas.getBearing());
     	}
     	cPlusCenter = new Double2D(x,y);
 
@@ -436,11 +439,11 @@ public class CALCULATION {
 //    		System.out.println("isDestOnRight = "+isDestOnRight);
 //    		System.out.println("cPlusCenter.distance(dest.getLocation()) < minTurningRadius");
 
-    		return calculateWaypoint(uas, uas.getPerformance().getCurrentMaxTurning(), !isDestOnRight);
+    		return calculateWaypoint(uas, Math.toRadians(uas.getUasPerformance().getCurrentMaxTurning()), !isDestOnRight);
     	}
     	else
     	{
-    		return calculateWaypoint(uas, uas.getPerformance().getCurrentMaxTurning(), isDestOnRight);
+    		return calculateWaypoint(uas, Math.toRadians(uas.getUasPerformance().getCurrentMaxTurning()), isDestOnRight);
     	}
    
     	   		

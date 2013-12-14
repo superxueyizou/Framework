@@ -82,7 +82,7 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		// Specify global time step of the simulation.
 		orcaSimulator.setTimeStep(1);
 		// Specify default parameters for agents that are subsequently added.
-		orcaSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15.0, 15.0,hostUAS.getRadius(), hostUAS.getPerformance().getCurrentMaxSpeed()); //rvoSimulator.setAgentDefaults(1.0f, 8, 10.0f, 20.0f, 0.5f, 8.0f);
+		orcaSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15.0, 15.0,hostUAS.getRadius(), hostUAS.getUasPerformance().getCurrentMaxSpeed()); //rvoSimulator.setAgentDefaults(1.0f, 8, 10.0f, 20.0f, 0.5f, 8.0f);
 
 		for(int i=0; i<state.uasBag.size(); i++)
 		{
@@ -105,7 +105,7 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm{
 	
 		viewingRange = hostUAS.getViewingRange();
 		viewingAngle = hostUAS.getViewingAngle();
-		performance = hostUAS.getPerformance();
+		performance = hostUAS.getUasPerformance();
 		
 		
 		updateRVOSimulator(state);
@@ -114,42 +114,7 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		
 		Vector2 vel= orcaSimulator.getAgentVelocity(hostUASIDInRVOSimulator);
 		Double2D velDouble2D = new Double2D(vel.x(), vel.y());
-		double speed= velDouble2D.length();
-		double bearing= CALCULATION.calculateAngle(new Double2D(0,0), velDouble2D);
-		
-		
-//		if(speed > performance.getCurrentMaxSpeed())
-//		{
-//			speed = performance.getCurrentMaxSpeed();
-//		}
-//		
-//		boolean isTurnRight;
-//		double bearingChange = CALCULATION.correctAngle(bearing-hostUAS.getBearing());
-//		if(bearingChange > 0)
-//		{
-//			isTurnRight=false;
-//		}
-//		else
-//		{
-//			isTurnRight= true;
-//		}
-//		
-//		if(bearingChange > performance.getCurrentMaxTurning())
-//		{
-//			bearing= CALCULATION.correctAngle(hostUAS.getBearing()+performance.getCurrentMaxTurning());
-//			bearingChange = performance.getCurrentMaxTurning();
-//		}
-//		else if(bearingChange < -performance.getCurrentMaxTurning())
-//		{
-//			bearing= CALCULATION.correctAngle(hostUAS.getBearing()-performance.getCurrentMaxTurning());
-//			bearingChange = performance.getCurrentMaxTurning();
-//			
-//		}
-		
-		hostUAS.setSpeed(speed);
-		hostUAS.setBearing(bearing);
-		
-//		return CALCULATION.calculateWaypoint(hostUAS, bearingChange, isTurnRight);
+		hostUAS.setVelocity(velDouble2D);
 		
 		Vector2 loc = orcaSimulator.getAgentPosition(hostUASIDInRVOSimulator);
 		Double2D newLocation = new Double2D(loc.x(), loc.y());
@@ -173,8 +138,8 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm{
 			if(agent==hostUAS)
 			{
 				location = new Vector2(agent.getLocation().x,agent.getLocation().y);
-				double velX = agent.getSpeed()*Math.cos(Math.toRadians(agent.getBearing()));
-				double velY = agent.getSpeed()*Math.sin(Math.toRadians(agent.getBearing()));
+				double velX = agent.getVelocity().x;
+				double velY = agent.getVelocity().y;
 				velocity= new Vector2(velX, velY);
 				
 			}
@@ -188,8 +153,8 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm{
 				}
 				
 				location = new Vector2(agent.getLocation().x,agent.getLocation().y);
-				double velX = agent.getSpeed()*Math.cos(Math.toRadians(agent.getBearing()));
-				double velY = agent.getSpeed()*Math.sin(Math.toRadians(agent.getBearing()));
+				double velX = agent.getVelocity().x;
+				double velY = agent.getVelocity().y;
 			
 //				location = new Vector2(agent.getLocation().x+state.random.nextGaussian(),agent.getLocation().y+state.random.nextGaussian());
 //				double velX = agent.getSpeed()*Math.cos(Math.toRadians(agent.getBearing()))+state.random.nextGaussian();
@@ -211,7 +176,7 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm{
 			if (ORCA.absSq(targetPosInRVOSimulator.sub(orcaSimulator.getAgentPosition(hostUASIDInRVOSimulator))) < 1) 
 			{	
 				// Agent is within one radius of its goal, set preferred velocity to zero.
-				orcaSimulator.setAgentPrefVelocity(hostUASIDInRVOSimulator, new Vector2(0.0f, 0.0f));
+				orcaSimulator.setAgentPrefVelocity(hostUASIDInRVOSimulator, new Vector2(0.0, 0.0));
 				isGoalReached = true;
 //				state.numGoalReached++;
 			} 

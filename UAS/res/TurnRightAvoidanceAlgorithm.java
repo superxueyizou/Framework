@@ -71,7 +71,7 @@ public class TurnRightAvoidanceAlgorithm extends AvoidanceAlgorithm{
 		
 		viewingRange = hostUAS.getViewingRange();
 		viewingAngle = hostUAS.getViewingAngle();
-		performance = hostUAS.getPerformance();
+		performance = hostUAS.getUasPerformance();
 		
 		
 		if (CALCULATION.checkCourse(hostUAS, bearing, obstacles)) 

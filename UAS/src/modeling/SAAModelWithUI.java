@@ -78,7 +78,7 @@ public class SAAModelWithUI extends GUIState
 		System.out.println("COModelWithUI.start is called  "+ sBuilder.state);
 		sBuilder.state.reset();
 		//sBuilder.testSim();
-		sBuilder.generateSimulation(CONFIGURATION.sObstacleNo,CONFIGURATION.sUASNo);
+		sBuilder.generateSimulation();
 		
 		super.start();
 		setupPortrayals();
@@ -97,7 +97,7 @@ public class SAAModelWithUI extends GUIState
 	{
 		sBuilder.state.reset();
 		//sBuilder.testSim();
-		sBuilder.generateSimulation(CONFIGURATION.sObstacleNo,CONFIGURATION.sUASNo);
+		sBuilder.generateSimulation();
 		super.load(state);
 		setupPortrayals();
 	}
@@ -155,7 +155,7 @@ public class SAAModelWithUI extends GUIState
 																	}, 
 																	//1, 1, new Color(0,0,0), OrientedPortrayal2D.SHAPE_COMPASS
 															  // ),
-									   1.667*10,1.0,new Color(255, 20, 0),false
+									   1.667*displayX/SAAModelBuilder.worldXVal,1.0,new Color(255, 20, 0),false
 									  )	
 		                              {
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)

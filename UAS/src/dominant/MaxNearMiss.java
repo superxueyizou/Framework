@@ -35,9 +35,24 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
       
         DoubleVectorIndividual ind2 = (DoubleVectorIndividual)ind;
         double distanceToDangerSum=0;
-    	boolean isRightSide = (ind2.genome[0]>0)? true: false;
-		double  offset = ind2.genome[1];
-		double  speed = ind2.genome[2];
+        
+        double destDist= ind2.genome[0];
+        double destAngle= ind2.genome[1];
+        
+        boolean headOnSelected = (ind2.genome[2]>0)? true: false;
+        double  headOnOffset = ind2.genome[3];
+    	boolean headOnIsRightSide = (ind2.genome[4]>0)? true: false;		
+		double  headOnSpeed = ind2.genome[5];
+		
+        boolean crossingSelected = (ind2.genome[6]>0)? true: false;
+        double  crossingEncounterAngle = ind2.genome[7];
+   		boolean crossingIsRightSide = (ind2.genome[8]>0)? true: false;		
+		double  crossingSpeed = ind2.genome[9];
+		
+        boolean tailApproachSelected = (ind2.genome[10]>0)? true: false;    	
+		double  tailApproachOffset = ind2.genome[11];
+		boolean tailApproachIsRightSide = (ind2.genome[12]>0)? true: false;
+		double  tailApproachSpeed = ind2.genome[13];
 		
 		int times =1, dividend=0;
         for(int i=0;i<times; i++)
@@ -45,13 +60,26 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
         	long time = System.nanoTime();
     		SAAModel simState= new SAAModel(time, 150, 100, false); 	
     		
-    		CONFIGURATION.headOnSelected = true;
-    		CONFIGURATION.headOnIsRightSide= isRightSide;
-    		CONFIGURATION.headOnOffset=offset;
-    		CONFIGURATION.headOnSpeed =speed;
+    		CONFIGURATION.selfDestDist = destDist;
+    		CONFIGURATION.selfDestAngle = destAngle;
+    		
+    		CONFIGURATION.headOnSelected = headOnSelected;
+    		CONFIGURATION.headOnOffset=headOnOffset;
+    		CONFIGURATION.headOnIsRightSide= headOnIsRightSide;    		
+    		CONFIGURATION.headOnSpeed =headOnSpeed;
+    		
+    		CONFIGURATION.crossingSelected = crossingSelected;
+    		CONFIGURATION.crossingEncounterAngle=crossingEncounterAngle;
+    		CONFIGURATION.crossingIsRightSide= crossingIsRightSide;    		
+    		CONFIGURATION.crossingSpeed =crossingSpeed;
+    		
+    		CONFIGURATION.tailApproachSelected = tailApproachSelected;
+    		CONFIGURATION.tailApproachOffset= tailApproachOffset;
+    		CONFIGURATION.tailApproachIsRightSide=tailApproachIsRightSide;
+    		CONFIGURATION.tailApproachSpeed =tailApproachSpeed;
     		
  	   		SAAModelBuilder sBuilder = new SAAModelBuilder(simState);
-    		sBuilder.generateSimulation(1,1);
+    		sBuilder.generateSimulation();
     		simState.start();		
     		do
     		{
@@ -64,15 +92,25 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
     		for(int j=0; j<simState.getUasBag().size(); j++)
     		{
     			UAS uas = (UAS)simState.getUasBag().get(j);
-    			System.out.println(uas.getDistanceToDanger());
-    			distanceToDangerSum += uas.getDistanceToDanger();
+    			System.out.println(uas.getDistanceToDanger()-uas.getRadius());
+    			distanceToDangerSum += uas.getDistanceToDanger()-uas.getRadius();
+    			
+//    			if(uas.getDistanceToDanger()-uas.getRadius()>0)
+//				{
+//    				distanceToDangerSum += uas.getDistanceToDanger()-uas.getRadius();
+//				}
+//    			else
+//    			{
+//    				distanceToDangerSum += 0;
+//    			}
+    			
     			dividend++;
     		}
     		
         }
         
 		float rawFitness= (float)distanceToDangerSum/dividend;  
-		float fitness = 1/(1+rawFitness);
+		float fitness = 1/Math.abs(1+rawFitness);
         
         
         if (!(ind2.fitness instanceof SimpleFitness))
@@ -80,11 +118,11 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
         
         ((SimpleFitness)ind2.fitness).setFitness(   state,            
 										            fitness,/// ...the fitness...
-										            fitness == 1);///... is the individual ideal?  Indicate here...
+										            fitness >= 1);///... is the individual ideal?  Indicate here...
         
         ind2.evaluated = true;
-        System.out.println("individual result: isRightSide("+isRightSide+"), offset("+ offset+"), speed( "+ speed + "); fitness[  " + fitness +" ]" );
-        
+        System.out.println("individual result: selfDestDist("+destDist+ "), selfDestAngle("+destAngle+ "), isRightSide("+headOnIsRightSide+"), offset("+ headOnOffset+"), speed("+ headOnSpeed + "); fitness[[ " + fitness +" ]]" );
+        System.out.println();
 
 	}
 

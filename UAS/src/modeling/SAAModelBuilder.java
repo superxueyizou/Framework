@@ -14,12 +14,8 @@ import modeling.encountergenerator.TailApproachGenerator;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
 import modeling.subsystems.avoidance.HRVOAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.RIPNAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.ORCAAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.RVOAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.SimpleAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.SmartTurnAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.TurnRightAvoidanceAlgorithm;
 import modeling.subsystems.sensor.Sensor;
 import modeling.subsystems.sensor.SimpleSensor;
 
@@ -40,7 +36,6 @@ public class SAAModelBuilder
 	
 	public static double worldXVal = 150;
 	public static double worldYVal = 105;
-	//private int noUAS=3;
 	
 		
 //	public COModelBuilder()
@@ -56,203 +51,133 @@ public class SAAModelBuilder
 		System.out.println("COModelBuilder(COModel simState) is being called!!!!!!!!!! the simstate is：" + state.toString());
 	}
 	
-	public  void generateSimulation(int noObstacles, int noUAS)
+	public  void generateSimulation()
 	{		
 		
-		double x =0;
-		double y =0;		
+		double x = worldXVal/3.0; ;
+		double y = worldYVal/2.0;		
+
+		Double2D location = new Double2D(x,y);
+		Destination d = generateDestination(x, y, CONFIGURATION.selfDestDist, CONFIGURATION.selfDestAngle,state.obstacles);
+		UASVelocity uasVelocity = new UASVelocity(d.getLocation().subtract(location).normalize().multiply(CONFIGURATION.selfSpeed));
+		UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMaxAcceleration, CONFIGURATION.selfMaxDeceleration, CONFIGURATION.selfMaxTurning);
+		SenseParas senseParas = new SenseParas(CONFIGURATION.selfViewingRange,CONFIGURATION.selfViewingAngle, CONFIGURATION.selfSensitivityForCollisions);
+		AvoidParas avoidParas = new AvoidParas(CONFIGURATION.selfAlpha);
 		
-		if (CONFIGURATION.staticAvoidance)
-		{
-			for (int i = 0; i < noObstacles; i++)
-			{
-				x = state.random.nextDouble() * worldXVal;
-				y = state.random.nextDouble() * worldYVal;
-				CircleObstacle cb = new CircleObstacle(state.getNewID(), state.random.nextInt(9) + 1);
-				cb.setLocation(new Double2D(x,y));
-				cb.setSchedulable(false);
-				state.allEntities.add(cb);
-				state.obstacles.add(cb);
-				//System.out.println("obstacle " + Integer.toString(i) + " is at (" + Double.toString(x) + ", " + Double.toString(y) + "), ID is"+ ob.ID);
-			}
-			
-			for(int i=1; i<=noUAS; i++)
-			{
-				do
-				{
-					x=state.random.nextDouble() * worldXVal;
-					y=state.random.nextDouble() * worldYVal;
-				}  while (state.obstacleAtPoint(new Double2D(x,y), state.obstacles));
+		UAS self = new UAS(state.getNewID(),CONFIGURATION.selfSafetyRadius,location, d, uasVelocity,uasPerformance, senseParas,avoidParas);
 				
-				Destination d = generateDestination(state.obstacles);
-				UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMaxAcceleration, CONFIGURATION.selfMaxDeceleration, CONFIGURATION.selfMaxTurning);
-				UAS self = new UAS(state.getNewID(), d, uasPerformance, 1.667);	
-				self.setLocation(new Double2D(x,y));
-				self.setSpeed(CONFIGURATION.selfSpeed);
-				self.setViewingRange(CONFIGURATION.selfViewingRange);
-				self.setViewingAngle(CONFIGURATION.selfViewingAngle);
-				AvoidanceAlgorithm aa = new SimpleAvoidanceAlgorithm(state, self);
-				Sensor sensor = new SimpleSensor();
-				self.init(sensor, aa);
-				self.setBearing(CALCULATION.calculateAngle(self.getLocation(), d.getLocation()));
-				System.out.println("self's bearing:"+self.getBearing());
-				
-				state.uasBag.add(self);
-				state.allEntities.add(self);
-				self.setSchedulable(true);
-				state.toSchedule.add(self);
-				state.obstacles.add(self);
-				//System.out.println("uas is at (" + Double.toString(x) + ", " + Double.toString(y) + ")ID is"+ uas.ID);
-				//System.out.println("COModelBuilder.genereteSimulation is called, uas's max speed is: " + state.uasStats.getMaxSpeed());
-			}
-		}		
-		else if (CONFIGURATION.dynamicAvoidance)
+		AvoidanceAlgorithm aa;
+		switch(CONFIGURATION.avoidanceAlgorithmSelection)
 		{
-			x = 1/3.0*worldXVal; 
-			y = 0.5*worldYVal;
-			
-			Destination d = new Destination(state.getNewID(), null);
-			d.setLocation(new Double2D(x+40,y-20));
-			d.setSchedulable(false);
-			state.allEntities.add(d);
-			
-			UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMaxAcceleration, CONFIGURATION.selfMaxDeceleration, CONFIGURATION.selfMaxTurning);
-			UAS self = new UAS(state.getNewID(), d, uasPerformance, CONFIGURATION.selfSafetyRadius);	
-			self.setLocation(new Double2D(x,y));
-			self.setSpeed(CONFIGURATION.selfSpeed);
-			self.setViewingRange(CONFIGURATION.selfViewingRange);
-			self.setViewingAngle(CONFIGURATION.selfViewingAngle);
-			//self.setSafetyRadius(CONFIGURATION.selfSafetyRadius);
-			AvoidanceAlgorithm aa;
-			switch(CONFIGURATION.avoidanceAlgorithmSelection)
-			{
-				case "TurnRightAvoidanceAlgorithm":
-					aa= new TurnRightAvoidanceAlgorithm(state, self);
-					break;
-				case "SmartTurnAvoidanceAlgorithm":
-					aa= new SmartTurnAvoidanceAlgorithm(state, self);
-					break;
-				case "None":
-					aa= new AvoidanceAlgorithmAdapter();
-					break;
-				case "RIPNAvoidanceAlgorithm":
-					aa= new RIPNAvoidanceAlgorithm(state, self);
-					break;
-				case "ORCAAvoidanceAlgorithm":
-					aa= new ORCAAvoidanceAlgorithm(state, self);
-					break;
-				case "RVOAvoidanceAlgorithm":
-					aa= new RVOAvoidanceAlgorithm(state, self);
-					break;
-				case "HRVOAvoidanceAlgorithm":
-					aa= new HRVOAvoidanceAlgorithm(state, self);
-					break;
-				default:
-					aa= new AvoidanceAlgorithmAdapter();
-			}
-			Sensor sensor = new SimpleSensor();
-			self.init(sensor, aa);
-			self.setBearing(CALCULATION.calculateAngle(self.getLocation(), d.getLocation()));
-			
-			state.uasBag.add(self);
-			state.obstacles.add(self);
-			state.allEntities.add(self);
-			self.setSchedulable(true);
-			state.toSchedule.add(self);
-			//System.out.println("self's bearing:"+self.getBearing());
-						
-			
-		    if(CONFIGURATION.headOnSelected)
-		    {
-		    	if(state.runningWithUI)
+//			case "TurnRightAvoidanceAlgorithm":
+//				aa= new TurnRightAvoidanceAlgorithm(state, self);
+//				break;
+//			case "SmartTurnAvoidanceAlgorithm":
+//				aa= new SmartTurnAvoidanceAlgorithm(state, self);
+//				break;
+//			
+//			case "RIPNAvoidanceAlgorithm":
+//				aa= new RIPNAvoidanceAlgorithm(state, self);
+//				break;
+			case "ORCAAvoidanceAlgorithm":
+				aa= new ORCAAvoidanceAlgorithm(state, self);
+				break;
+			case "RVOAvoidanceAlgorithm":
+				aa= new RVOAvoidanceAlgorithm(state, self);
+				break;
+			case "HRVOAvoidanceAlgorithm":
+				aa= new HRVOAvoidanceAlgorithm(state, self);
+				break;
+			case "None":
+				aa= new AvoidanceAlgorithmAdapter(state, self);
+				break;
+			default:
+				aa= new AvoidanceAlgorithmAdapter(state, self);
+		}
+		Sensor sensor = new SimpleSensor();
+		self.init(sensor, aa);
+				
+		state.uasBag.add(self);
+		state.obstacles.add(self);
+		state.allEntities.add(self);
+		self.setSchedulable(true);
+		state.toSchedule.add(self);
+		//System.out.println("self's bearing:"+self.getBearing());
+					
+		
+	    if(CONFIGURATION.headOnSelected)
+	    {
+	    	double offset = CONFIGURATION.headOnOffset ;
+	    	boolean isRightSide = CONFIGURATION.headOnIsRightSide;
+	    	double speed= CONFIGURATION.headOnSpeed;
+	    	
+	    	if(state.runningWithUI)
+	    	{
+		    	for(int i=0; i<CONFIGURATION.headOnTimes; i++)
 		    	{
-		    		double offset = 0;
-			    	boolean isRightSide = true;
-			    	double speedCoefficient=1;
-			    	for(int i=0; i<CONFIGURATION.headOnTimes; i++)
-			    	{
-			    		new HeadOnGenerator(state, self, offset, isRightSide, speedCoefficient*CONFIGURATION.headOnSpeed).execute();
-			    		offset = offset + 2;
-			    		isRightSide = !isRightSide;
-			    		speedCoefficient += 0.2;
-			    	}
+		    		new HeadOnGenerator(state, self, offset, isRightSide, speed).execute();
+		    		offset += 2;
+		    		isRightSide = !isRightSide;
+		    		speed += 0.2*speed;
 		    	}
-		    	else
-		    	{
-		    		double offset = CONFIGURATION.headOnOffset ;
-			    	boolean isRightSide = CONFIGURATION.headOnIsRightSide;
-			    	double speed= CONFIGURATION.headOnSpeed;
-			    	new HeadOnGenerator(state, self, offset, isRightSide, speed).execute();
-			    		
-		    	}
-		    
-		    }
-		    if(CONFIGURATION.crossingSelected)
-		    {
-		       	if(state.runningWithUI)
-		    	{
-		       		double distance = 30;
-			    	double encouterAngle = 180;
-			    	double speedCoefficient=1;
-			    	for(int i=0; i<CONFIGURATION.crossingTimes; i++)
-			    	{
-			    		new CrossingGenerator(state, self, distance, encouterAngle,speedCoefficient*CONFIGURATION.crossingSpeed).execute();
-			    		distance = distance+10;
-			    		encouterAngle = encouterAngle-20;
-			    		speedCoefficient += 0.2;
-			    	}
-		    	}
-		    	else
-		    	{
-		    		double distance = CONFIGURATION.crossingDistance;
-		    		double encounterAngle = CONFIGURATION.crossingEncounterAngle;
-		    		double speed= CONFIGURATION.crossingSpeed;
-		    		new CrossingGenerator(state, self, distance, encounterAngle,speed).execute();
+	    	}
+	    	else
+	    	{
+	    	  	new HeadOnGenerator(state, self, offset, isRightSide, speed).execute();
 		    		
-		    	}
-		    	
-		    }
-		    if(CONFIGURATION.tailApproachSelected)
-		    {
-		     	if(state.runningWithUI)
+	    	}
+	    
+	    }
+	    if(CONFIGURATION.crossingSelected)
+	    {
+    		double encounterAngle = CONFIGURATION.crossingEncounterAngle;
+    		boolean isRightSide = CONFIGURATION.crossingIsRightSide;
+    		double speed= CONFIGURATION.crossingSpeed;
+	   
+	       	if(state.runningWithUI)
+	    	{
+		    	for(int i=0; i<CONFIGURATION.crossingTimes; i++)
 		    	{
-		     		double offset = 3;
-			    	boolean isRightSide = true;
-			    	double speedCoefficient=1.2;
-			    	for(int i=0; i<CONFIGURATION.tailApproachTimes; i++)
-			    	{
-			    		new TailApproachGenerator(state, self, offset, isRightSide, speedCoefficient*CONFIGURATION.tailApproachSpeed).execute();
-			    		offset = offset + 2;
-			    		isRightSide = !isRightSide;
-			    		speedCoefficient += 0.2;
-			    	}
+		    		new CrossingGenerator(state, self, encounterAngle,isRightSide,speed).execute();
+		    		isRightSide = !isRightSide;
+		    		encounterAngle -= Math.toRadians(20);
+		    		speed += 0.2*speed;
 		    	}
-		    	else
+	    	}
+	    	else
+	    	{
+	    		new CrossingGenerator(state, self, encounterAngle,isRightSide,speed).execute();
+	    	}
+	    	
+	    }
+	    if(CONFIGURATION.tailApproachSelected)
+	    {
+	    	double offset = CONFIGURATION.tailApproachOffset;
+	    	boolean isRightSide = CONFIGURATION.tailApproachIsRightSide;
+	    	double speed= CONFIGURATION.tailApproachSpeed;
+	     	if(state.runningWithUI)
+	    	{	     		
+		    	for(int i=0; i<CONFIGURATION.tailApproachTimes; i++)
 		    	{
-		    		double offset = CONFIGURATION.tailApproachOffset;
-			    	boolean isRightSide = CONFIGURATION.tailApproachIsRightSide;
-			    	double speed= CONFIGURATION.tailApproachSpeed;
-			    	new TailApproachGenerator(state, self, offset, isRightSide, speed).execute();
+		    		new TailApproachGenerator(state, self, offset, isRightSide, speed).execute();
+		    		offset += 2;
+		    		isRightSide = !isRightSide;
+		    		speed += 0.2*speed;
 		    	}
-		    	
-		    }
-		
-		    for(Object o : state.uasBag)
-		    {
-		    	UAS uas = (UAS)o;
-		    	uas.getAa().init();		    	
-		    }
-			
-		
-			
-			//System.out.println("uas is at (" + Double.toString(x) + ", " + Double.toString(y) + ")ID is"+ uas.ID);
-			//System.out.println("COModelBuilder.genereteSimulation is called, uas's max speed is: " + state.uasStats.getMaxSpeed());
-		}
-		else
-		{
-			System.out.println("Please select one of the avoidances, static or dynamic?");
-		}
-		
+	    	}
+	    	else
+	    	{	    		
+		    	new TailApproachGenerator(state, self, offset, isRightSide, speed).execute();
+	    	}
+	    	
+	    }
+	
+	    for(Object o : state.uasBag)
+	    {
+	    	UAS uas = (UAS)o;
+	    	uas.getAa().init();		    	
+	    }
+				
 		System.out.println("Simulation stepping begins!");
 		System.out.println("====================================================================================================");
 		
@@ -284,18 +209,20 @@ public class SAAModelBuilder
 	
 	public SAAModel getSim() {return state;}
 	
-	public Destination generateDestination(Bag obstacles)
+	public Destination generateDestination(double uasX, double uasY, double distance, double angle,Bag obstacles)
 	{
 		int dID = state.getNewID();
 		Destination d = new Destination(dID, null);
-		double x, y;
+		double desX, desY;
+		double delta=0;
 		do
 		{
-			x = state.random.nextDouble() * worldXVal;
-			y = state.random.nextDouble() * worldYVal;
-		}  while (state.obstacleAtPoint(new Double2D(x,y), obstacles));
+			desX = uasX + (distance+delta)* Math.cos(angle);
+			desY = uasY - (distance+delta)* Math.sin(angle);
+			delta += 1.0;
+		}  while (state.obstacleAtPoint(new Double2D(desX,desY), obstacles));
 		
-		d.setLocation(new Double2D(x,y));
+		d.setLocation(new Double2D(desX,desY));
 		d.isSchedulable = false;
 		state.allEntities.add(d);
 		return d;

@@ -83,7 +83,7 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 		 * double alfaDefault,
 		 * double maxAccelDefault)
 		 * */
-		rvoSimulator.setAgentDefaults( 250, hostUAS.getViewingRange(), 10, hostUAS.getRadius(), 1.0, hostUAS.getSpeed(), hostUAS.getPerformance().getCurrentMaxSpeed(), 7.5, CONFIGURATION.selfAlfa, hostUAS.getPerformance().getCurrentMaxAccel());
+		rvoSimulator.setAgentDefaults( 250, hostUAS.getViewingRange(), 10, hostUAS.getRadius(), 1.0, hostUAS.getSpeed(), hostUAS.getUasPerformance().getCurrentMaxSpeed(), 7.5, CONFIGURATION.selfAlpha, hostUAS.getUasPerformance().getCurrentMaxAccel());
 		//rvoSimulator.setAgentDefaults( 250, 15.0, 10, hostUAS.getRadius(), 1.0, 1.5, hostUAS.getPerformance().getCurrentMaxSpeed(), 7.5, hostUAS.getPerformance().getCurrentMaxAccel());
 		// Specify default parameters for agents that are subsequently added.
 
@@ -112,11 +112,13 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 		
 		Vector2 vel= rvoSimulator.getAgentVelocity(hostUASIDInRVOSimulator);
 		Double2D velDouble2D = new Double2D(vel.x(), vel.y());
-		double speed= velDouble2D.length();
-		double bearing= CALCULATION.calculateAngle(new Double2D(0,0), velDouble2D);
+		hostUAS.setVelocity(velDouble2D);
 		
-		hostUAS.setSpeed(speed);
-		hostUAS.setBearing(bearing);
+//		double speed= velDouble2D.length();
+//		double bearing= CALCULATION.calculateAngle(new Double2D(0,0), velDouble2D);
+//		
+//		hostUAS.setSpeed(speed);
+//		hostUAS.setBearing(bearing);
 		
 		
 		Vector2 loc = rvoSimulator.getAgentPosition(hostUASIDInRVOSimulator);
@@ -141,8 +143,8 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 			if(agent==hostUAS)
 			{
 				location = new Vector2(agent.getLocation().x,agent.getLocation().y);
-				double velX = agent.getSpeed()*Math.cos(Math.toRadians(agent.getBearing()));
-				double velY = agent.getSpeed()*Math.sin(Math.toRadians(agent.getBearing()));
+				double velX = agent.getVelocity().x;
+				double velY = agent.getVelocity().y;
 				velocity= new Vector2(velX, velY);
 				
 			}
@@ -156,8 +158,8 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 				}
 				
 				location = new Vector2(agent.getLocation().x,agent.getLocation().y);
-				double velX = agent.getSpeed()*Math.cos(Math.toRadians(agent.getBearing()));
-				double velY = agent.getSpeed()*Math.sin(Math.toRadians(agent.getBearing()));
+				double velX = agent.getVelocity().x;
+				double velY = agent.getVelocity().y;
 			
 //				location = new Vector2(agent.getLocation().x+state.random.nextGaussian(),agent.getLocation().y+state.random.nextGaussian());
 //				double velX = agent.getSpeed()*Math.cos(Math.toRadians(agent.getBearing()))+state.random.nextGaussian();

@@ -6,19 +6,18 @@ package modeling.encountergenerator;
 import sim.util.Double2D;
 import tools.CALCULATION;
 import tools.CONFIGURATION;
+import modeling.AvoidParas;
 import modeling.SAAModel;
 import modeling.Destination;
+import modeling.SenseParas;
 import modeling.UAS;
 import modeling.UASPerformance;
+import modeling.UASVelocity;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
 import modeling.subsystems.avoidance.HRVOAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.RIPNAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.ORCAAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.RVOAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.SimpleAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.SmartTurnAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.TurnRightAvoidanceAlgorithm;
 import modeling.subsystems.sensor.Sensor;
 import modeling.subsystems.sensor.SimpleSensor;
 
@@ -31,7 +30,6 @@ public class TailApproachGenerator extends EncounterGenerator {
 	/**
 	 * 
 	 */
-	private UAS intruder;
 	private SAAModel state;
 	private UAS self;
 	private double offset;
@@ -60,42 +58,37 @@ public class TailApproachGenerator extends EncounterGenerator {
 	 */
 	public void execute()
 	{
-		double middleX = (self.getLocation().x + self.getDestination().getLocation().x)/2;
-		double middleY = (self.getLocation().y + self.getDestination().getLocation().y)/2;
-		double encounterTime = (self.getLocation().distance(new Double2D(middleX, middleY))/ self.getSpeed());
-		double intruderHalf = encounterTime *intruderSpeed;
-		
+		Double2D selfMiddle = self.getLocation().add(self.getDestination().getLocation()).multiply(0.5);
+		Double2D selfVector = self.getDestination().getLocation().subtract(self.getLocation());
+		Double2D intruderVector = selfVector.multiply(intruderSpeed/self.getSpeed());
+		Double2D offsetVector = selfVector.rotate(0.5*sideFactor*Math.PI).resize(offset);
+		Double2D intruderMiddle = selfMiddle.add(offsetVector);
+				
+		Double2D intruderLocation = intruderMiddle.subtract(intruderVector.multiply(0.5));
+		Double2D intruderDestinationLoc = intruderMiddle.add(intruderVector.multiply(0.5));
 		Destination intruderDestination = new Destination(state.getNewID(), null);
-		double tMX = middleX + sideFactor*offset* Math.sin(Math.toRadians(self.getBearing())); 
-		double tMY = middleY + sideFactor*offset* Math.cos(Math.toRadians(self.getBearing()));
+		intruderDestination.setLocation(intruderDestinationLoc);
 		
-		double tX = tMX + intruderHalf* Math.cos(Math.toRadians(self.getBearing()));// intruderDestination's x
-		double tY = tMY - intruderHalf* Math.sin(Math.toRadians(self.getBearing()));// intruderDestination's y
-		intruderDestination.setLocation(new Double2D(tX , tY));
+		UASVelocity intruderVelocity = new UASVelocity(intruderDestination.getLocation().subtract(intruderLocation).normalize().multiply(intruderSpeed));
+		UASPerformance intruderPerformance = new UASPerformance(CONFIGURATION.tailApproachMaxSpeed, CONFIGURATION.tailApproachMaxAcceleration, CONFIGURATION.tailApproachMaxDeceleration, CONFIGURATION.tailApproachMaxTurning);
+		SenseParas intruderSenseParas = new SenseParas(CONFIGURATION.tailApproachViewingRange,CONFIGURATION.tailApproachViewingAngle, CONFIGURATION.tailApproachSensitivityForCollisions);
+		AvoidParas intruderAvoidParas = new AvoidParas(CONFIGURATION.tailApproachAlpha);
 		
-		UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed,  CONFIGURATION.tailApproachMaxAcceleration,  CONFIGURATION.tailApproachMaxDeceleration,  CONFIGURATION.tailApproachMaxTurning);
-		intruder = new UAS(state.getNewID(), intruderDestination, uasPerformance, CONFIGURATION.tailApproachSafetyRadius);
-		double x = tMX - intruderHalf* Math.cos(Math.toRadians(self.getBearing())); // intruder's x
-		double y = tMY + intruderHalf* Math.sin(Math.toRadians(self.getBearing())); // intruder's y
-		intruder.setLocation(new Double2D(x,y));
-		intruder.setBearing(self.getBearing());
-		intruder.setSpeed(intruderSpeed);
+		UAS intruder = new UAS(state.getNewID(),CONFIGURATION.tailApproachSafetyRadius,intruderLocation, intruderDestination, intruderVelocity,intruderPerformance, intruderSenseParas,intruderAvoidParas);
+		
 		
 		AvoidanceAlgorithm aa;
 		switch(CONFIGURATION.tailApproachAvoidanceAlgorithmSelection)
 		{
-			case "TurnRightAvoidanceAlgorithm":
-				aa= new TurnRightAvoidanceAlgorithm(state, intruder);
-				break;
-			case "SmartTurnAvoidanceAlgorithm":
-				aa= new SmartTurnAvoidanceAlgorithm(state, intruder);
-				break;
-			case "None":
-				aa= new AvoidanceAlgorithmAdapter();
-				break;
-			case "RIPNAvoidanceAlgorithm":
-				aa= new RIPNAvoidanceAlgorithm(state, intruder);
-				break;
+//			case "TurnRightAvoidanceAlgorithm":
+//				aa= new TurnRightAvoidanceAlgorithm(state, intruder);
+//				break;
+//			case "SmartTurnAvoidanceAlgorithm":
+//				aa= new SmartTurnAvoidanceAlgorithm(state, intruder);
+//				break;
+//			case "RIPNAvoidanceAlgorithm":
+//				aa= new RIPNAvoidanceAlgorithm(state, intruder);
+//				break;
 			case "ORCAAvoidanceAlgorithm":
 				aa= new ORCAAvoidanceAlgorithm(state, intruder);
 				break;
@@ -105,8 +98,11 @@ public class TailApproachGenerator extends EncounterGenerator {
 			case "HRVOAvoidanceAlgorithm":
 				aa= new HRVOAvoidanceAlgorithm(state, intruder);
 				break;
+			case "None":
+				aa= new AvoidanceAlgorithmAdapter(state, intruder);
+				break;
 			default:
-				aa= new AvoidanceAlgorithmAdapter();
+				aa= new AvoidanceAlgorithmAdapter(state, intruder);
 		}
 		Sensor sensor = new SimpleSensor();
 		intruder.init(sensor, aa);

@@ -29,6 +29,7 @@ public class SimulationWithUI {
 		SAAConfigurator frame = new SAAConfigurator();
 		frame.setBounds(1500+80, 404, 340,742); // for windows: frame.setBounds(1500+40, 380, 380,700);
 		frame.setVisible(true);
+
 		
     }
 }
