@@ -18,6 +18,9 @@ import sim.portrayal.Inspector;
 import sim.portrayal.SimplePortrayal2D;
 import sim.portrayal.continuous.ContinuousPortrayal2D;
 import sim.portrayal.grid.FastValueGridPortrayal2D;
+import sim.portrayal.network.NetworkPortrayal2D;
+import sim.portrayal.network.SimpleEdgePortrayal2D;
+import sim.portrayal.network.SpatialNetwork2D;
 import sim.portrayal.simple.CircledPortrayal2D;
 import sim.portrayal.simple.HexagonalPortrayal2D;
 import sim.portrayal.simple.ImagePortrayal2D;
@@ -43,9 +46,11 @@ public class SAAModelWithUI extends GUIState
 	
 	
 	ContinuousPortrayal2D environmentPortrayal = new ContinuousPortrayal2D();
-	FastValueGridPortrayal2D obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle", true);  // immutable
-	FastValueGridPortrayal2D terrainPortrayal = new FastValueGridPortrayal2D("Terrain", true);  // immutable
-	FastValueGridPortrayal2D wallPortrayal = new FastValueGridPortrayal2D("Wall", true);  // immutable
+	NetworkPortrayal2D voPortrayal = new NetworkPortrayal2D();
+	
+//	FastValueGridPortrayal2D obstaclesPortrayal = new FastValueGridPortrayal2D("Obstacle", true);  // immutable
+//	FastValueGridPortrayal2D terrainPortrayal = new FastValueGridPortrayal2D("Terrain", true);  // immutable
+//	FastValueGridPortrayal2D wallPortrayal = new FastValueGridPortrayal2D("Wall", true);  // immutable
 	    
 	
    
@@ -77,7 +82,6 @@ public class SAAModelWithUI extends GUIState
 	{
 		System.out.println("COModelWithUI.start is called  "+ sBuilder.state);
 		sBuilder.state.reset();
-		//sBuilder.testSim();
 		sBuilder.generateSimulation();
 		
 		super.start();
@@ -158,11 +162,11 @@ public class SAAModelWithUI extends GUIState
 									   1.667*displayX/SAAModelBuilder.worldXVal,1.0,new Color(255, 20, 0),false
 									  )	
 		                              {
-			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
-			{
-				paint = ((UAS)object).isActive? new Color(255, 0, 0):new Color(128, 128, 128);			
-			    super.draw(object, graphics, info);
-			}
+											public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
+											{
+												paint = ((UAS)object).isActive? new Color(255, 0, 0):new Color(128, 128, 128);			
+											    super.draw(object, graphics, info);
+											}
 			
 		                              }
 				
@@ -188,30 +192,42 @@ public class SAAModelWithUI extends GUIState
 			}
 		});
 		
+		environmentPortrayal.setPortrayalForClass(VelocityObstaclePoint.class, new HexagonalPortrayal2D(0.3)
+		{
+			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
+			{
+				paint = new Color(255, 255, 255);			
+			    super.draw(object, graphics, info);
+			}
+		});
 		
-		obstaclesPortrayal.setField(simulation.obstacleMap);
-		obstaclesPortrayal.setMap(new sim.util.gui.SimpleColorMap(
-				0,
-				1,
-				new Color(0,0,0,0),
-				new Color(0,0,255,255)
-				));
-
-		terrainPortrayal.setField(simulation.terrainMap);
-		terrainPortrayal.setMap(new sim.util.gui.SimpleColorMap(
-				0,
-				2,// Constants.TerrainType.GRAVEL
-				new Color(0,0,0,0),
-				new Color(0,255,0,255)
-				));
-        
-		wallPortrayal.setField(simulation.wallMap);
-		wallPortrayal.setMap(new sim.util.gui.SimpleColorMap(
-				0,
-				1,
-				new Color(0,0,0,0),
-				new Color(255,0,0,255)
-				));		
+		voPortrayal.setField( new SpatialNetwork2D(simulation.environment, simulation.voField));
+		voPortrayal.setPortrayalForAll(new SimpleEdgePortrayal2D());
+		
+		
+//		obstaclesPortrayal.setField(simulation.obstacleMap);
+//		obstaclesPortrayal.setMap(new sim.util.gui.SimpleColorMap(
+//				0,
+//				1,
+//				new Color(0,0,0,0),
+//				new Color(0,0,255,255)
+//				));
+//
+//		terrainPortrayal.setField(simulation.terrainMap);
+//		terrainPortrayal.setMap(new sim.util.gui.SimpleColorMap(
+//				0,
+//				2,// Constants.TerrainType.GRAVEL
+//				new Color(0,0,0,0),
+//				new Color(0,255,0,255)
+//				));
+//        
+//		wallPortrayal.setField(simulation.wallMap);
+//		wallPortrayal.setMap(new sim.util.gui.SimpleColorMap(
+//				0,
+//				1,
+//				new Color(0,0,0,0),
+//				new Color(255,0,0,255)
+//				));		
 		
 		// reschedule the displayer
 		display.reset();
@@ -237,10 +253,12 @@ public class SAAModelWithUI extends GUIState
         displayFrame.setVisible(true);
 		
 		//adding the different layers to the display
-		display.attach(terrainPortrayal,"Terrain");
-		display.attach(obstaclesPortrayal,"Obstacles");		
         display.attach(environmentPortrayal, "Environment" );
-        display.attach(wallPortrayal,"Wall");	
+        display.attach(voPortrayal, "VelocityObstacles",false);
+       
+//		display.attach(terrainPortrayal,"Terrain");
+//		display.attach(obstaclesPortrayal,"Obstacles");	        
+//      display.attach(wallPortrayal,"Wall");	
         
         System.out.println("COModelWithUI.init is called!");
     }
@@ -249,13 +267,13 @@ public class SAAModelWithUI extends GUIState
     
 
     public void quit()
-        {
+    {
         super.quit();
 
         if (displayFrame!=null) displayFrame.dispose();
         displayFrame = null;
         display = null;
-        }
+    }
     
     
     

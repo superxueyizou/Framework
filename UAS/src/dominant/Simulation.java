@@ -46,7 +46,7 @@ public class Simulation {
 		{
 			String str = UTILS.readLastLine(new File("out.stat"), "utf-8").trim();
 			String[] pArr= str.split(" ");
-			System.out.println(pArr[3]);
+			//System.out.println(pArr[3]);
 					
 			CONFIGURATION.selfDestDist= Double.parseDouble(pArr[0]);
 			CONFIGURATION.selfDestAngle=Double.parseDouble(pArr[1]);

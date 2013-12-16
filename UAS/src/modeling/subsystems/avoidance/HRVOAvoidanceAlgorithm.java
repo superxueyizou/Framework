@@ -5,9 +5,11 @@ package modeling.subsystems.avoidance;
 
 import edu.unc.cs.gamma.hrvo.HRVOSimulator;
 import edu.unc.cs.gamma.hrvo.Vector2;
+import edu.unc.cs.gamma.hrvo.VelocityObstacle;
 import modeling.SAAModel;
 import modeling.Destination;
 import modeling.UAS;
+import modeling.VelocityObstaclePoint;
 import modeling.Waypoint;
 import sim.engine.SimState;
 import sim.util.Double2D;
@@ -31,6 +33,10 @@ public class HRVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 
 	public HRVOSimulator hrvoSimulator;
 	private int hostUASIDInHRVOSimulator =0;
+	
+	VelocityObstaclePoint apex = new VelocityObstaclePoint();
+	VelocityObstaclePoint side1End= new VelocityObstaclePoint();
+	VelocityObstaclePoint side2End= new VelocityObstaclePoint();
 	
 	
 	public HRVOAvoidanceAlgorithm(SimState simstate, UAS uas) 
@@ -96,8 +102,38 @@ public class HRVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 	{
 		
 		updateRVOSimulator(state);
+		
 		hrvoSimulator.doStep();
 //		setPreferredVelocity(state);
+		if(state.runningWithUI)
+		{
+			state.voField.removeNode(apex);
+			state.voField.removeNode(side1End);
+			state.voField.removeNode(side2End);
+			
+			if(!hrvoSimulator.getAgentVelocityObstacles(hostUASIDInHRVOSimulator).isEmpty())
+			{
+				VelocityObstacle vo =  hrvoSimulator.getAgentVelocityObstacles(hostUASIDInHRVOSimulator).get(0);
+				Double2D apexLoc = hostUAS.getLocation().add(new Double2D(vo.getApex().getX(),vo.getApex().getY())) ;
+				Double2D side1EndLoc = apexLoc.add(new Double2D(100*vo.getSide1().getX(),100*vo.getSide1().getY()));
+				Double2D side2EndLoc = apexLoc.add(new Double2D(100*vo.getSide2().getX(),100*vo.getSide2().getY()));
+				
+				state.environment.setObjectLocation(apex, apexLoc);
+				state.environment.setObjectLocation(side1End, side1EndLoc);
+				state.environment.setObjectLocation(side2End, side2EndLoc);
+				
+				state.voField.addNode(apex);
+				state.voField.addNode(side1End);
+				state.voField.addNode(side1End);
+				
+				state.voField.addEdge(apex, side1End, null);
+				state.voField.addEdge(apex, side2End, null);			
+				
+//				System.out.println(hrvoSimulator.getAgentVelocityObstacles(hostUASIDInHRVOSimulator).size());
+			}
+			
+		}
+		
 		
 		Vector2 vel= hrvoSimulator.getAgentVelocity(hostUASIDInHRVOSimulator);
 		Double2D velDouble2D = new Double2D(vel.x(), vel.y());
@@ -105,7 +141,6 @@ public class HRVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 
 		Vector2 loc = hrvoSimulator.getAgentPosition(hostUASIDInHRVOSimulator);
 		Double2D newLocation = new Double2D(loc.x(), loc.y());
-		
 		
 		Waypoint wp = new Waypoint(state.getNewID(), hostUAS.getDestination());
 		wp.setLocation(newLocation);

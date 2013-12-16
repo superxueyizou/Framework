@@ -54,7 +54,7 @@ public class SAAModelBuilder
 	public  void generateSimulation()
 	{		
 		
-		double x = worldXVal/3.0; ;
+		double x = worldXVal/2.0; ;
 		double y = worldYVal/2.0;		
 
 		Double2D location = new Double2D(x,y);

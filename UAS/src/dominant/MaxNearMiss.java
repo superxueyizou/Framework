@@ -80,7 +80,30 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
     		
  	   		SAAModelBuilder sBuilder = new SAAModelBuilder(simState);
     		sBuilder.generateSimulation();
-    		simState.start();		
+    		simState.start();	
+    		
+    		for(int m=0; m<simState.getUasBag().size(); m++)
+    		{
+    			UAS uas1 = (UAS)simState.getUasBag().get(m);
+    			for(int n=m+1; n<simState.getUasBag().size(); n++)
+    			{
+    				UAS uas2 = (UAS)simState.getUasBag().get(n);
+    				if(uas1.getLocation().distance(uas2.getLocation())<=10)
+    				{
+    	    			
+						 ((SimpleFitness)ind2.fitness).setFitness(   state,            
+						            0,/// ...the fitness...
+						            false);///... is the individual ideal?  Indicate here...
+	
+						 ind2.evaluated = true;
+    					return;
+    				}
+    				
+    			}
+    			
+    		}
+    		
+    		
     		do
     		{
     			if (!simState.schedule.step(simState))
@@ -118,7 +141,7 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
         
         ((SimpleFitness)ind2.fitness).setFitness(   state,            
 										            fitness,/// ...the fitness...
-										            fitness >= 1);///... is the individual ideal?  Indicate here...
+										            fitness >= 1.00);///... is the individual ideal?  Indicate here...
         
         ind2.evaluated = true;
         System.out.println("individual result: selfDestDist("+destDist+ "), selfDestAngle("+destAngle+ "), isRightSide("+headOnIsRightSide+"), offset("+ headOnOffset+"), speed("+ headOnSpeed + "); fitness[[ " + fitness +" ]]" );
