@@ -21,6 +21,10 @@ public class UAS extends CircleObstacle implements Oriented2D
 	
 	//parameters for UAS movement
 	private UASVelocity uasVelocity;
+	
+	private UASVelocity oldUASVelocity;	
+	private Double2D oldLocation;
+
 	private UASPerformance uasPerformance;//the set performance for the uas;
 	
 	//parameters for UAS's sensing capability. They are the result of the sensor subsystem.
@@ -54,6 +58,9 @@ public class UAS extends CircleObstacle implements Oriented2D
 		this.uasVelocity = uasVelocity; //new UASVelocity(new Double2D(0.0,0.0));
 		this.senseParas = senseParas;
 		this.avoidParas = avoidParas;
+		
+		this.oldUASVelocity= new UASVelocity(new Double2D(0,0));
+		this.oldLocation= location;
 		
 		nextWp=null;
 		wpQueue=new LinkedList<Waypoint>();
@@ -102,18 +109,24 @@ public class UAS extends CircleObstacle implements Oriented2D
 			}
 			
 			
-			MutableDouble2D sumForces = new MutableDouble2D(); //used to record the changes to be made to the location of the uas
-			sumForces.addIn(this.location);
-			double moveX = uasVelocity.getVelocity().x; //CALCULATION.xMovement(bearing, speed);
-			double moveY = uasVelocity.getVelocity().y; //CALCULATION.yMovement(bearing, speed);
-			sumForces.addIn(new Double2D(moveX, moveY));						        
-			state.environment.setObjectLocation(this, new Double2D(sumForces));
-			this.setLocation( new Double2D(sumForces));
-			proximityToDanger(new Double2D(sumForces), state.obstacles);
+//			MutableDouble2D sumForces = new MutableDouble2D(); //used to record the changes to be made to the location of the uas
+//			sumForces.addIn(this.location);
+//			double moveX = uasVelocity.getVelocity().x; //CALCULATION.xMovement(bearing, speed);
+//			double moveY = uasVelocity.getVelocity().y; //CALCULATION.yMovement(bearing, speed);
+//			sumForces.addIn(new Double2D(moveX, moveY));
+//			
+//			state.environment.setObjectLocation(this, new Double2D(sumForces));
+//			this.setLocation( new Double2D(sumForces));
+//			proximityToDanger(new Double2D(sumForces), state.obstacles);
 
-//			state.environment.setObjectLocation(this, nextWp.getLocation());
-//			this.setLocation( nextWp.getLocation());
-//			proximityToDanger(nextWp.getLocation(), state.obstacles);
+			this.setOldLocation(this.location);
+			this.setLocation(nextWp.getLocation());
+			state.environment.setObjectLocation(this, nextWp.getLocation());
+			proximityToDanger(this.location, state.obstacles);
+			
+//			System.out.println("old location: "+this.oldLocation + "  old Velocity: "+ this.getOldVelocity());
+//			System.out.println("new location: "+this.location+ "  new Velocity: "+ this.getVelocity());
+//			System.out.println(this.getOldVelocity() == this.getVelocity());
 			
 			if (this.location.distance(nextWp.location)<1)
 			{
@@ -222,7 +235,24 @@ public class UAS extends CircleObstacle implements Oriented2D
 	public void setVelocity(Double2D velocity) {
 		this.uasVelocity.setVelocity(velocity);
 	}
+	
+	public Double2D getOldVelocity() {
+		return oldUASVelocity.getVelocity();
+	}
 
+	public void setOldVelocity(Double2D oldVelocity) {
+		this.oldUASVelocity.setVelocity(oldVelocity);
+	}
+
+	
+	public Double2D getOldLocation() {
+		return oldLocation;
+	}
+
+	public void setOldLocation(Double2D oldLocation) {
+		this.oldLocation = oldLocation;
+	}
+	
 	public double getSafetyRadius() {
 		return safetyRadius;
 	}

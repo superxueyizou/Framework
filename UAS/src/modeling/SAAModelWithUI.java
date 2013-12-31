@@ -26,6 +26,7 @@ import sim.portrayal.simple.HexagonalPortrayal2D;
 import sim.portrayal.simple.ImagePortrayal2D;
 import sim.portrayal.simple.LabelledPortrayal2D;
 import sim.portrayal.simple.OrientedPortrayal2D;
+import sim.portrayal.simple.OvalPortrayal2D;
 import tools.CONFIGURATION;
 
 /**
@@ -183,7 +184,7 @@ public class SAAModelWithUI extends GUIState
 		
 		);
 		
-		environmentPortrayal.setPortrayalForClass(Waypoint.class, new HexagonalPortrayal2D(0.3)
+		environmentPortrayal.setPortrayalForClass(Waypoint.class, new OvalPortrayal2D(0.2)
 		{
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
 			{

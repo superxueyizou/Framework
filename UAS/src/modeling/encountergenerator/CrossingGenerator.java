@@ -13,6 +13,7 @@ import modeling.SenseParas;
 import modeling.UAS;
 import modeling.UASPerformance;
 import modeling.UASVelocity;
+import modeling.subsystems.avoidance.AVOAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
 import modeling.subsystems.avoidance.HRVOAvoidanceAlgorithm;
@@ -94,6 +95,9 @@ public class CrossingGenerator extends EncounterGenerator {
 				break;
 			case "HRVOAvoidanceAlgorithm":
 				aa= new HRVOAvoidanceAlgorithm(state, intruder);
+				break;
+			case "AVOAvoidanceAlgorithm":
+				aa= new AVOAvoidanceAlgorithm(state, intruder);
 				break;
 			case "None":
 				aa= new AvoidanceAlgorithmAdapter(state, intruder);

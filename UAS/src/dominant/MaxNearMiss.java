@@ -88,7 +88,7 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
     			for(int n=m+1; n<simState.getUasBag().size(); n++)
     			{
     				UAS uas2 = (UAS)simState.getUasBag().get(n);
-    				if(uas1.getLocation().distance(uas2.getLocation())<=10)
+    				if(uas1.getLocation().distance(uas2.getLocation())<=7)
     				{
     	    			
 						 ((SimpleFitness)ind2.fitness).setFitness(   state,            
@@ -116,16 +116,16 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
     		{
     			UAS uas = (UAS)simState.getUasBag().get(j);
     			System.out.println(uas.getDistanceToDanger()-uas.getRadius());
-    			distanceToDangerSum += uas.getDistanceToDanger()-uas.getRadius();
+//    			distanceToDangerSum += uas.getDistanceToDanger()-uas.getRadius();
     			
-//    			if(uas.getDistanceToDanger()-uas.getRadius()>0)
-//				{
-//    				distanceToDangerSum += uas.getDistanceToDanger()-uas.getRadius();
-//				}
-//    			else
-//    			{
-//    				distanceToDangerSum += 0;
-//    			}
+    			if(uas.getDistanceToDanger()-uas.getRadius()>0)
+				{
+    				distanceToDangerSum += uas.getDistanceToDanger()-uas.getRadius();
+				}
+    			else
+    			{
+    				distanceToDangerSum += 0;
+    			}
     			
     			dividend++;
     		}
@@ -141,7 +141,7 @@ public class MaxNearMiss extends Problem implements SimpleProblemForm
         
         ((SimpleFitness)ind2.fitness).setFitness(   state,            
 										            fitness,/// ...the fitness...
-										            fitness >= 1.00);///... is the individual ideal?  Indicate here...
+										            false);///... is the individual ideal?  Indicate here...
         
         ind2.evaluated = true;
         System.out.println("individual result: selfDestDist("+destDist+ "), selfDestAngle("+destAngle+ "), isRightSide("+headOnIsRightSide+"), offset("+ headOnOffset+"), speed("+ headOnSpeed + "); fitness[[ " + fitness +" ]]" );

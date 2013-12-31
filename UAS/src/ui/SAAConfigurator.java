@@ -307,7 +307,7 @@ public class SAAConfigurator extends JFrame {
 			
 			
 			JRadioButton rdbtnHRVOAvoidanceAlgorithm = new JRadioButton("HRVO");
-			rdbtnHRVOAvoidanceAlgorithm.setBounds(8, 76, 149, 23);
+			rdbtnHRVOAvoidanceAlgorithm.setBounds(8, 76, 79, 23);
 			rdbtnHRVOAvoidanceAlgorithm.setSelected(CONFIGURATION.avoidanceAlgorithmSelection == "HRVOAvoidanceAlgorithm");
 			AvoidanceAlgorithmSelectionPanel.add(rdbtnHRVOAvoidanceAlgorithm);
 			selfAvoidanceAlgorithmGroup.add(rdbtnHRVOAvoidanceAlgorithm);
@@ -316,6 +316,20 @@ public class SAAConfigurator extends JFrame {
 					if(((JRadioButton)e.getSource()).isSelected())
 					{
 						CONFIGURATION.avoidanceAlgorithmSelection = "HRVOAvoidanceAlgorithm";
+					}
+				}
+			});
+			
+			JRadioButton rdbtnAVOAvoidanceAlgorithm = new JRadioButton("AVO");
+			rdbtnAVOAvoidanceAlgorithm.setBounds(108, 76, 94, 23);
+			rdbtnAVOAvoidanceAlgorithm.setSelected(CONFIGURATION.avoidanceAlgorithmSelection == "AVOAvoidanceAlgorithm");
+			AvoidanceAlgorithmSelectionPanel.add(rdbtnAVOAvoidanceAlgorithm);
+			selfAvoidanceAlgorithmGroup.add(rdbtnAVOAvoidanceAlgorithm);
+			rdbtnAVOAvoidanceAlgorithm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(((JRadioButton)e.getSource()).isSelected())
+					{
+						CONFIGURATION.avoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";
 					}
 				}
 			});
@@ -691,7 +705,7 @@ public class SAAConfigurator extends JFrame {
 				
 				
 				JRadioButton rdbtnHRVONAvoidanceAlgorithm1 = new JRadioButton("HRVO");
-				rdbtnHRVONAvoidanceAlgorithm1.setBounds(8, 76, 149, 23);
+				rdbtnHRVONAvoidanceAlgorithm1.setBounds(8, 76, 80, 23);
 				rdbtnHRVONAvoidanceAlgorithm1.setSelected(CONFIGURATION.headOnAvoidanceAlgorithmSelection == "HRVOAvoidanceAlgorithm");
 				AvoidanceAlgorithmSelectionPanel1.add(rdbtnHRVONAvoidanceAlgorithm1);
 				headOnAvoidanceAlgorithmGroup.add(rdbtnHRVONAvoidanceAlgorithm1);
@@ -705,6 +719,21 @@ public class SAAConfigurator extends JFrame {
 					}
 				});
 				
+				
+				JRadioButton rdbtnAVONAvoidanceAlgorithm1 = new JRadioButton("AVO");
+				rdbtnAVONAvoidanceAlgorithm1.setBounds(109, 76, 80, 23);
+				rdbtnAVONAvoidanceAlgorithm1.setSelected(CONFIGURATION.headOnAvoidanceAlgorithmSelection == "AVOAvoidanceAlgorithm");
+				AvoidanceAlgorithmSelectionPanel1.add(rdbtnAVONAvoidanceAlgorithm1);
+				headOnAvoidanceAlgorithmGroup.add(rdbtnAVONAvoidanceAlgorithm1);
+				rdbtnAVONAvoidanceAlgorithm1.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						if(((JRadioButton)e.getSource()).isSelected())
+						{
+							CONFIGURATION.headOnAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";
+						}
+						
+					}
+				});
 				
 				JRadioButton rdbtnNone1 = new JRadioButton("None");
 				rdbtnNone1.setBounds(227, 49, 62, 23);
@@ -909,7 +938,7 @@ public class SAAConfigurator extends JFrame {
 			
 			
 			JRadioButton rdbtnHRVOAvoidanceAlgorithm1 = new JRadioButton("HRVO");
-			rdbtnHRVOAvoidanceAlgorithm1.setBounds(8, 76, 149, 23);
+			rdbtnHRVOAvoidanceAlgorithm1.setBounds(8, 76, 80, 23);
 			rdbtnHRVOAvoidanceAlgorithm1.setSelected(CONFIGURATION.crossingAvoidanceAlgorithmSelection == "HRVOAvoidanceAlgorithm");
 			AvoidanceAlgorithmSelectionPanel1.add(rdbtnHRVOAvoidanceAlgorithm1);
 			crossingAvoidanceAlgorithmGroup.add(rdbtnHRVOAvoidanceAlgorithm1);
@@ -918,6 +947,23 @@ public class SAAConfigurator extends JFrame {
 					if(((JRadioButton)e.getSource()).isSelected())
 					{
 						CONFIGURATION.crossingAvoidanceAlgorithmSelection = "HRVOAvoidanceAlgorithm";
+					}
+					
+				}
+			});
+			
+			
+			
+			JRadioButton rdbtnAVOAvoidanceAlgorithm1 = new JRadioButton("AVO");
+			rdbtnAVOAvoidanceAlgorithm1.setBounds(109, 76, 80, 23);
+			rdbtnAVOAvoidanceAlgorithm1.setSelected(CONFIGURATION.crossingAvoidanceAlgorithmSelection == "AVOAvoidanceAlgorithm");
+			AvoidanceAlgorithmSelectionPanel1.add(rdbtnAVOAvoidanceAlgorithm1);
+			crossingAvoidanceAlgorithmGroup.add(rdbtnAVOAvoidanceAlgorithm1);
+			rdbtnAVOAvoidanceAlgorithm1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(((JRadioButton)e.getSource()).isSelected())
+					{
+						CONFIGURATION.crossingAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";
 					}
 					
 				}
@@ -1132,15 +1178,31 @@ public class SAAConfigurator extends JFrame {
 	
 	
 	JRadioButton rdbtnHRVOAvoidanceAlgorithm1 = new JRadioButton("HRVO");
-	rdbtnHRVOAvoidanceAlgorithm1.setBounds(8, 76, 149, 23);
+	rdbtnHRVOAvoidanceAlgorithm1.setBounds(8, 76, 75, 23);
 	rdbtnHRVOAvoidanceAlgorithm1.setSelected(CONFIGURATION.tailApproachAvoidanceAlgorithmSelection == "HRVOAvoidanceAlgorithm");
 	AvoidanceAlgorithmSelectionPanel1.add(rdbtnHRVOAvoidanceAlgorithm1);
 	tailApproachAvoidanceAlgorithmGroup.add(rdbtnHRVOAvoidanceAlgorithm1);
-	rdbtnRVOAvoidanceAlgorithm1.addActionListener(new ActionListener() {
+	rdbtnHRVOAvoidanceAlgorithm1.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			if(((JRadioButton)e.getSource()).isSelected())
 			{
 				CONFIGURATION.tailApproachAvoidanceAlgorithmSelection = "HRVOAvoidanceAlgorithm";
+			}
+			
+		}
+	});
+	
+	
+	JRadioButton rdbtnAVOAvoidanceAlgorithm1 = new JRadioButton("AVO");
+	rdbtnAVOAvoidanceAlgorithm1.setBounds(109, 76, 75, 23);
+	rdbtnAVOAvoidanceAlgorithm1.setSelected(CONFIGURATION.tailApproachAvoidanceAlgorithmSelection == "AVOAvoidanceAlgorithm");
+	AvoidanceAlgorithmSelectionPanel1.add(rdbtnAVOAvoidanceAlgorithm1);
+	tailApproachAvoidanceAlgorithmGroup.add(rdbtnAVOAvoidanceAlgorithm1);
+	rdbtnAVOAvoidanceAlgorithm1.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			if(((JRadioButton)e.getSource()).isSelected())
+			{
+				CONFIGURATION.tailApproachAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";
 			}
 			
 		}

@@ -11,6 +11,7 @@ import java.util.Date;
 import modeling.encountergenerator.CrossingGenerator;
 import modeling.encountergenerator.HeadOnGenerator;
 import modeling.encountergenerator.TailApproachGenerator;
+import modeling.subsystems.avoidance.AVOAvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithm;
 import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
 import modeling.subsystems.avoidance.HRVOAvoidanceAlgorithm;
@@ -87,6 +88,9 @@ public class SAAModelBuilder
 				break;
 			case "HRVOAvoidanceAlgorithm":
 				aa= new HRVOAvoidanceAlgorithm(state, self);
+				break;
+			case "AVOAvoidanceAlgorithm":
+				aa= new AVOAvoidanceAlgorithm(state, self);
 				break;
 			case "None":
 				aa= new AvoidanceAlgorithmAdapter(state, self);

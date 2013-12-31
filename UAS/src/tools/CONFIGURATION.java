@@ -31,7 +31,7 @@ public class CONFIGURATION {
 	public static double selfSensitivityForCollisions = 0.5;
 	public static double selfSafetyRadius=1.667;
 	public static double selfAlpha=2;
-	public static String avoidanceAlgorithmSelection = "HRVOAvoidanceAlgorithm"; //"HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String avoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm"; //"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 
 	
 	
@@ -49,7 +49,7 @@ public class CONFIGURATION {
 	public static double headOnSensitivityForCollisions = 0.5;
 	public static double headOnSafetyRadius=1.667;
 	public static double headOnAlpha=2;
-	public static String headOnAvoidanceAlgorithmSelection = "HRVOAvoidanceAlgorithm";//"HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String headOnAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean crossingSelected = false;
 	public static double crossingEncounterAngle= Math.toRadians(30);
@@ -65,7 +65,7 @@ public class CONFIGURATION {
 	public static double crossingSensitivityForCollisions = 0.5;
 	public static double crossingSafetyRadius=1.667;
 	public static double crossingAlpha=2;
-	public static String crossingAvoidanceAlgorithmSelection = "HRVOAvoidanceAlgorithm";//"HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String crossingAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean tailApproachSelected = false;
 	public static double tailApproachOffset = 2;
@@ -81,7 +81,7 @@ public class CONFIGURATION {
 	public static double tailApproachSensitivityForCollisions = 0.5;
 	public static double tailApproachSafetyRadius=1.667;
 	public static double tailApproachAlpha=2;
-	public static String tailApproachAvoidanceAlgorithmSelection = "HRVOAvoidanceAlgorithm";//"HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String tailApproachAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	
 	
