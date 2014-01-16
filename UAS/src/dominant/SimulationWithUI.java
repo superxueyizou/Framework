@@ -11,7 +11,8 @@ import ui.SAAConfigurator;
  * @author xueyi
  *Simulation with UI but without the use of GA
  */
-public class SimulationWithUI {
+public class SimulationWithUI 
+{
 
 	/**
 	 * @param args

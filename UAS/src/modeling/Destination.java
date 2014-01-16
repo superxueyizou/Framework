@@ -1,5 +1,4 @@
 package modeling;
-import sim.util.*;
 
 /**
  *

@@ -12,7 +12,6 @@ import modeling.UAS;
 import modeling.Waypoint;
 import sim.engine.SimState;
 import sim.util.Double2D;
-import tools.CALCULATION;
 import tools.CONFIGURATION;
 
 /**
@@ -37,9 +36,7 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 
 	private boolean isGoalReached;
 	
-	//private Vector2 velocity;
-	
-	
+		
 	public RVOAvoidanceAlgorithm(SimState simstate, UAS uas) {
 		// TODO Auto-generated constructor stub
 		state = (SAAModel) simstate;
@@ -83,10 +80,8 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 		 * double alfaDefault,
 		 * double maxAccelDefault)
 		 * */
-		rvoSimulator.setAgentDefaults( 250, hostUAS.getViewingRange(), 10, hostUAS.getRadius(), 1.0, hostUAS.getSpeed(), hostUAS.getUasPerformance().getCurrentMaxSpeed(), 7.5, CONFIGURATION.selfAlpha, hostUAS.getUasPerformance().getCurrentMaxAccel());
-		//rvoSimulator.setAgentDefaults( 250, 15.0, 10, hostUAS.getRadius(), 1.0, 1.5, hostUAS.getPerformance().getCurrentMaxSpeed(), 7.5, hostUAS.getPerformance().getCurrentMaxAccel());
-		// Specify default parameters for agents that are subsequently added.
-
+		rvoSimulator.setAgentDefaults( 250, hostUAS.getViewingRange(), 8, hostUAS.getRadius(), 1.0, hostUAS.getSpeed(), hostUAS.getUasPerformance().getCurrentMaxSpeed(), 7.5, hostUAS.getAlpha(), hostUAS.getUasPerformance().getCurrentMaxAccel());
+		
 		for(int i=0; i<state.uasBag.size(); i++)
 		{
 			UAS uas= (UAS)state.uasBag.get(i);
@@ -112,14 +107,9 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 		
 		Vector2 vel= rvoSimulator.getAgentVelocity(hostUASIDInRVOSimulator);
 		Double2D velDouble2D = new Double2D(vel.x(), vel.y());
+		hostUAS.setOldVelocity(hostUAS.getVelocity());
 		hostUAS.setVelocity(velDouble2D);
-		
-//		double speed= velDouble2D.length();
-//		double bearing= CALCULATION.calculateAngle(new Double2D(0,0), velDouble2D);
-//		
-//		hostUAS.setSpeed(speed);
-//		hostUAS.setBearing(bearing);
-		
+
 		
 		Vector2 loc = rvoSimulator.getAgentPosition(hostUASIDInRVOSimulator);
 		Double2D newLocation = new Double2D(loc.x(), loc.y());
@@ -180,15 +170,12 @@ public class RVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 		{
 			if (RVO.absSq(targetPosInRVOSimulator.sub(rvoSimulator.getAgentPosition(hostUASIDInRVOSimulator))) < 1) 
 			{	
-				// Agent is within one radius of its goal, set preferred velocity to zero.
-//				rvoSimulator.setAgentPrefVelocity(hostUASIDInRVOSimulator, new Vector2(0.0f, 0.0f));
 				isGoalReached = true;
-//				state.numGoalReached++;
+			
 			} 
 			else 
 			{
-				// Agent is far away from its goal, set preferred velocity as unit vector towards agent's goal.
-//				rvoSimulator.setAgentPrefVelocity(hostUASIDInRVOSimulator, RVO2.normalize(targetPosInRVOSimulator.sub(rvoSimulator.getAgentPosition(hostUASIDInRVOSimulator)).mul(1.5*1.5/Math.sqrt(2)))); 
+	
 			}
 		}
 	}

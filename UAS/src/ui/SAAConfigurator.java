@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -19,7 +20,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JDialog;
 import javax.swing.JCheckBox;
-import javax.swing.JSeparator;
 import javax.swing.JButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -38,9 +38,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
 
-public class SAAConfigurator extends JFrame {
-	
-	
+public class SAAConfigurator extends JFrame {	
 
 	private JPanel contentPane;
 	private final ButtonGroup selfAvoidanceAlgorithmGroup = new ButtonGroup();
@@ -121,13 +119,13 @@ public class SAAConfigurator extends JFrame {
 			btnLoad.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) 
 				{
-					String str;
-					try 
+					String result = JOptionPane.showInputDialog(null, "copy and paste:", "Genome",JOptionPane.PLAIN_MESSAGE).trim();
+//					System.out.println(result);
+					if(!result.isEmpty())
 					{
-						str = UTILS.readLastLine(new File("out.stat"), "utf-8").trim();
-						String[] pArr= str.split(" ");
-						System.out.println(pArr[3]);
-								
+						String[] pArr= result.split("\\s+");
+//						System.out.println(pArr[1]);
+														
 						CONFIGURATION.selfDestDist= Double.parseDouble(pArr[0]);
 						CONFIGURATION.selfDestAngle=Double.parseDouble(pArr[1]);
 						
@@ -145,14 +143,9 @@ public class SAAConfigurator extends JFrame {
 			    		CONFIGURATION.tailApproachOffset= Double.parseDouble(pArr[11]);
 			    		CONFIGURATION.tailApproachIsRightSide=Double.parseDouble(pArr[12])>0? true: false;
 			    		CONFIGURATION.tailApproachSpeed =Double.parseDouble(pArr[13]);
-			    					    		
-					} 
-					catch (IOException e1) 
-					{
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+			    		
 					}
-					
+//					System.out.println(CONFIGURATION.selfDestDist);
 				}
 			});
 			btnLoad.setBounds(184, 7, 70, 25);
@@ -495,8 +488,7 @@ public class SAAConfigurator extends JFrame {
 			safetyRadiusTextField.setBounds(208, 582, 86, 20);
 			avoidanceConfigPanel.add(safetyRadiusTextField);
 			safetyRadiusTextField.setColumns(10);
-			
-						
+				
 			alphaTextField = new JTextField();
 			alphaTextField.setText(String.valueOf(CONFIGURATION.selfAlpha));
 			alphaTextField.addKeyListener(new KeyAdapter() {
@@ -504,11 +496,14 @@ public class SAAConfigurator extends JFrame {
 				public void keyReleased(KeyEvent e) {
 					JTextField alfaTextField = (JTextField) e.getSource();
 					CONFIGURATION.selfAlpha = new Double(alfaTextField.getText());
+					
 				}
 			});
 			alphaTextField.setBounds(208, 621, 86, 19);
 			avoidanceConfigPanel.add(alphaTextField);
 			alphaTextField.setColumns(10);
+			
+		
 			
 			
 		JPanel encounterConfigPanel = new JPanel();

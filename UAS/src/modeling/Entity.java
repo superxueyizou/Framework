@@ -1,6 +1,5 @@
 package modeling;
 import sim.engine.*;
-import sim.field.continuous.*;
 import sim.util.*;
 
 /**

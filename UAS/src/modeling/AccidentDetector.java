@@ -20,8 +20,8 @@ import sim.util.Double2D;
  * @author xueyi
  *
  */
-public class AccidentDetector implements Constants,Steppable {
-
+public class AccidentDetector implements Constants,Steppable
+{
 	/**
 	 * 
 	 */
@@ -32,7 +32,8 @@ public class AccidentDetector implements Constants,Steppable {
 	private int noAccidents=0;
 	
 	
-	public AccidentDetector(){
+	public AccidentDetector()
+	{
 		// TODO Auto-generated constructor stub		
 		try{
 			ps= new PrintStream(new FileOutputStream(accidentLog));
@@ -49,8 +50,8 @@ public class AccidentDetector implements Constants,Steppable {
 	 * @see state.engine.Steppable#step(state.engine.SimState)
 	 */
 	@Override
-	public void step(SimState simState) {
-		// TODO Auto-generated method stub
+	public void step(SimState simState)
+	{
 		this.state = (SAAModel)simState;
 		trackedUASBag.clear();
 		for (int i=0; i<state.uasBag.size(); i++)
@@ -74,6 +75,14 @@ public class AccidentDetector implements Constants,Steppable {
 			{
 				continue;
 			}
+			
+//			if(uas1.getDistanceToDanger()<=uas1.getRadius())
+//			{
+//				addLog(Constants.AccidentType.CLASHWITHOTHERUAS, uas1.getID(), state.schedule.getSteps(), uas1.getLocation(), "the other UAS's ID is unknown");
+//				noAccidents++;
+//				uas1.isActive=false;
+//				continue ;
+//			}
 			/************
 			 * test if there is a collision with circular obstacles (exactly, i.e. not including UAS)
 			 */
@@ -95,17 +104,7 @@ public class AccidentDetector implements Constants,Steppable {
 					continue outerLoop;
 				}
 			}
-			
-			/************
-			 * test if there is a collision with wall
-			 */
-//			if(detectCollisionWithWall(uas1))
-//			{
-//				addLog(Constants.AccidentType.CLASHWITHWALL, uas1.getID(), state.schedule.getSteps(), uas1.getLocation(), null);
-//				noAccidents++;
-//				uas1.isActive=false;
-//				trackedUASBag.remove(uas1);
-//			}
+
 			
 			/************
 			 * test if there is a collision with other alive UAS
@@ -127,7 +126,7 @@ public class AccidentDetector implements Constants,Steppable {
 					continue outerLoop;
 				}
 			}
-			
+							
 		}
 //		System.out.println("AccidentDetector is running, has found " + noAccidents + " accidents; The present trackedUASBag's size is "+trackedUASBag.size()+ " and the No. of Obstacles is "+state.obstacles.size());
 //		System.out.println("***************************************************************************************************************************************");
@@ -145,40 +144,12 @@ public class AccidentDetector implements Constants,Steppable {
 		//return false;
 		return obstacle.inCollision(uAS.getLocation(), uAS.radius);//inShape(uAS.getLocation());
 	}
-	
-	private boolean detectCollisionWithWall(UAS uAS)
-	{
-        Double2D me = uAS.getLocation();
-		
-		if(me.x <= 1 )
-		{
-			//System.out.println("clash with the left wall!");
-			return true;
-		}
-		else if(100 - me.x <= 1)
-		{
-			//System.out.println("clash with the right wall!");
-			return true;
-		}
-		
-		if (me.y <= 1)
-		{
-			//System.out.println("clash with the upper wall!");
-			return true;
-		}
-		else if(100- me.y <= 1)
-		{
-			//System.out.println("clash with the lower wall!");
-			return true;
-		}
-		
-		return false;
-	}
-	
+
 	private boolean detectCollisionWithOtherUAS(UAS uas1, UAS uas2)
 	{
 		return uas1.inCollision(uas2.getLocation(), uas2.radius);
 	}
+	
 
 	public int getNoAccidents() {
 		return noAccidents;

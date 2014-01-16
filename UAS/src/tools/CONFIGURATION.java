@@ -16,6 +16,8 @@ public class CONFIGURATION {
 	{
 		// TODO Auto-generated constructor stub
 	}
+	
+	
 	public static boolean avoidanceAlgorithmEnabler=true;
 	
 	public static double selfDestDist = 50;
@@ -30,7 +32,7 @@ public class CONFIGURATION {
 	public static double selfViewingAngle = Math.toRadians(60);
 	public static double selfSensitivityForCollisions = 0.5;
 	public static double selfSafetyRadius=1.667;
-	public static double selfAlpha=2;
+	public static double selfAlpha=0.5; //RVO[0,1.0], HRVO(1.0,2.0], ORCA(2.0,3.0]
 	public static String avoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm"; //"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 
 	
@@ -48,7 +50,7 @@ public class CONFIGURATION {
 	public static double headOnViewingAngle =  Math.toRadians(60);
 	public static double headOnSensitivityForCollisions = 0.5;
 	public static double headOnSafetyRadius=1.667;
-	public static double headOnAlpha=2;
+	public static double headOnAlpha=0.5;
 	public static String headOnAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean crossingSelected = false;
@@ -64,7 +66,7 @@ public class CONFIGURATION {
 	public static double crossingViewingAngle =  Math.toRadians(60);
 	public static double crossingSensitivityForCollisions = 0.5;
 	public static double crossingSafetyRadius=1.667;
-	public static double crossingAlpha=2;
+	public static double crossingAlpha=1.0;
 	public static String crossingAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	public static boolean tailApproachSelected = false;
@@ -80,7 +82,7 @@ public class CONFIGURATION {
 	public static double tailApproachViewingAngle =  Math.toRadians(60);
 	public static double tailApproachSensitivityForCollisions = 0.5;
 	public static double tailApproachSafetyRadius=1.667;
-	public static double tailApproachAlpha=2;
+	public static double tailApproachAlpha=1.0;
 	public static String tailApproachAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 	
 	

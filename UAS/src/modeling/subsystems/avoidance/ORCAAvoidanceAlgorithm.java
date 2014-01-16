@@ -3,14 +3,17 @@
  */
 package modeling.subsystems.avoidance;
 
-import orca.ORCAMath;
-import orca.ORCASimulator;
+
+import edu.unc.cs.gamma.orca.ORCA;
+import edu.unc.cs.gamma.orca.ORCASimulator;
+import edu.unc.cs.gamma.orca.Vector2;
 import modeling.SAAModel;
 import modeling.Destination;
 import modeling.UAS;
 import modeling.Waypoint;
 import sim.engine.SimState;
 import sim.util.Double2D;
+import tools.UTILS;
 
 /**
  * @author Xueyi
@@ -60,7 +63,7 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm
 		// Specify global time step of the simulation.
 		orcaSimulator.setTimeStep(1);
 		// Specify default parameters for agents that are subsequently added.
-		orcaSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15.0, 15.0,hostUAS.getRadius(), hostUAS.getUasPerformance().getCurrentMaxSpeed(), new Double2D()); 
+		orcaSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15.0, 15.0,hostUAS.getRadius(), hostUAS.getUasPerformance().getCurrentMaxSpeed()); 
 		//orcaSimulator.setAgentDefaults(1.0, 8, 10.0, 20.0f, 0.5, 8.0, new Double());
 
 		for(int i=0; i<state.uasBag.size(); i++)
@@ -70,7 +73,7 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm
 			{
 				hostUASIDInORCASimulator=i;
 			}
-			Double2D location= new Double2D(uas.getLocation().x,uas.getLocation().y);
+			Vector2 location= new Vector2(uas.getLocation().x,uas.getLocation().y);
 			orcaSimulator.addAgent(location);			
 		}
 		
@@ -84,14 +87,17 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm
 		orcaSimulator.doStep();
 		setPreferredVelocity(state);
 
-		Double2D velDouble2D = orcaSimulator.getAgentVelocity(hostUASIDInORCASimulator);
+		Vector2 vel = orcaSimulator.getAgentVelocity(hostUASIDInORCASimulator);
+		Double2D velDouble2D = new Double2D(vel.x(),vel.y());
+		hostUAS.setOldVelocity(hostUAS.getVelocity());
 		hostUAS.setVelocity(velDouble2D);
 
-		Double2D newLocation = orcaSimulator.getAgentPosition(hostUASIDInORCASimulator);
+		Vector2  newLocation = orcaSimulator.getAgentPosition(hostUASIDInORCASimulator);
+		Double2D newLocationDouble2D = new Double2D(newLocation.x(),newLocation.y());
 		
 		
 		Waypoint wp = new Waypoint(state.getNewID(), hostUAS.getDestination());
-		wp.setLocation(newLocation);
+		wp.setLocation(newLocationDouble2D);
 		return wp;
 	
 	}
@@ -115,8 +121,8 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm
 			{
 				if (!agent.isActive)
 				{
-					orcaSimulator.setAgentPosition(i, new Double2D(Double.MAX_VALUE, Double.MAX_VALUE));
-					orcaSimulator.setAgentVelocity(i, new Double2D(0,0));
+					orcaSimulator.setAgentPosition(i, new Vector2(Double.MAX_VALUE, Double.MAX_VALUE));
+					orcaSimulator.setAgentVelocity(i, new Vector2(0,0));
 					continue;
 				}
 				
@@ -129,8 +135,8 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm
 //				velocity= new Double2D(velX, velY);
 					
 			}
-			orcaSimulator.setAgentPosition(i, location);
-			orcaSimulator.setAgentVelocity(i, velocity);
+			orcaSimulator.setAgentPosition(i, UTILS.Double2DToVector2(location));
+			orcaSimulator.setAgentVelocity(i, UTILS.Double2DToVector2(velocity));
 			
 		}
 
@@ -140,17 +146,16 @@ public class ORCAAvoidanceAlgorithm extends AvoidanceAlgorithm
 	{
 		if (!isGoalReached) 
 		{
-			if (ORCAMath.absSq(targetPosInORCASimulator.subtract(orcaSimulator.getAgentPosition(hostUASIDInORCASimulator))) < 1) 
+			if (ORCA.absSq(UTILS.Double2DToVector2(targetPosInORCASimulator).sub(orcaSimulator.getAgentPosition(hostUASIDInORCASimulator))) < 1) 
 			{	
 				// Agent is within one radius of its goal, set preferred velocity to zero.
-				orcaSimulator.setAgentPrefVelocity(hostUASIDInORCASimulator, new Double2D(0.0, 0.0));
+				orcaSimulator.setAgentPrefVelocity(hostUASIDInORCASimulator, new Vector2(0.0, 0.0));
 				isGoalReached = true;
-//				state.numGoalReached++;
 			} 
 			else 
 			{
 				// Agent is far away from its goal, set preferred velocity as unit vector towards agent's goal.
-				orcaSimulator.setAgentPrefVelocity(hostUASIDInORCASimulator, ORCAMath.normalize(targetPosInORCASimulator.subtract(orcaSimulator.getAgentPosition(hostUASIDInORCASimulator)).multiply(1.5*1.5/Math.sqrt(2)))); 
+				orcaSimulator.setAgentPrefVelocity(hostUASIDInORCASimulator, ORCA.normalize(UTILS.Double2DToVector2(targetPosInORCASimulator).sub(orcaSimulator.getAgentPosition(hostUASIDInORCASimulator)).mul(1.5*1.5/Math.sqrt(2)))); 
 			}
 		}
 	}

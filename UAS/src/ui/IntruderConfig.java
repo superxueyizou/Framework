@@ -15,8 +15,6 @@ import tools.CONFIGURATION;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class IntruderConfig extends JDialog 
 {
@@ -175,7 +173,7 @@ public class IntruderConfig extends JDialog
 					CONFIGURATION.headOnSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
 					CONFIGURATION.headOnSafetyRadius= new Double(safetyRadiusTextField.getText()); 
 					CONFIGURATION.headOnAlpha= new Double(alphaTextField.getText()); 					
-					System.out.println(viewingRangeTextField.getText()+"777777777777777777777");
+					//System.out.println(viewingRangeTextField.getText()+"777777777777777777777");
 					
 				}
 				else if(getRootPane().getParent().getName() == "CrossingEncounter--IntruderConfig")
@@ -190,7 +188,7 @@ public class IntruderConfig extends JDialog
 					CONFIGURATION.crossingSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
 					CONFIGURATION.crossingSafetyRadius= new Double(safetyRadiusTextField.getText());
 					CONFIGURATION.crossingAlpha= new Double(alphaTextField.getText()); 
-					System.out.println("88888888888888888");
+					//System.out.println("88888888888888888");
 				}
 				else if(getRootPane().getParent().getName() == "TailApproachEncounter--IntruderConfig")
 				{
@@ -204,7 +202,7 @@ public class IntruderConfig extends JDialog
 					CONFIGURATION.tailApproachSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
 					CONFIGURATION.tailApproachSafetyRadius= new Double(safetyRadiusTextField.getText());
 					CONFIGURATION.tailApproachAlpha= new Double(alphaTextField.getText());
-					System.out.println("99999999999999999999999");
+					//System.out.println("99999999999999999999999");
 				}
 				else
 				{

@@ -1,5 +1,6 @@
 package modeling;
 
+import ec.util.MersenneTwisterFast;
 import sim.util.*;
 import sim.field.continuous.*;
 import sim.engine.*;
@@ -16,22 +17,9 @@ public class SAAModel extends SimState
 	public boolean runningWithUI = false; 
 	
     private int newID = 0;	
-    
-//	private double xDouble;
-//	private double yDouble;	
-	
+
     public Continuous2D environment;
     public Network voField;
-    
-//	public IntGrid2D obstacleMap;
-//	private int obstacleMapResolution = 3; //multiplier used to change resolution of obstacles image
-//
-//	public IntGrid2D terrainMap;
-//	private int terrainMapResolution = 3;
-//	
-//	public IntGrid2D wallMap;
-//	private int wallMapResolution =3;
-	
 	
 	
 	public AccidentDetector aDetector= new AccidentDetector();
@@ -49,13 +37,7 @@ public class SAAModel extends SimState
 		super(seed);
 		environment = new Continuous2D(1.0, x, y);
 		voField = new Network(false);
-		
-//		xDouble = x;
-//		yDouble = y;
-//		obstacleMap = new IntGrid2D((int) (xDouble * obstacleMapResolution), (int) (yDouble * obstacleMapResolution), 0);
-//		terrainMap = new IntGrid2D((int) (xDouble * terrainMapResolution), (int) (yDouble * terrainMapResolution), 0);
-//		wallMap = new IntGrid2D((int) (xDouble * wallMapResolution), (int) (yDouble * wallMapResolution), 0);
-		
+
 		runningWithUI = UI;
 		System.out.println("COModel(long seed, double x, double y, boolean UI) is being called!!!!!!!!!!!! the simstate is :" + this.toString());
 
@@ -70,12 +52,6 @@ public class SAAModel extends SimState
 		voField.clear();
 		loadEntities();
 		scheduleEntities();	
-		
-		
-//		buildObstacleMap(); //build the map of integers for obstacle representation
-//		buildTerrainMap();
-//		buildWallMap();
-		
 	}
 		
 	
@@ -97,9 +73,8 @@ public class SAAModel extends SimState
 		allEntities.clear();
 		environment.clear(); //clear the environment
 		voField.clear();
-		
-		
-//		terrainMap.setTo(0); //normal
+		//random = new MersenneTwisterFast(785945568);
+
 	}
 	
 	
@@ -202,130 +177,5 @@ public class SAAModel extends SimState
 	public void setUasBag(Bag uasBag) {
 		this.uasBag = uasBag;
 	}
-
-/********************************************************************************************************************/
-//	/**
-//	 * A method which creates a discrete map of where obstacles are in the environment
-//	 * which can be used for outputting a visual representation of the obstacles
-//	 * when the simulation is ran with a UI
-//	 */
-//	private void buildObstacleMap()
-//	{
-//		//[TODO] This will need to be called more than once if the simulations can have moving obstacles
-//		Bag all = environment.allObjects;
-//		Bag obstacles = new Bag();
-//		
-//		Double2D coordinate;
-//		int xInt = (int) (xDouble * obstacleMapResolution);
-//		int yInt = (int) (yDouble * obstacleMapResolution);
-//		obstacleMap = new IntGrid2D(xInt, yInt, 0);
-//		
-//		for (int i = 0; i < all.size(); i++)
-//		{
-//			if (((Entity) (all.get(i))).getType() == Constants.EntityType.TCIROBSTACLE)
-//			{
-//				obstacles.add(all.get(i));
-//			}
-//			
-//		}
-//		
-//		for (int i = 0; i < xInt; i++) 
-//		{
-//			for (int j = 0; j < yInt; j++)
-//			{
-//				coordinate = new Double2D(((double) i) / obstacleMapResolution, ((double) j) / obstacleMapResolution);
-//				//loop over all coordinates and check if there is an obstacle there
-//				if (obstacleAtPoint(coordinate, obstacles))
-//				{
-//					//System.out.println("setting the point at x:" + Integer.toString(i) + " y:" + Integer.toString(j) + " to 1");
-//					obstacleMap.field[i][j] = 1;
-//				}				
-//			}
-//		}
-//	}
-//	
-//	
-//	/**
-//	 * A method which draws two circles onto the terrain map for different terrain types.
-//	 */
-//	public void buildWallMap()
-//	{
-//		int xInt = (int) (xDouble * terrainMapResolution);
-//		int yInt = (int) (yDouble * terrainMapResolution);
-//		
-//		for (int i = 0; i < xInt; i++) 
-//		{
-//			
-//			wallMap.field[0][i]=1;
-//			wallMap.field[yInt-1][i]=1;			
-//		}
-//		
-//		for (int j = 0; j < yInt; j++) 
-//		{
-//			
-//			wallMap.field[j][0]=1;
-//			wallMap.field[j][xInt-1]=1;			
-//		}
-//		
-//	}
-//	
-//	
-//	public void buildTerrainMap()
-//	{
-//
-//		int xInt = (int) (xDouble * wallMapResolution);
-//		int yInt = (int) (yDouble * wallMapResolution);
-//		
-//		for (int i = 0; i < xInt; i++) {
-//			for (int j = 0; j < yInt; j++)
-//			{
-//				if ((((i - (50 * terrainMapResolution)) * (i - (50 * terrainMapResolution))) + ((j - (50 * terrainMapResolution)) * (j - (50 * terrainMapResolution)))) < ((20 * terrainMapResolution) * (20 * terrainMapResolution)))
-//				{
-//					terrainMap.field[i][j] = 2; //gravel
-//				} else if ((((i - (50 * terrainMapResolution)) * (i - (50 * terrainMapResolution))) + ((j - (50 * terrainMapResolution)) * (j - (50 * terrainMapResolution)))) < ((40 * terrainMapResolution) * (40 * terrainMapResolution))){
-//					terrainMap.field[i][j] = 1; //ice
-//				} else {
-//					terrainMap.field[i][j] = 0; //normal
-//				}
-//			}
-//		}
-//		
-//	}
-
-//	/**
-//	 * A method which checks the terrain at a given location
-//	 * 
-//	 * @param coord coordinate to check the terrain at
-//	 * @return 
-//	 */
-//	public Constants.TerrainType terrainTypeAtPoint(Double2D coord)
-//	{
-//		int x = (int)coord.x * terrainMapResolution;
-//		int y = (int)coord.y * terrainMapResolution;
-//		Constants.TerrainType tTerrain =Constants.TerrainType.NORMAL;
-//		try
-//		{
-//			int mapNo =	terrainMap.get(x, y);
-//			switch(mapNo)
-//			{case 0:
-//				tTerrain = Constants.TerrainType.NORMAL;
-//				break;
-//			case 1:
-//				tTerrain = Constants.TerrainType.ICE;
-//				break;
-//			case 2:
-//				tTerrain = Constants.TerrainType.GRAVEL;
-//				break;
-//			default:
-//					tTerrain = Constants.TerrainType.NORMAL;
-//			
-//			}
-//		}
-//		catch(ArrayIndexOutOfBoundsException e)
-//		{
-//			System.out.println("too fast to detect the clash with wall accident, go on!");
-//		}
-//		return tTerrain;
-//	}
 
 }

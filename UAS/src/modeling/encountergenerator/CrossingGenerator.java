@@ -4,7 +4,6 @@
 package modeling.encountergenerator;
 
 import sim.util.Double2D;
-import tools.CALCULATION;
 import tools.CONFIGURATION;
 import modeling.AvoidParas;
 import modeling.SAAModel;

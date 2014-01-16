@@ -1,12 +1,4 @@
 package modeling;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.io.FileOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import modeling.encountergenerator.CrossingGenerator;
 import modeling.encountergenerator.HeadOnGenerator;
@@ -21,7 +13,6 @@ import modeling.subsystems.sensor.Sensor;
 import modeling.subsystems.sensor.SimpleSensor;
 
 import sim.util.*;
-import tools.CALCULATION;
 import tools.CONFIGURATION;
 /**
  *
@@ -35,16 +26,9 @@ public class SAAModelBuilder
 	
 	public  SAAModel state;
 	
-	public static double worldXVal = 150;
-	public static double worldYVal = 105;
-	
-		
-//	public COModelBuilder()
-//	{
-//		System.out.println("COModelBuilder() is being called!!!!!!!!!! the simstate is：" + state.toString());
-//		setUpSim((Calendar.SECOND * 1000)+ Calendar.MILLISECOND);	
-//	}
-	
+	public static double worldXVal = 150; //150,000m
+	public static double worldYVal = 105; //105,000m
+
 	
 	public SAAModelBuilder(SAAModel simState)
 	{

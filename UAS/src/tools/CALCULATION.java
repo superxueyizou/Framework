@@ -35,58 +35,8 @@ public class CALCULATION {
 	public static double calculateAngle(Double2D point1, Double2D point2)
 	{
 		Double2D vector = point2.subtract(point1);
-		return vector.angle();
-		
-		
-//		double absX=Math.abs(vector.x);
-//		double absY=Math.abs(vector.y);
-//		double angle;
-//		
-//		if(absX != 0)
-//		{
-//			angle = Math.toDegrees(Math.atan(absY/absX));
-//			
-//			if(vector.x >0)
-//			{
-//				if (vector.y >0) 
-//				{	
-//					angle =  - angle;
-//					
-//				} 
-//				
-//				
-//			}
-//			else
-//			{
-//				if (vector.y <0) 
-//				{	
-//					angle = 180 - angle;
-//					
-//				}
-//				else
-//				{
-//					angle = angle - 180;
-//				}
-//			}
-//			
-//			
-//		
-//		} 
-//		else 
-//		{
-//			//the UAS is either in line with the destination horizontally or vertically
-//			if (vector.y >0)
-//			{
-//			    angle = -90;			    
-//			}
-//			else
-//			{
-//				angle = 90;
-//			}
-//		}
-//		
-//		return angle;
-}
+		return vector.angle();	
+	}
 
 
 /****************************************************************************************************************************************/

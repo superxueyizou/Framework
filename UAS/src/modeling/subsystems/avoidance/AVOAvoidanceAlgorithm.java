@@ -12,6 +12,7 @@ import modeling.VelocityObstaclePoint;
 import modeling.Waypoint;
 import sim.engine.SimState;
 import sim.util.Double2D;
+import sim.util.distribution.Normal;
 
 /**
  * @author Xueyi
@@ -57,11 +58,11 @@ public class AVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 	public void initORCASimulator()
 	{
 		// Create a new simulator instance.
-		avoSimulator = new AVOSimulator();
+		avoSimulator = new AVOSimulator(state);
 		// Specify global time step of the simulation.
 		avoSimulator.setTimeStep(1);
 		// Specify default parameters for agents that are subsequently added.
-		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15.0, 15.0, hostUAS.getRadius(),1.0,hostUAS.getSpeed(), hostUAS.getUasPerformance().getCurrentMaxSpeed(),hostUAS.getAlpha(),  hostUAS.getUasPerformance().getCurrentMaxSpeed(), new Double2D()); 
+		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15, 15, hostUAS.getRadius(),1.0,hostUAS.getSpeed(), hostUAS.getUasPerformance().getCurrentMaxSpeed(),hostUAS.getAlpha(),  hostUAS.getUasPerformance().getMaxAcceleration(), new Double2D()); 
 		//orcaSimulator.setAgentDefaults(1.0, 8, 10.0, 20.0f, 0.5, 8.0, new Double());
 
 		for(int i=0; i<state.uasBag.size(); i++)
@@ -114,6 +115,7 @@ public class AVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 		}
 		
 		Double2D velDouble2D = avoSimulator.getAgentVelocity(hostUASIDInAVOSimulator);
+		hostUAS.setOldVelocity(hostUAS.getVelocity());
 		hostUAS.setVelocity(velDouble2D);
 
 		Double2D newLocation = avoSimulator.getAgentPosition(hostUASIDInAVOSimulator);
@@ -134,10 +136,13 @@ public class AVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 			
 			Double2D location;
 			Double2D velocity;
+			double   radius;
+			
 			if(agent==hostUAS)
 			{
 				location = agent.getLocation();
 				velocity= agent.getVelocity();
+				radius = agent.getRadius();
 				
 			}
 			else
@@ -146,20 +151,22 @@ public class AVOAvoidanceAlgorithm extends AvoidanceAlgorithm
 				{
 					avoSimulator.setAgentPosition(i, new Double2D(Double.MAX_VALUE, Double.MAX_VALUE));
 					avoSimulator.setAgentVelocity(i, new Double2D(0,0));
+					avoSimulator.setAgentRadius(i, 0);
 					continue;
 				}
 				
 				location = new Double2D(agent.getLocation().x,agent.getLocation().y);
 				velocity= new Double2D(agent.getVelocity().x, agent.getVelocity().y);
+				radius = agent.getRadius();
 				
-//				location = new Vector2(agent.getLocation().x+state.random.nextGaussian(),agent.getLocation().y+state.random.nextGaussian());
-//				double velX = agent.getSpeed()*Math.cos(Math.toRadians(agent.getBearing()))+state.random.nextGaussian();
-//				double velY = agent.getSpeed()*Math.sin(Math.toRadians(agent.getBearing()))+state.random.nextGaussian();
-//				velocity= new Double2D(velX, velY);
-					
+//				Normal normal = new Normal(0,0.02,state.random);
+//				location = new Double2D(agent.getLocation().x*(1+normal.nextDouble()), agent.getLocation().y*(1+normal.nextDouble()));
+//				velocity = new Double2D(agent.getVelocity().x*(1+normal.nextDouble()), agent.getVelocity().y*(1+normal.nextDouble()));
+//				radius = agent.getRadius()*(1+normal.nextDouble());
 			}
 			avoSimulator.setAgentPosition(i, location);
 			avoSimulator.setAgentVelocity(i, velocity);
+			avoSimulator.setAgentRadius(i, radius);
 			
 		}
 

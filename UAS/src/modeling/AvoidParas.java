@@ -4,7 +4,6 @@ public class AvoidParas
 {
 	private double alpha=0.5;
 
-
 	
 	public AvoidParas(double alpha)
 	{

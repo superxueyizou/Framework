@@ -122,6 +122,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 			this.setOldLocation(this.location);
 			this.setLocation(nextWp.getLocation());
 			state.environment.setObjectLocation(this, nextWp.getLocation());
+			
 			proximityToDanger(this.location, state.obstacles);
 			
 //			System.out.println("old location: "+this.oldLocation + "  old Velocity: "+ this.getOldVelocity());
@@ -429,7 +430,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 	
 
 	/**
-	 * A method which measures how far away the closest obstacle to the UAS is
+	 * A method which measures how far away the closest obstacle to the UAS is (does not subtract UAV's radius)
 	 * 
 	 * @param obstacles 
 	 */
@@ -474,30 +475,6 @@ public class UAS extends CircleObstacle implements Oriented2D
 			return false;
 		}
 	}
-	
-//	/**
-//	 * Returns the distance from the provided coordinate to the closest part of
-//	 * the obstacle to that point.
-//	 * 
-//	 * @param coord
-//	 * @return 
-//	 */
-//	@Override
-//	public double obstacleToPoint(Double2D coord)
-//	{
-//		//as the shape of this obstacle is a circle the closest point is the edge
-//		//of the circle to the point.
-//		double val = this.location.distance(coord);
-//		
-//		if (val < 0)
-//		{
-//			return 0;
-//		} 
-//		else 
-//		{
-//			return val;
-//		}
-//	}
 	
 	
 	/*************

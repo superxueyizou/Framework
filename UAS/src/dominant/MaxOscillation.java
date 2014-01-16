@@ -56,7 +56,7 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 		
 		
        	long time = System.nanoTime();
-		SAAModel simState= new SAAModel(time, 150, 100, false); 	
+		SAAModel simState= new SAAModel(785945568, 150, 100, false); 	
 		
 		CONFIGURATION.selfDestDist = destDist;
 		CONFIGURATION.selfDestAngle = destAngle;
@@ -78,7 +78,7 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 		
    		SAAModelBuilder sBuilder = new SAAModelBuilder(simState);
 		sBuilder.generateSimulation();
-		simState.start();	
+		
 		
 		for(int m=0; m<simState.getUasBag().size(); m++)
 		{
@@ -89,7 +89,7 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 				if(uas1.getLocation().distance(uas2.getLocation())<=7)
 				{
 	    			
-					 ((SimpleFitness)ind2.fitness).setFitness(   state,            
+					 ((SimpleFitness)ind2.fitness).setFitness(  state,            
 					            0,/// ...the fitness...
 					            false);///... is the individual ideal?  Indicate here...
 
@@ -101,6 +101,8 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 			
 		}
 		
+		simState.start();	
+		
 		double totalArea =0;
 		do
 		{
@@ -111,8 +113,7 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
     			Double2D oldVelocity = uas.getOldVelocity();
     			Double2D newVelocity = uas.getVelocity();
     			double area =Math.abs(0.5*oldVelocity.negate().perpDot(newVelocity));
-    			totalArea += area;
-    			
+    			totalArea += area;    			
     		}
 			
 			if (!simResult)
@@ -123,6 +124,7 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 		
 		System.out.println("total area: "+ totalArea +"total steps: "+simState.schedule.getSteps());
     
+		System.out.println("total accidents: "+simState.aDetector.getNoAccidents());
         
 		float rawFitness= (float)totalArea/simState.schedule.getSteps();  
 		float fitness = rawFitness;
@@ -138,6 +140,22 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
         ind2.evaluated = true;
         System.out.println("individual result: selfDestDist("+destDist+ "), selfDestAngle("+destAngle+ "), isRightSide("+headOnIsRightSide+"), offset("+ headOnOffset+"), speed("+ headOnSpeed + "); fitness[[ " + fitness +" ]]" );
         System.out.println();
+        
+        
+        //if(fitness >0.9)
+        {
+        	StringBuilder dataItem = new StringBuilder();
+        	dataItem.append(state.generation+",");
+        	for (int i=0; i< ind2.genome.length; i++)
+        	{
+        		dataItem.append(ind2.genome[i]+",");
+        		
+        	}
+        	dataItem.append(fitness+",");
+        	dataItem.append(simState.aDetector.getNoAccidents());
+        	Simulation.simDataSet.add(dataItem.toString());
+        	
+        }
 
 	}
 

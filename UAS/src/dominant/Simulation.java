@@ -5,6 +5,9 @@ package dominant;
 
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
 import tools.CONFIGURATION;
@@ -17,8 +20,9 @@ import ec.util.*;
  * simulation with GA as harness
  *
  */
-public class Simulation {
-
+public class Simulation
+{
+	protected static List<String> simDataSet = new ArrayList<>(200);
 	/**
 	 * @param args
 	 */
@@ -30,20 +34,38 @@ public class Simulation {
 		eState.startFresh();
 		int result=EvolutionState.R_NOTDONE;
 		int i=1;
+		
+		String title = "generation,selfDestDist,selfDestAngle,"+
+				   "headOnSelected,headOnOffset,headOnIsRightSide,headOnSpeed,"+
+                "crossingSelected,crossingEncounterAngle,crossingIsRightSide,crossingSpeed,"+
+				   "tailApproachSelected,tailApproachOffset,tailApproachIsRightSide,tailApproachSpeed,"+
+                "fitness," +"accident"+"\n";
+		boolean isAppending = false;
+		String label = database.getLabel();
+		String fileName= (String) label.subSequence(label.lastIndexOf("/")+1, label.lastIndexOf("."));
+		
+		
 		while(result == EvolutionState.R_NOTDONE)
 		{
 			result=eState.evolve();
 			System.out.println("simulation of generation "+i +" finished :)&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-			System.out.println();
+			System.out.println();			
+			
+			if(simDataSet.size()>=200)
+			{  				
+				UTILS.writeDataSet2CSV(fileName + "Dataset.csv", title, simDataSet,isAppending);
+				isAppending =true;
+				simDataSet.clear();
+			}
 			i++;
 		}		
-		eState.finish(result);
+		eState.finish(result);		
 		
 		int confirmationResult = JOptionPane.showConfirmDialog(null, "Evolution search has finished Do you like recurrence with GUI?", "Recurrent With GUI",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
 		
 		if (confirmationResult == JOptionPane.YES_OPTION )
 		{
-			String str = UTILS.readLastLine(new File("out.stat"), "utf-8").trim();
+			String str = UTILS.readLastLine(new File(fileName+"Statics.stat"), "utf-8").trim();
 			String[] pArr= str.split(" ");
 			//System.out.println(pArr[3]);
 					
@@ -67,13 +89,20 @@ public class Simulation {
 			
 			System.out.println("\nRecurrenceWithGUI");
 			SimulationWithUI.main(null);
-		}		
+		}	
+		else
+		{
+			DataMiner dm = new DataMiner();
+			dm.execute(fileName);
+			
+		}
 				
 		Evolve.cleanup(eState);	
+		
+		
+		
 	}
 	
 
-
-	
 
 }
