@@ -1,14 +1,12 @@
 package modeling;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-
+import modeling.env.Destination;
+import modeling.env.VelocityObstaclePoint;
+import modeling.env.Waypoint;
+import modeling.uas.UAS;
 import sim.display.Controller;
 import sim.display.Display2D;
 import sim.display.GUIState;
@@ -17,17 +15,13 @@ import sim.portrayal.DrawInfo2D;
 import sim.portrayal.Inspector;
 import sim.portrayal.SimplePortrayal2D;
 import sim.portrayal.continuous.ContinuousPortrayal2D;
-import sim.portrayal.grid.FastValueGridPortrayal2D;
 import sim.portrayal.network.NetworkPortrayal2D;
 import sim.portrayal.network.SimpleEdgePortrayal2D;
 import sim.portrayal.network.SpatialNetwork2D;
 import sim.portrayal.simple.CircledPortrayal2D;
 import sim.portrayal.simple.HexagonalPortrayal2D;
-import sim.portrayal.simple.ImagePortrayal2D;
 import sim.portrayal.simple.LabelledPortrayal2D;
-import sim.portrayal.simple.OrientedPortrayal2D;
 import sim.portrayal.simple.OvalPortrayal2D;
-import tools.CONFIGURATION;
 
 /**
  * A class for running a simulation with a UI, run to see a simulation with a UI
@@ -40,8 +34,7 @@ public class SAAModelWithUI extends GUIState
 	protected SAAModelBuilder sBuilder; 
 	
 	public Display2D display;
-	public JFrame displayFrame;
-	
+	public JFrame displayFrame;	
 	private double displayX = SAAModelBuilder.worldXVal;
 	private double displayY = SAAModelBuilder.worldYVal;
 	
@@ -53,31 +46,20 @@ public class SAAModelWithUI extends GUIState
    
     public SAAModelWithUI() 
     {   
-        super(new SAAModel(785945568, SAAModelBuilder.worldXVal, SAAModelBuilder.worldYVal, true)); 	
-    	
+        super(new SAAModel(785945568, SAAModelBuilder.worldXVal, SAAModelBuilder.worldYVal, true)); 	    	
     	System.out.println("COModelWithUI() is being called!"+ "it's state(model)is: "+ state.toString());
     	sBuilder = new SAAModelBuilder((SAAModel) state);
     }
   
     
-    public static String getName() { return "UAS-SAA-Sim"; } 
-    
-    public void setDisplayBound(double x, double y)
-    {
-    	this.displayX = x;
-    	this.displayY = y;
-    }
-  
-    
-	public void start()
+    public void start()
 	{
-		System.out.println("COModelWithUI.start is called  "+ sBuilder.state);
-		sBuilder.state.reset();
+		System.out.println("COModelWithUI.start is called  "+ state);
+		((SAAModel)state).reset();
 		sBuilder.generateSimulation();
 		
 		super.start();
-		setupPortrayals();
-		
+		setupPortrayals();	
 		
 	}
 
@@ -90,8 +72,7 @@ public class SAAModelWithUI extends GUIState
 	 */
 	public void load(SimState state)
 	{
-		sBuilder.state.reset();
-		//sBuilder.testSim();
+		((SAAModel)state).reset();
 		sBuilder.generateSimulation();
 		super.load(state);
 		setupPortrayals();
@@ -192,6 +173,7 @@ public class SAAModelWithUI extends GUIState
 			}
 		});
 		
+		
 		voPortrayal.setField( new SpatialNetwork2D(simulation.environment, simulation.voField));
 		voPortrayal.setPortrayalForAll(new SimpleEdgePortrayal2D());
 		
@@ -225,9 +207,7 @@ public class SAAModelWithUI extends GUIState
         System.out.println("COModelWithUI.init is called!");
     }
     
-    
-    
-
+  
     public void quit()
     {
         super.quit();
@@ -239,7 +219,17 @@ public class SAAModelWithUI extends GUIState
     
     
     
-    public Object getSimulationInspectedObject(){return state;}
+    public static String getName() { return "UAS-SAA-Sim"; }
+
+
+	public void setDisplayBound(double x, double y)
+	{
+		this.displayX = x;
+		this.displayY = y;
+	}
+
+
+	public Object getSimulationInspectedObject(){return state;}
     
     public Inspector getInspector()
     {

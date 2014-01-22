@@ -7,7 +7,7 @@ import sim.util.Double2D;
 import tools.CONFIGURATION;
 import modeling.SAAModel;
 import modeling.SAAModelBuilder;
-import modeling.UAS;
+import modeling.uas.UAS;
 import ec.EvolutionState;
 import ec.Individual;
 import ec.Problem;
@@ -80,12 +80,12 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 		sBuilder.generateSimulation();
 		
 		
-		for(int m=0; m<simState.getUasBag().size(); m++)
+		for(int m=0; m<simState.uasBag.size(); m++)
 		{
-			UAS uas1 = (UAS)simState.getUasBag().get(m);
-			for(int n=m+1; n<simState.getUasBag().size(); n++)
+			UAS uas1 = (UAS)simState.uasBag.get(m);
+			for(int n=m+1; n<simState.uasBag.size(); n++)
 			{
-				UAS uas2 = (UAS)simState.getUasBag().get(n);
+				UAS uas2 = (UAS)simState.uasBag.get(n);
 				if(uas1.getLocation().distance(uas2.getLocation())<=7)
 				{
 	    			
@@ -107,9 +107,9 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 		do
 		{
 			boolean simResult = simState.schedule.step(simState);
-			for(int j=0; j<simState.getUasBag().size(); j++)
+			for(int j=0; j<simState.uasBag.size(); j++)
     		{
-    			UAS uas = (UAS)simState.getUasBag().get(j);
+    			UAS uas = (UAS)simState.uasBag.get(j);
     			Double2D oldVelocity = uas.getOldVelocity();
     			Double2D newVelocity = uas.getVelocity();
     			double area =Math.abs(0.5*oldVelocity.negate().perpDot(newVelocity));
@@ -156,6 +156,8 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
         	Simulation.simDataSet.add(dataItem.toString());
         	
         }
+        
+        MyStatistics.accidents[state.generation]+= simState.aDetector.getNoAccidents();
 
 	}
 

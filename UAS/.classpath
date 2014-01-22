@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/hrvo.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/AVOJAVA"/>
 	<classpathentry kind="lib" path="lib/weka.jar"/>
+	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

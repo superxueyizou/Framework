@@ -5,27 +5,29 @@ package modeling.encountergenerator;
 
 import sim.util.Double2D;
 import tools.CONFIGURATION;
-import modeling.AvoidParas;
 import modeling.SAAModel;
-import modeling.Destination;
-import modeling.SenseParas;
-import modeling.UAS;
-import modeling.UASPerformance;
-import modeling.UASVelocity;
-import modeling.subsystems.avoidance.AVOAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.AvoidanceAlgorithm;
-import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
-import modeling.subsystems.avoidance.HRVOAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.ORCAAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.RVOAvoidanceAlgorithm;
-import modeling.subsystems.sensor.Sensor;
-import modeling.subsystems.sensor.SimpleSensor;
+import modeling.env.Destination;
+import modeling.saa.collsionavoidance.AVO;
+import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithm;
+import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithmAdapter;
+import modeling.saa.selfseparation.SVO;
+import modeling.saa.selfseparation.SelfSeparationAlgorithm;
+import modeling.saa.selfseparation.SelfSeparationAlgorithmAdapter;
+import modeling.saa.sense.Sensor;
+import modeling.saa.sense.SimpleSensor;
+import modeling.uas.AvoidParas;
+import modeling.uas.SenseParas;
+import modeling.uas.UAS;
+import modeling.uas.UASPerformance;
+import modeling.uas.UASVelocity;
+
 
 /**
  * @author Xueyi
  *
  */
-public class CrossingGenerator extends EncounterGenerator {
+public class CrossingGenerator extends EncounterGenerator 
+{
 
 	/**
 	 * 
@@ -74,9 +76,31 @@ public class CrossingGenerator extends EncounterGenerator {
 		
 		UAS intruder = new UAS(state.getNewID(),CONFIGURATION.crossingSafetyRadius,intruderLocation, intruderDestination, intruderVelocity,intruderPerformance, intruderSenseParas,intruderAvoidParas);
 		
-		AvoidanceAlgorithm aa;
-		switch(CONFIGURATION.crossingAvoidanceAlgorithmSelection)
+		Sensor sensor = new SimpleSensor();
+
+		SelfSeparationAlgorithm ssa; 
+		switch (CONFIGURATION.crossingSelfSeparationAlgorithmSelection)
 		{
+			case "SVOAvoidanceAlgorithm":
+				ssa= new SVO(state, intruder);
+				break;
+			case "None":
+				ssa= new SelfSeparationAlgorithmAdapter(state, intruder);
+				break;
+			default:
+				ssa= new SelfSeparationAlgorithmAdapter(state, intruder);
+		
+		}
+		
+		CollisionAvoidanceAlgorithm caa;
+		switch(CONFIGURATION.crossingCollisionAvoidanceAlgorithmSelection)
+		{
+			case "AVOAvoidanceAlgorithm":
+				caa= new AVO(state, intruder);
+				break;
+			case "None":
+				caa= new CollisionAvoidanceAlgorithmAdapter(state, intruder);
+				break;
 //			case "TurnRightAvoidanceAlgorithm":
 //				aa= new TurnRightAvoidanceAlgorithm(state, intruder);
 //				break;
@@ -86,26 +110,21 @@ public class CrossingGenerator extends EncounterGenerator {
 //			case "RIPNAvoidanceAlgorithm":
 //				aa= new RIPNAvoidanceAlgorithm(state, intruder);
 //				break;
-			case "ORCAAvoidanceAlgorithm":
-				aa= new ORCAAvoidanceAlgorithm(state, intruder);
-				break;
-			case "RVOAvoidanceAlgorithm":
-				aa= new RVOAvoidanceAlgorithm(state, intruder);
-				break;
-			case "HRVOAvoidanceAlgorithm":
-				aa= new HRVOAvoidanceAlgorithm(state, intruder);
-				break;
-			case "AVOAvoidanceAlgorithm":
-				aa= new AVOAvoidanceAlgorithm(state, intruder);
-				break;
-			case "None":
-				aa= new AvoidanceAlgorithmAdapter(state, intruder);
-				break;
+//			case "ORCAAvoidanceAlgorithm":
+//				aa= new ORCAAvoidanceAlgorithm(state, intruder);
+//				break;
+//			case "RVOAvoidanceAlgorithm":
+//				aa= new RVOAvoidanceAlgorithm(state, intruder);
+//				break;
+//			case "HRVOAvoidanceAlgorithm":
+//				aa= new HRVOAvoidanceAlgorithm(state, intruder);
+//				break;
+			
 			default:
-				aa= new AvoidanceAlgorithmAdapter(state, intruder);
+				caa= new CollisionAvoidanceAlgorithmAdapter(state, intruder);
 		}
-		Sensor sensor = new SimpleSensor();
-		intruder.init(sensor, aa);
+
+		intruder.init(sensor, ssa,caa);
 		
 		
 		state.uasBag.add(intruder);

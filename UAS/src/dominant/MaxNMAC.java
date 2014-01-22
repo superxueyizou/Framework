@@ -7,7 +7,7 @@ import tools.CONFIGURATION;
 import tools.UTILS;
 import modeling.SAAModel;
 import modeling.SAAModelBuilder;
-import modeling.UAS;
+import modeling.uas.UAS;
 import ec.EvolutionState;
 import ec.Individual;
 import ec.Problem;
@@ -82,12 +82,12 @@ public class MaxNMAC extends Problem implements SimpleProblemForm
  	   		SAAModelBuilder sBuilder = new SAAModelBuilder(simState);
     		sBuilder.generateSimulation();
     		   		
-    		for(int m=0; m<simState.getUasBag().size(); m++)
+    		for(int m=0; m<simState.uasBag.size(); m++)
     		{
-    			UAS uas1 = (UAS)simState.getUasBag().get(m);
-    			for(int n=m+1; n<simState.getUasBag().size(); n++)
+    			UAS uas1 = (UAS)simState.uasBag.get(m);
+    			for(int n=m+1; n<simState.uasBag.size(); n++)
     			{
-    				UAS uas2 = (UAS)simState.getUasBag().get(n);
+    				UAS uas2 = (UAS)simState.uasBag.get(n);
     				if(uas1.getLocation().distance(uas2.getLocation())<=7)
     				{
     	    			
@@ -113,15 +113,15 @@ public class MaxNMAC extends Problem implements SimpleProblemForm
     			}
     		} while(simState.schedule.getSteps()< 1000);
     		
-    		for(int j=0; j<simState.getUasBag().size(); j++)
+    		for(int j=0; j<simState.uasBag.size(); j++)
     		{
-    			UAS uas = (UAS)simState.getUasBag().get(j);
-    			System.out.println(uas.getDistanceToDanger()-uas.getRadius());
+    			UAS uas = (UAS)simState.uasBag.get(j);
+    			System.out.println(uas.getDistanceToDanger());
 //    			distanceToDangerSum += uas.getDistanceToDanger()-uas.getRadius();
     			
-    			if(uas.getDistanceToDanger()-uas.getRadius()>0)
+    			if(uas.getDistanceToDanger()>0)
 				{
-    				distanceToDangerSum += uas.getDistanceToDanger()-uas.getRadius();
+    				distanceToDangerSum += uas.getDistanceToDanger();
 				}
     			else
     			{
@@ -160,8 +160,9 @@ public class MaxNMAC extends Problem implements SimpleProblemForm
         	dataItem.append(fitness+",");
         	dataItem.append(simState.aDetector.getNoAccidents());
         	Simulation.simDataSet.add(dataItem.toString());
-        	
+        
         }
+        MyStatistics.accidents[state.generation]+= simState.aDetector.getNoAccidents();
 
 	}
 

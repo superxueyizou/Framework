@@ -3,9 +3,9 @@
  */
 package tools;
 
-import modeling.Obstacle;
-import modeling.UAS;
-import modeling.Waypoint;
+import modeling.env.Obstacle;
+import modeling.env.Waypoint;
+import modeling.uas.UAS;
 import sim.util.Bag;
 import sim.util.Double2D;
 import sim.util.MutableDouble2D;

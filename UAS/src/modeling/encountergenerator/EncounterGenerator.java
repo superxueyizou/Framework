@@ -7,7 +7,8 @@ package modeling.encountergenerator;
  * @author Xueyi
  *
  */
-public abstract class EncounterGenerator {
+public abstract class EncounterGenerator 
+{
 
 	/**
 	 * 

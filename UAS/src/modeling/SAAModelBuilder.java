@@ -3,14 +3,21 @@ package modeling;
 import modeling.encountergenerator.CrossingGenerator;
 import modeling.encountergenerator.HeadOnGenerator;
 import modeling.encountergenerator.TailApproachGenerator;
-import modeling.subsystems.avoidance.AVOAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.AvoidanceAlgorithm;
-import modeling.subsystems.avoidance.AvoidanceAlgorithmAdapter;
-import modeling.subsystems.avoidance.HRVOAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.ORCAAvoidanceAlgorithm;
-import modeling.subsystems.avoidance.RVOAvoidanceAlgorithm;
-import modeling.subsystems.sensor.Sensor;
-import modeling.subsystems.sensor.SimpleSensor;
+import modeling.env.Destination;
+import modeling.saa.collsionavoidance.AVO;
+import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithm;
+import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithmAdapter;
+import modeling.saa.selfseparation.SVO;
+import modeling.saa.selfseparation.SelfSeparationAlgorithm;
+import modeling.saa.selfseparation.SelfSeparationAlgorithmAdapter;
+import modeling.saa.sense.Sensor;
+import modeling.saa.sense.SimpleSensor;
+import modeling.uas.AvoidParas;
+import modeling.uas.SenseParas;
+import modeling.uas.UAS;
+import modeling.uas.UASPerformance;
+import modeling.uas.UASVelocity;
+
 
 import sim.util.*;
 import tools.CONFIGURATION;
@@ -50,48 +57,46 @@ public class SAAModelBuilder
 		AvoidParas avoidParas = new AvoidParas(CONFIGURATION.selfAlpha);
 		
 		UAS self = new UAS(state.getNewID(),CONFIGURATION.selfSafetyRadius,location, d, uasVelocity,uasPerformance, senseParas,avoidParas);
-				
-		AvoidanceAlgorithm aa;
-		switch(CONFIGURATION.avoidanceAlgorithmSelection)
+		
+		Sensor sensor = new SimpleSensor();
+		
+		SelfSeparationAlgorithm ssa; 
+		switch (CONFIGURATION.selfSelfSeparationAlgorithmSelection)
 		{
-//			case "TurnRightAvoidanceAlgorithm":
-//				aa= new TurnRightAvoidanceAlgorithm(state, self);
-//				break;
-//			case "SmartTurnAvoidanceAlgorithm":
-//				aa= new SmartTurnAvoidanceAlgorithm(state, self);
-//				break;
-//			
-//			case "RIPNAvoidanceAlgorithm":
-//				aa= new RIPNAvoidanceAlgorithm(state, self);
-//				break;
-			case "ORCAAvoidanceAlgorithm":
-				aa= new ORCAAvoidanceAlgorithm(state, self);
-				break;
-			case "RVOAvoidanceAlgorithm":
-				aa= new RVOAvoidanceAlgorithm(state, self);
-				break;
-			case "HRVOAvoidanceAlgorithm":
-				aa= new HRVOAvoidanceAlgorithm(state, self);
-				break;
-			case "AVOAvoidanceAlgorithm":
-				aa= new AVOAvoidanceAlgorithm(state, self);
+			case "SVOAvoidanceAlgorithm":
+				ssa= new SVO(state, self);
 				break;
 			case "None":
-				aa= new AvoidanceAlgorithmAdapter(state, self);
+				ssa= new SelfSeparationAlgorithmAdapter(state, self);
 				break;
 			default:
-				aa= new AvoidanceAlgorithmAdapter(state, self);
+				ssa= new SelfSeparationAlgorithmAdapter(state, self);
+		
 		}
-		Sensor sensor = new SimpleSensor();
-		self.init(sensor, aa);
+		
+		CollisionAvoidanceAlgorithm caa;
+		switch(CONFIGURATION.selfCollisionAvoidanceAlgorithmSelection)
+		{
+			case "AVOAvoidanceAlgorithm":
+				caa= new AVO(state, self);
+				break;
+			case "None":
+				caa= new CollisionAvoidanceAlgorithmAdapter(state, self);
+				break;
+			default:
+				caa= new CollisionAvoidanceAlgorithmAdapter(state, self);
+		}
+		
+		
+		
+		self.init(sensor,ssa,caa);
 				
 		state.uasBag.add(self);
 		state.obstacles.add(self);
 		state.allEntities.add(self);
 		self.setSchedulable(true);
 		state.toSchedule.add(self);
-		//System.out.println("self's bearing:"+self.getBearing());
-					
+		
 		
 	    if(CONFIGURATION.headOnSelected)
 	    {
@@ -163,7 +168,8 @@ public class SAAModelBuilder
 	    for(Object o : state.uasBag)
 	    {
 	    	UAS uas = (UAS)o;
-	    	uas.getAa().init();		    	
+	    	uas.getCaa().init();	
+	    	uas.getSsa().init();
 	    }
 				
 		System.out.println("Simulation stepping begins!");
@@ -171,33 +177,9 @@ public class SAAModelBuilder
 		
 			
 	}
-	
-	
 
-	/**
-	 * 
-	 * @param args
-	 * @return 
-	 */
-	public static String[] addEndTime(String[] args)
-	{
-		String[] x = new String[args.length + 2];
-		
-		if (args.length != 0)
-		{
-			x = args;
-		}
-		
-		x[args.length] = "-for";
-		x[args.length + 1] = simLength;
-		
-		return x;
-	}
 	
-	
-	public SAAModel getSim() {return state;}
-	
-	public Destination generateDestination(double uasX, double uasY, double distance, double angle,Bag obstacles)
+	public Destination generateDestination(double uasX, double uasY, double distance, double angle, Bag obstacles)
 	{
 		int dID = state.getNewID();
 		Destination d = new Destination(dID, null);
@@ -211,7 +193,7 @@ public class SAAModelBuilder
 		}  while (state.obstacleAtPoint(new Double2D(desX,desY), obstacles));
 		
 		d.setLocation(new Double2D(desX,desY));
-		d.isSchedulable = false;
+		d.setSchedulable(false);
 		state.allEntities.add(d);
 		return d;
 	}

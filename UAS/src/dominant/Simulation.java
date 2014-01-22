@@ -23,17 +23,18 @@ import ec.util.*;
 public class Simulation
 {
 	protected static List<String> simDataSet = new ArrayList<>(200);
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception
 	{
-		String[] params = new String[]{"-file", "src/dominant/MaxOscillation.params"};
+		String[] params = new String[]{"-file", "src/dominant/MaxOscillation.params"}; //MaxOscillation, MaxNMAC
 		ParameterDatabase database = Evolve.loadParameterDatabase(params);
 		EvolutionState eState= Evolve.initialize(database, 0);
 		eState.startFresh();
 		int result=EvolutionState.R_NOTDONE;
-		int i=1;
+		
 		
 		String title = "generation,selfDestDist,selfDestAngle,"+
 				   "headOnSelected,headOnOffset,headOnIsRightSide,headOnSpeed,"+
@@ -44,13 +45,13 @@ public class Simulation
 		String label = database.getLabel();
 		String fileName= (String) label.subSequence(label.lastIndexOf("/")+1, label.lastIndexOf("."));
 		
+		int i=0;
 		
 		while(result == EvolutionState.R_NOTDONE)
 		{
 			result=eState.evolve();
 			System.out.println("simulation of generation "+i +" finished :)&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-			System.out.println();			
-			
+						
 			if(simDataSet.size()>=200)
 			{  				
 				UTILS.writeDataSet2CSV(fileName + "Dataset.csv", title, simDataSet,isAppending);
@@ -58,12 +59,18 @@ public class Simulation
 				simDataSet.clear();
 			}
 			i++;
-		}		
+		}	
+		
+//		for(int j=0; j<MyStatistics.accidents.length; j++)
+//		{
+//			System.out.print(MyStatistics.accidents[j]);
+//		}
+				
 		eState.finish(result);		
+		Object[] options= new Object[]{"Recurrence","Weka","Close"};
+		int confirmationResult = JOptionPane.showOptionDialog(null, "choose the next step", "What's next", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null, options, 0);
 		
-		int confirmationResult = JOptionPane.showConfirmDialog(null, "Evolution search has finished Do you like recurrence with GUI?", "Recurrent With GUI",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
-		
-		if (confirmationResult == JOptionPane.YES_OPTION )
+		if (confirmationResult == 0 )
 		{
 			String str = UTILS.readLastLine(new File(fileName+"Statics.stat"), "utf-8").trim();
 			String[] pArr= str.split(" ");
@@ -90,16 +97,18 @@ public class Simulation
 			System.out.println("\nRecurrenceWithGUI");
 			SimulationWithUI.main(null);
 		}	
-		else
+		else if (confirmationResult == 1)
 		{
 			DataMiner dm = new DataMiner();
 			dm.execute(fileName);
 			
 		}
+		else if (confirmationResult == 2 )
+		{
+			Evolve.cleanup(eState);	
+		}
 				
-		Evolve.cleanup(eState);	
-		
-		
+	
 		
 	}
 	

@@ -18,7 +18,8 @@ public class CONFIGURATION {
 	}
 	
 	
-	public static boolean avoidanceAlgorithmEnabler=true;
+	public static boolean collisionAvoidanceEnabler=true;
+	public static boolean selfSeparationEnabler=true;
 	
 	public static double selfDestDist = 50;
 	public static double selfDestAngle = Math.toRadians(30);	
@@ -32,8 +33,9 @@ public class CONFIGURATION {
 	public static double selfViewingAngle = Math.toRadians(60);
 	public static double selfSensitivityForCollisions = 0.5;
 	public static double selfSafetyRadius=1.667;
-	public static double selfAlpha=0.5; //RVO[0,1.0], HRVO(1.0,2.0], ORCA(2.0,3.0]
-	public static String avoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm"; //"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static double selfAlpha=1; //RVO[0,1.0], HRVO(1.0,2.0], ORCA(2.0,3.0]
+	public static String selfCollisionAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm"; //"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String selfSelfSeparationAlgorithmSelection = "SVOAvoidanceAlgorithm"; //"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
 
 	
 	
@@ -50,8 +52,10 @@ public class CONFIGURATION {
 	public static double headOnViewingAngle =  Math.toRadians(60);
 	public static double headOnSensitivityForCollisions = 0.5;
 	public static double headOnSafetyRadius=1.667;
-	public static double headOnAlpha=0.5;
-	public static String headOnAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static double headOnAlpha=1;
+	public static String headOnCollisionAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String headOnSelfSeparationAlgorithmSelection = "SVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+
 	
 	public static boolean crossingSelected = false;
 	public static double crossingEncounterAngle= Math.toRadians(30);
@@ -66,8 +70,10 @@ public class CONFIGURATION {
 	public static double crossingViewingAngle =  Math.toRadians(60);
 	public static double crossingSensitivityForCollisions = 0.5;
 	public static double crossingSafetyRadius=1.667;
-	public static double crossingAlpha=1.0;
-	public static String crossingAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static double crossingAlpha=1;
+	public static String crossingCollisionAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String crossingSelfSeparationAlgorithmSelection = "SVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+
 	
 	public static boolean tailApproachSelected = false;
 	public static double tailApproachOffset = 2;
@@ -77,14 +83,15 @@ public class CONFIGURATION {
 	public static double tailApproachMaxAcceleration = 1.0;
 	public static double tailApproachMaxDeceleration = 1.0;
 	public static double tailApproachMaxTurning = Math.toRadians(5.0);
-	public static double tailApproachSpeed = 2.0;
+	public static double tailApproachSpeed = 1.0;
 	public static double tailApproachViewingRange =38.89;
 	public static double tailApproachViewingAngle =  Math.toRadians(60);
 	public static double tailApproachSensitivityForCollisions = 0.5;
 	public static double tailApproachSafetyRadius=1.667;
-	public static double tailApproachAlpha=1.0;
-	public static String tailApproachAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
-	
+	public static double tailApproachAlpha=1;
+	public static String tailApproachCollisionAvoidanceAlgorithmSelection = "AVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+	public static String tailApproachSelfSeparationAlgorithmSelection = "SVOAvoidanceAlgorithm";//"AVOAvoidanceAlgorithm","HRVOAvoidanceAlgorithm","RVOAvoidanceAlgorithm","ORCAAvoidanceAlgorithm","TurnRightAvoidanceAlgorithm", "SmartTurnAvoidanceAlgorithm", "None", "RIPNAvoidanceAlgorithm" 
+
 	
 	
 }
