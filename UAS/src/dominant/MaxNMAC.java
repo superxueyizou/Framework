@@ -56,7 +56,7 @@ public class MaxNMAC extends Problem implements SimpleProblemForm
 		double  tailApproachSpeed = ind2.genome[13];
 		
 		long time = System.nanoTime();
-		SAAModel simState= new SAAModel(785945568, 150, 100, false); 	
+		SAAModel simState= new SAAModel(785945568, CONFIGURATION.fieldXVal, CONFIGURATION.fieldYVal, false); 	
 		
 		int times =1, dividend=0;
         for(int i=0;i<times; i++)

@@ -14,7 +14,10 @@ import sim.util.MutableDouble2D;
  * @author Xueyi
  *
  */
-public class CALCULATION {
+public class CALCULATION 
+{
+	
+	final static double epsilon = 1.0e-6;
 
 	/**providing calculation tool by some static methods
 	 * 
@@ -37,24 +40,137 @@ public class CALCULATION {
 		Double2D vector = point2.subtract(point1);
 		return vector.angle();	
 	}
+	
+	/***
+	 * calculate the vector angle in the Mason coordinate system, return [-pi, pi)
+	 * @param vector
+	 * @return 
+	 */
+	public static double getMasonAngle(Double2D vector)
+	{
+		Double2D vector2 = new Double2D(vector.x,-vector.y);
+		return vector2.angle();	
+	}
+	
+	public static double getAngle(Double2D p1, Double2D p2)
+    {
+	   	double x1 = p1.x, y1= p1.y,x2=p2.x,y2=p2.y;
+	    final double nyPI = Math.PI;
+	    double dist, dot,angle;
+	    
+	    // normalize
+	    dist = Math.sqrt( x1 * x1 + y1 * y1 );
+	    x1 /= dist;
+	    y1 /= dist;
+	    dist = Math.sqrt( x2 * x2 + y2 * y2 );
+	    x2 /= dist;
+	    y2 /= dist;
+	    // dot product
+	    dot = x1 * x2 + y1 * y2;
+	    if ( Math.abs(dot-1.0) <= epsilon )
+	    {
+	    	angle = 0.0;
+	    }	     
+	    else if ( Math.abs(dot+1.0) <= epsilon )
+	    {
+	    	angle = -nyPI;	    	
+	    }
+	    else 
+	    {
+		     angle = Math.acos(dot);
+		}
+	    
+	    return angle;
+    }
+	
+	/****
+	 * right rotate a vector in Mason coordinate system
+	 * @param vector
+	 * @param radian
+	 * @return
+	 */
+	public static Double2D vectorRRotate(Double2D vector, double radian)
+	{
+		return vector.rotate(radian);
+	}
+	
+	
+	/****
+	 * left rotate a vector in Mason coordinate system
+	 * @param vector
+	 * @param radian
+	 * @return
+	 */
+	public static Double2D vectorLRotate(Double2D vector, double radian)
+	{
+		return vector.rotate(-radian);
+	}
 
+    /*
+    * 计算向量p1到p2的旋转角，算法如下：
+    * 首先通过点乘和arccosine的得到两个向量之间的夹角
+    * 然后判断通过差乘来判断两个向量之间的位置关系
+    * 如果p2在p1的逆时针方向, 返回arccose的角度值, 范围[0 ~ pi)
+    * 否则返回-arecose的值, 返回[-Pi,0)
+    */ 
+   public static double  getRotateAngle(Double2D p1, Double2D p2)
+   {
+	   	double x1 = p1.x, y1= p1.y,x2=p2.x,y2=p2.y;
+	    
+	    final double nyPI = Math.PI;
+	    double dist, dot, angle;
+	    
+	    // normalize
+	    dist = Math.sqrt( x1 * x1 + y1 * y1 );
+	    x1 /= dist;
+	    y1 /= dist;
+	    dist = Math.sqrt( x2 * x2 + y2 * y2 );
+	    x2 /= dist;
+	    y2 /= dist;
+	    // dot product
+	    dot = x1 * x2 + y1 * y2;
+	    if ( Math.abs(dot-1.0) <= epsilon )
+	    {
+	    	angle = 0.0;
+	    }	     
+	    else if ( Math.abs(dot+1.0) <= epsilon )
+	    {
+	    	angle = -nyPI;	    	
+	    }
+	    else 
+	    {
+		     angle = Math.acos(dot);
+		     
+		     double cross;
+		     //cross product
+		     cross = x1 * y2 - x2 * y1;
+		     // vector p2 is anti-clockwise from vector p1 
+		     // with respect to the origin (0.0)
+		     if (cross >0 ) 
+		     { 
+		      angle = - angle;
+		     }    
+	    }
+	   
+	    return angle;
+   }
 
 /****************************************************************************************************************************************/
 	
 		/** 
-	 * A method which changes a bearing to be in the range of -pi (EXclusive) to pi (INclusive)
+	 * A method which changes a bearing to be in the range of -pi (INclusive) to pi (EXclusive)
 	 * 
 	 * @param b the bearing to be corrected
-	 * @return a bearing equivalent to b which has been converted to be in the correct range
+	 * @return a bearing equivalent to b which has been converted to be in the correct range [-pi, pi)
 	 */
 	public static double correctAngle(double b)
 	{
-		if (b > Math.PI)
+		if (b >= Math.PI)
 		{
 			return (b - 2.0*Math.PI);
 		}
 		
-		if (b <= -Math.PI)
+		if (b < -Math.PI)
 		{
 			return (b + 2.0*Math.PI);
 		}
@@ -110,6 +226,106 @@ public class CALCULATION {
 		return yChange;
     }
 	
+	protected static double det(Double2D v1, Double2D v2)
+    {
+        return v1.x * v2.y - v1.y * v2.x;
+    }
+	
+    /*
+     * a first point of a line
+     * b second point of a line
+     * c testing point
+     */
+	public static boolean leftOf(Double2D a, Double2D b, Double2D c)
+    {
+        return (det(a.subtract(c), b.subtract(a))>epsilon);
+    }
+	
+	public static boolean rightOf(Double2D a, Double2D b, Double2D c)
+    {
+        return (-det(a.subtract(c), b.subtract(a))>epsilon);
+    }
+	
+	
+//	public static double  getAngle(Double2D p1, Double2D p2)
+//    {
+// 	   	double x1 = p1.x, y1= p1.y,x2=p2.x,y2=p2.y;
+// 	    final double nyPI = Math.PI;
+// 	    double dist, dot, degree, angle;
+// 	    
+// 	    // normalize
+// 	    dist = Math.sqrt( x1 * x1 + y1 * y1 );
+// 	    x1 /= dist;
+// 	    y1 /= dist;
+// 	    dist = Math.sqrt( x2 * x2 + y2 * y2 );
+// 	    x2 /= dist;
+// 	    y2 /= dist;
+// 	    // dot product
+// 	    dot = x1 * x2 + y1 * y2;
+// 	    if ( Math.abs(dot-1.0) <= epsilon )
+// 	    {
+// 	    	angle = 0.0;
+// 	    }	     
+// 	    else if ( Math.abs(dot+1.0) <= epsilon )
+// 	    {
+// 	    	angle = nyPI;	    	
+// 	    }
+// 	    else 
+// 	    {
+// 		     angle = Math.acos(dot);
+// 		}
+// 	    degree = Math.toDegrees(angle);
+// 	    return degree;
+//    }
+
+//    /*
+//    * 计算向量p1到p2的旋转角，算法如下：
+//    * 首先通过点乘和arccosine的得到两个向量之间的夹角
+//    * 然后判断通过差乘来判断两个向量之间的位置关系
+//    * 如果p2在p1的顺时针方向, 返回arccose的角度值, 范围0 ~ 180.0(根据右手定理,可以构成正的面积)
+//    * 否则返回 360.0 - arecose的值, 返回180到360(根据右手定理,面积为负)
+//    */ 
+//   public static double  getRotateAngle(Double2D p1, Double2D p2)
+//   {
+//	   	double x1 = p1.x, y1= p1.y,x2=p2.x,y2=p2.y;
+//	    
+//	    final double nyPI = Math.PI;
+//	    double dist, dot, degree, angle;
+//	    
+//	    // normalize
+//	    dist = Math.sqrt( x1 * x1 + y1 * y1 );
+//	    x1 /= dist;
+//	    y1 /= dist;
+//	    dist = Math.sqrt( x2 * x2 + y2 * y2 );
+//	    x2 /= dist;
+//	    y2 /= dist;
+//	    // dot product
+//	    dot = x1 * x2 + y1 * y2;
+//	    if ( Math.abs(dot-1.0) <= epsilon )
+//	    {
+//	    	angle = 0.0;
+//	    }	     
+//	    else if ( Math.abs(dot+1.0) <= epsilon )
+//	    {
+//	    	angle = nyPI;	    	
+//	    }
+//	    else 
+//	    {
+//		     double cross;
+//		     
+//		     angle = Math.acos(dot);
+//		     //cross product
+//		     cross = x1 * y2 - x2 * y1;
+//		     // vector p2 is clockwise from vector p1 
+//		     // with respect to the origin (0.0)
+//		     if (cross < 0 ) 
+//		     { 
+//		      angle = 2 * nyPI - angle;
+//		     }    
+//	    }
+//	    degree = Math.toDegrees(angle);
+//	    return degree;
+//   }
 	//this method tests a course to see if any of the obstacles in the bag will be hit
 	//by the UAS if it moves from it's position on the bearing provided
 	/**

@@ -11,6 +11,7 @@ import sim.engine.SimState;
 import sim.engine.Steppable;
 import sim.util.Bag;
 import sim.util.Double2D;
+import tools.CONFIGURATION;
 
 
 /**
@@ -58,6 +59,10 @@ public class AccidentDetector implements Constants,Steppable
 	@Override
 	public void step(SimState simState)
 	{
+		if(!CONFIGURATION.accidentDetectorEnabler)
+		{
+			return;
+		}
 		this.state = (SAAModel)simState;
 		trackedUASBag.clear();
 		for (int i=0; i<state.uasBag.size(); i++)

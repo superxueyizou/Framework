@@ -1,7 +1,15 @@
 package modeling;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
+import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import modeling.env.Destination;
 import modeling.env.VelocityObstaclePoint;
@@ -20,8 +28,10 @@ import sim.portrayal.network.SimpleEdgePortrayal2D;
 import sim.portrayal.network.SpatialNetwork2D;
 import sim.portrayal.simple.CircledPortrayal2D;
 import sim.portrayal.simple.HexagonalPortrayal2D;
+import sim.portrayal.simple.ImagePortrayal2D;
 import sim.portrayal.simple.LabelledPortrayal2D;
 import sim.portrayal.simple.OvalPortrayal2D;
+import tools.CONFIGURATION;
 
 /**
  * A class for running a simulation with a UI, run to see a simulation with a UI
@@ -35,8 +45,8 @@ public class SAAModelWithUI extends GUIState
 	
 	public Display2D display;
 	public JFrame displayFrame;	
-	private double displayX = SAAModelBuilder.worldXVal;
-	private double displayY = SAAModelBuilder.worldYVal;
+	private double displayX = CONFIGURATION.fieldXVal;
+	private double displayY = CONFIGURATION.fieldYVal;
 	
 	
 	ContinuousPortrayal2D environmentPortrayal = new ContinuousPortrayal2D();
@@ -46,7 +56,7 @@ public class SAAModelWithUI extends GUIState
    
     public SAAModelWithUI() 
     {   
-        super(new SAAModel(785945568, SAAModelBuilder.worldXVal, SAAModelBuilder.worldYVal, true)); 	    	
+        super(new SAAModel(785945568, CONFIGURATION.fieldXVal, CONFIGURATION.fieldYVal, true)); 	    	
     	System.out.println("COModelWithUI() is being called!"+ "it's state(model)is: "+ state.toString());
     	sBuilder = new SAAModelBuilder((SAAModel) state);
     }
@@ -88,6 +98,13 @@ public class SAAModelWithUI extends GUIState
 	public void setupPortrayals()
 	{		
 		SAAModel simulation = (SAAModel) state;
+		
+//		Image i = new ImageIcon("logoWallpaper.png").getImage();
+//		BufferedImage b = display.getGraphicsConfiguration().createCompatibleImage(i.getWidth(null), i.getHeight(null));
+//		Graphics g = b.getGraphics();
+//		g.drawImage(i,0,0,i.getWidth(null),i.getHeight(null),null);
+//		g.dispose();
+//		display.setBackdrop(new TexturePaint(b, new Rectangle(0,0,i.getWidth(null),i.getHeight(null))));
 
 		// tell the portrayals what to portray and how to portray them
 		environmentPortrayal.setField( simulation.environment );
@@ -121,8 +138,13 @@ public class SAAModelWithUI extends GUIState
 		(UAS.class, 
 				new CircledPortrayal2D(
 										//new OrientedPortrayal2D(
-																	(SimplePortrayal2D)new HexagonalPortrayal2D(0.7)
+																	(SimplePortrayal2D)new OvalPortrayal2D(10.0*displayX/CONFIGURATION.fieldXVal)
 																	{
+																		/**
+																		 * 
+																		 */
+																		private static final long serialVersionUID = 1L;
+
 																		public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
 																		{
 																			paint = new Color(0, 156, 0);		
@@ -131,9 +153,14 @@ public class SAAModelWithUI extends GUIState
 																	}, 
 																	//1, 1, new Color(0,0,0), OrientedPortrayal2D.SHAPE_COMPASS
 															  // ),
-									   1.667*displayX/SAAModelBuilder.worldXVal,1.0,new Color(255, 20, 0),false
+									   1.0*CONFIGURATION.selfSafetyRadius*displayX/CONFIGURATION.fieldXVal,1.0,new Color(255, 20, 0),false
 									  )	
 		                              {
+											/**
+										 * 
+										 */
+										private static final long serialVersionUID = 1L;
+
 											public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
 											{
 												paint = ((UAS)object).isActive? new Color(255, 0, 0):new Color(128, 128, 128);			
@@ -144,8 +171,13 @@ public class SAAModelWithUI extends GUIState
 				
 		);
 		
-		environmentPortrayal.setPortrayalForClass(Destination.class, new LabelledPortrayal2D( new HexagonalPortrayal2D(0.7)
+		environmentPortrayal.setPortrayalForClass(Destination.class, new LabelledPortrayal2D( new OvalPortrayal2D(20.0*displayX/CONFIGURATION.fieldXVal)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
 			{
 				paint = new Color(0x0E, 0xEC, 0xF0);			
@@ -155,17 +187,47 @@ public class SAAModelWithUI extends GUIState
 		
 		);
 		
-		environmentPortrayal.setPortrayalForClass(Waypoint.class, new OvalPortrayal2D(0.2)
+		environmentPortrayal.setPortrayalForClass(Waypoint.class, new OvalPortrayal2D(10.0*displayX/CONFIGURATION.fieldXVal)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
 			{
-				paint = new Color(10, 10, 10);			
+				if(((Waypoint) object).getAction()==1)
+				{
+					//red for avoid
+					paint = new Color(255, 0, 0);	
+				}
+				else if(((Waypoint) object).getAction()==2)
+				{
+					//green for maintain
+					paint = new Color(0, 255, 0);	
+				}
+				else if(((Waypoint) object).getAction()==3)
+				{
+					//blue for alert
+					paint = new Color(0, 0, 255);	
+				}
+				else
+				{
+					//black for restore
+					paint = new Color(0, 0, 0);
+				}
+							
 			    super.draw(object, graphics, info);
 			}
 		});
 		
-		environmentPortrayal.setPortrayalForClass(VelocityObstaclePoint.class, new HexagonalPortrayal2D(0.3)
+		environmentPortrayal.setPortrayalForClass(VelocityObstaclePoint.class, new HexagonalPortrayal2D(5*displayX/CONFIGURATION.fieldXVal)
 		{
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			public void draw(Object object, Graphics2D graphics, DrawInfo2D info)
 			{
 				paint = new Color(255, 255, 255);			
@@ -191,9 +253,10 @@ public class SAAModelWithUI extends GUIState
 
         // make the displayer
         display = new Display2D(displayX,displayY,this);
+        //display.setPreferredSize(new Dimension((int)displayX,(int)displayY)); //(1514,1140)
         // turn off clipping
         display.setClipping(false);
-       //display.setBackdrop(new Color(0,150,255,150));
+//      display.setBackdrop(new Color(0,0,0));
 
         displayFrame = display.createFrame();
         displayFrame.setTitle("SAA Simulation");

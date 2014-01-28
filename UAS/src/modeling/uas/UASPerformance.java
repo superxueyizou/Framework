@@ -8,27 +8,43 @@ public class UASPerformance
 {
 	//the maximum possible values of the uasBag statistics
 	private double maxSpeed;
+	private double minSpeed;	
+	private double maxClimb;
+	private double maxDescent;
+	private double maxTurning;
     private double maxAcceleration;
 	private double maxDeceleration;
-	private double maxTurning;
+	
 	
 	//the current limits of speed, etc for the uas.
 	private double currentMaxSpeed;
+	private double currentMinSpeed;	
+	private double currentMaxClimb;
+	private double currentMaxDescent;
+	private double currentMaxTurning;
 	private double currentMaxAcceleration;
 	private double currentMaxDeceleration;
-	private double currentMaxTurning;
 	
-	public UASPerformance(double maxUASSpeed, double maxUASAcceleration, double maxUASDeceleration, double maxUASTurning)
+	
+	public UASPerformance(double maxUASSpeed, double minUASSpeed, double maxUASClimb, double maxUASDescent, double maxUASTurning, double maxUASAcceleration, double maxUASDeceleration)
 	{
 		maxSpeed = maxUASSpeed;
+		minSpeed = minUASSpeed;
+		maxClimb = maxUASClimb;
+		maxDescent = maxUASDescent;
+		maxTurning = maxUASTurning;
 		maxAcceleration = maxUASAcceleration;
 		maxDeceleration = maxUASDeceleration;
-		maxTurning = maxUASTurning;
+		
 		
 		currentMaxSpeed = maxSpeed;
+		currentMinSpeed = minSpeed;
+		currentMaxClimb	= maxClimb;
+		currentMaxDescent = maxDescent;
+		currentMaxTurning = maxTurning;
 		currentMaxAcceleration = maxAcceleration;
 		currentMaxDeceleration = maxDeceleration;
-		currentMaxTurning = maxTurning;
+		
 	}
 	
 	public double getMaxSpeed() {
@@ -59,6 +75,62 @@ public class UASPerformance
 		return maxTurning;
 	}
 
+	public double getMinSpeed() {
+		return minSpeed;
+	}
+
+	public void setMinSpeed(double minSpeed) {
+		this.minSpeed = minSpeed;
+	}
+
+	public double getMaxClimb() {
+		return maxClimb;
+	}
+
+	public void setMaxClimb(double maxClimb) {
+		this.maxClimb = maxClimb;
+	}
+
+	public double getMaxDescent() {
+		return maxDescent;
+	}
+
+	public void setMaxDescent(double maxDescent) {
+		this.maxDescent = maxDescent;
+	}
+
+	public double getCurrentMinSpeed() {
+		return currentMinSpeed;
+	}
+
+	public void setCurrentMinSpeed(double currentMinSpeed) {
+		this.currentMinSpeed = currentMinSpeed;
+	}
+
+	public double getCurrentMaxClimb() {
+		return currentMaxClimb;
+	}
+
+	public void setCurrentMaxClimb(double currentMaxClimb) {
+		this.currentMaxClimb = currentMaxClimb;
+	}
+
+	public double getCurrentMaxDescent() {
+		return currentMaxDescent;
+	}
+
+	public void setCurrentMaxDescent(double currentMaxDescent) {
+		this.currentMaxDescent = currentMaxDescent;
+	}
+
+	public double getCurrentMaxAcceleration() {
+		return currentMaxAcceleration;
+	}
+
+	public double getCurrentMaxDeceleration() {
+		return currentMaxDeceleration;
+	}
+
 	public void setMaxTurning(double maxTurning) {
 		this.maxTurning = maxTurning;
 	}
@@ -82,9 +154,13 @@ public class UASPerformance
 	public void reset()
 	{
 		currentMaxSpeed = maxSpeed;
+		currentMinSpeed = minSpeed;
+		currentMaxClimb = maxClimb;
+		currentMaxDescent = maxDescent;
+		currentMaxTurning = maxTurning;
 		currentMaxAcceleration = maxAcceleration;
 		currentMaxDeceleration = maxDeceleration;
-		currentMaxTurning = maxTurning;
+		
 	}
 	
 

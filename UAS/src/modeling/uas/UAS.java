@@ -15,6 +15,7 @@ import modeling.saa.sense.Sensor;
 import sim.engine.*;
 import sim.portrayal.Oriented2D;
 import sim.util.*;
+import tools.CALCULATION;
 import tools.CONFIGURATION;
 
 /**
@@ -47,6 +48,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 	private AvoidParas avoidParas;	
 
 	//parameters for navigation
+	private Double2D source;
 	private Destination destination;
 	private Waypoint nextWp;
 	private LinkedList<Waypoint> wpQueue;//for auto-pilot
@@ -114,11 +116,11 @@ public class UAS extends CircleObstacle implements Oriented2D
 			}
 								
 			nextWp= this.getNextWp();
-			if (nextWp == caaWp || nextWp == ssaWp)
+			if (nextWp != null && (nextWp == caaWp || nextWp == ssaWp))
 			{
 				state.environment.setObjectLocation(nextWp, nextWp.getLocation());
 				oldUASVelocity = uasVelocity;
-				uasVelocity= new UASVelocity(nextWp.getLocation().subtract(location).normalize().multiply(CONFIGURATION.selfSpeed));
+				uasVelocity= new UASVelocity(nextWp.getLocation().subtract(location));
 				
 				this.setOldLocation(this.location);
 				this.setLocation(nextWp.getLocation());
@@ -128,14 +130,30 @@ public class UAS extends CircleObstacle implements Oriented2D
 			else if (nextWp != null)
 			{
 				oldUASVelocity = uasVelocity;
-				uasVelocity= new UASVelocity(nextWp.getLocation().subtract(location).normalize().multiply(CONFIGURATION.selfSpeed));
+				Double2D candVel = nextWp.getLocation().subtract(location).normalize().multiply(CONFIGURATION.selfSpeed);
 				
+				double angle = CALCULATION.getRotateAngle(oldUASVelocity.getVelocity(), candVel);
+				
+				if(angle > Math.toRadians(2.5))
+				{
+					candVel = CALCULATION.vectorRRotate(candVel, Math.toRadians(2.5));
+				}
+				else if(angle < Math.toRadians(-2.5))
+				{
+					candVel = CALCULATION.vectorLRotate(candVel, Math.toRadians(2.5));
+				}
+				else
+				{
+					candVel = candVel;
+				}
+				
+				uasVelocity = new UASVelocity(candVel);
 				this.setOldLocation(this.location);
 				this.setLocation(location.add(uasVelocity.getVelocity()));
 				state.environment.setObjectLocation(this, this.location);
 				
-				System.out.println("approaching the auto-pilot's waypoint!");
-				if (this.location.distance(nextWp.getLocation())<1)
+//				System.out.println("approaching the auto-pilot's waypoint!");
+				if (this.location.distance(nextWp.getLocation())<2*CONFIGURATION.selfSafetyRadius)
 				{
 					wpQueue.poll();
 				}
@@ -151,7 +169,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 //			System.out.println("new location: "+this.location+ "  new Velocity: "+ this.getVelocity());
 //			System.out.println((this.getOldLocation()== this.getLocation())+" "+(this.getOldVelocity() == this.getVelocity()));
 			
-			if (this.location.distance(destination.getLocation())<1)
+			if (this.location.distance(destination.getLocation())<2*CONFIGURATION.selfSafetyRadius)
 			{
 				this.isActive = false;
 				//System.out.println("arrived at the destination!");
@@ -260,6 +278,14 @@ public class UAS extends CircleObstacle implements Oriented2D
 		this.destination = destination;
 	}
 
+	public Double2D getSource() {
+		return source;
+	}
+
+	public void setSource(Double2D source) {
+		this.source = source;
+	}
+
 	public double getViewingRange() {
 		return this.senseParas.getViewingRange();
 	}
@@ -366,8 +392,6 @@ public class UAS extends CircleObstacle implements Oriented2D
 		this.state = state;
 	}
 	
-
-	
 	/*****************************************
 	 * overide method extended from Obstacle
 	 */
@@ -391,5 +415,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 	{
 		return this.uasVelocity.getBearing();
 	}
+
+
 
 }

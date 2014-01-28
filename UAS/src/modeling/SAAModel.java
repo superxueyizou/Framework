@@ -9,6 +9,7 @@ import sim.util.*;
 import sim.field.continuous.*;
 import sim.engine.*;
 import sim.field.network.Network;
+import tools.CONFIGURATION;
 
 public class SAAModel extends SimState
 {
@@ -126,6 +127,8 @@ public class SAAModel extends SimState
 			schedule.scheduleRepeating((Entity) toSchedule.get(i), i, 1.0);
 		}	
 		schedule.scheduleRepeating(aDetector,i+1, 1.0);
+	
+		
 	}
 
 	/**

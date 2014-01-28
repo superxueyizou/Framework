@@ -75,6 +75,10 @@ public class SAAConfigurator extends JFrame
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 12, 326, 818);
 				
+		JPanel modelBuilderConfigPanel = new ModelBuilder();
+		tabbedPane.addTab("ModelBuilder", null, modelBuilderConfigPanel, null);
+		modelBuilderConfigPanel.setLayout(null);
+		
 		JPanel selfConfigPanel = new Self();
 		tabbedPane.addTab("Self", null, selfConfigPanel, null);
 		selfConfigPanel.setLayout(null);

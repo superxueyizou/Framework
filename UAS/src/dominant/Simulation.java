@@ -29,7 +29,7 @@ public class Simulation
 	 */
 	public static void main(String[] args) throws Exception
 	{
-		String[] params = new String[]{"-file", "src/dominant/MaxOscillation.params"}; //MaxOscillation, MaxNMAC
+		String[] params = new String[]{"-file", "src/dominant/MaxNMAC.params"}; //MaxOscillation, MaxNMAC
 		ParameterDatabase database = Evolve.loadParameterDatabase(params);
 		EvolutionState eState= Evolve.initialize(database, 0);
 		eState.startFresh();

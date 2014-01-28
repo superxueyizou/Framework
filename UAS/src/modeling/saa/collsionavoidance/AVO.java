@@ -62,9 +62,10 @@ public class AVO extends CollisionAvoidanceAlgorithm
 		// Specify global time step of the simulation.
 		avoSimulator.setTimeStep(1);
 		// Specify default parameters for agents that are subsequently added.
-		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15, 15, hostUAS.getRadius(),1.0,hostUAS.getSpeed(), hostUAS.getUasPerformance().getCurrentMaxSpeed(),hostUAS.getAlpha(),  hostUAS.getUasPerformance().getMaxAcceleration(), new Double2D()); 
-		//orcaSimulator.setAgentDefaults(1.0, 8, 10.0, 20.0f, 0.5, 8.0, new Double());
-
+		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 150, 150, hostUAS.getRadius()*100,10.0,hostUAS.getSpeed(), 
+				hostUAS.getUasPerformance().getCurrentMaxSpeed(),hostUAS.getAlpha(), 
+				hostUAS.getUasPerformance().getMaxAcceleration(),hostUAS.getUasPerformance().getMaxTurning(), new Double2D()); 
+		
 		for(int i=0; i<state.uasBag.size(); i++)
 		{
 			UAS uas= (UAS)state.uasBag.get(i);
@@ -72,8 +73,9 @@ public class AVO extends CollisionAvoidanceAlgorithm
 			{
 				hostUASIDInAVOSimulator=i;
 			}
-			Double2D location= new Double2D(uas.getLocation().x,uas.getLocation().y);
-			avoSimulator.addAgent(location, avoSimulator.addGoal(uas.getDestination().getLocation()));			
+			Double2D avoLocation = new Double2D(uas.getLocation().x, -uas.getLocation().y);
+			Double2D avoGoalLocation = new Double2D(uas.getDestination().getLocation().x, -uas.getDestination().getLocation().y);
+			avoSimulator.addAgent(avoLocation, avoSimulator.addGoal(avoGoalLocation));				
 		}
 		
 	}
@@ -82,7 +84,7 @@ public class AVO extends CollisionAvoidanceAlgorithm
 	public Waypoint execute()
 	{		
 		updateAVOSimulator(state);
-		avoSimulator.doStep();
+		avoSimulator.agentDoStep(hostUASIDInAVOSimulator);
 		
 		if(state.runningWithUI)
 		{
@@ -93,9 +95,9 @@ public class AVO extends CollisionAvoidanceAlgorithm
 			if(!avoSimulator.getAgentVelocityObstacles(hostUASIDInAVOSimulator).isEmpty())
 			{
 				VelocityObstacle vo =  avoSimulator.getAgentVelocityObstacles(hostUASIDInAVOSimulator).get(0);
-				Double2D apexLoc = hostUAS.getLocation().add(new Double2D(vo.apex.getX(),vo.apex.getY())) ;
-				Double2D side1EndLoc = apexLoc.add(new Double2D(100*vo.side1.getX(),100*vo.side1.getY()));
-				Double2D side2EndLoc = apexLoc.add(new Double2D(100*vo.side2.getX(),100*vo.side2.getY()));
+				Double2D apexLoc = hostUAS.getLocation().add(new Double2D(vo.apex.getX(),-vo.apex.getY())) ;
+				Double2D side1EndLoc = apexLoc.add(new Double2D(10000*vo.side1.getX(),-10000*vo.side1.getY()));
+				Double2D side2EndLoc = apexLoc.add(new Double2D(10000*vo.side2.getX(),-10000*vo.side2.getY()));
 				
 				state.environment.setObjectLocation(apex, apexLoc);
 				state.environment.setObjectLocation(side1End, side1EndLoc);
@@ -107,15 +109,16 @@ public class AVO extends CollisionAvoidanceAlgorithm
 				
 				state.voField.addEdge(apex, side1End, null);
 				state.voField.addEdge(apex, side2End, null);			
+				System.out.println("dddddddddddddd"+avoSimulator.getAgentVelocityObstacles(hostUASIDInAVOSimulator).size());
 				
-//				System.out.println(avoSimulator.getAgentVelocityObstacles(hostUASIDInavoSimulator).size());
 			}
 			
 		}
 
+		
 		Double2D newLocation = avoSimulator.getAgentPosition(hostUASIDInAVOSimulator);		
 		Waypoint wp = new Waypoint(state.getNewID(), hostUAS.getDestination());
-		wp.setLocation(newLocation);
+		wp.setLocation(new Double2D(newLocation.x, -newLocation.y));
 		return wp;
 	
 	}
@@ -127,15 +130,15 @@ public class AVO extends CollisionAvoidanceAlgorithm
 		{
 			UAS agent= (UAS)state.uasBag.get(i);
 			
-			Double2D location;
-			Double2D velocity;
-			double   radius;
+			Double2D avoLocation;
+			Double2D avoVelocity;
+			double   avoRadius;
 			
 			if(agent==hostUAS)
 			{
-				location = agent.getLocation();
-				velocity = agent.getVelocity();
-				radius = agent.getRadius();
+				avoLocation = new Double2D(agent.getLocation().x, -agent.getLocation().y);
+				avoVelocity = new Double2D(agent.getVelocity().x, -agent.getVelocity().y);
+				avoRadius = agent.getRadius()*1000;
 				
 			}
 			else
@@ -148,18 +151,20 @@ public class AVO extends CollisionAvoidanceAlgorithm
 					continue;
 				}
 				
-				location = new Double2D(agent.getOldLocation().x,agent.getOldLocation().y);
-				velocity= new Double2D(agent.getOldVelocity().x, agent.getOldVelocity().y);
-				radius = agent.getRadius();
+				avoLocation = new Double2D(agent.getOldLocation().x, -agent.getOldLocation().y);
+				avoVelocity = new Double2D(agent.getOldVelocity().x, -agent.getOldVelocity().y);
+				avoRadius = agent.getRadius()*1000;
+				
 				
 //				Normal normal = new Normal(0,0.02,state.random);
-//				location = new Double2D(agent.getOldLocation().x*(1+normal.nextDouble()), agent.getOldLocation().y*(1+normal.nextDouble()));
-//				velocity = new Double2D(agent.getOldVelocity().x*(1+normal.nextDouble()), agent.getOldVelocity().y*(1+normal.nextDouble()));
-//				radius = agent.getRadius()*(1+normal.nextDouble());
+//				avoLocation = new Double2D(agent.getOldLocation().x*(1+normal.nextDouble()), -agent.getOldLocation().y*(1+normal.nextDouble()));
+//				avoVelocity = new Double2D(agent.getOldVelocity().x*(1+normal.nextDouble()), -agent.getOldVelocity().y*(1+normal.nextDouble()));
+//				avoRadius = agent.getRadius()*(1+normal.nextDouble());
 			}
-			avoSimulator.setAgentPosition(i, location);
-			avoSimulator.setAgentVelocity(i, velocity);
-			avoSimulator.setAgentRadius(i, radius);
+			
+			avoSimulator.setAgentPosition(i, avoLocation);
+			avoSimulator.setAgentVelocity(i, avoVelocity);
+			avoSimulator.setAgentRadius(i, avoRadius);
 			
 		}
 

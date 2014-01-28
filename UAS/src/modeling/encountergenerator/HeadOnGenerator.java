@@ -64,11 +64,12 @@ public class HeadOnGenerator extends EncounterGenerator
 		intruderDestination.setLocation(intruderDestinationLoc);
 		
 		UASVelocity intruderVelocity = new UASVelocity(intruderVector.resize(intruderSpeed));
-		UASPerformance intruderPerformance = new UASPerformance(CONFIGURATION.headOnMaxSpeed, CONFIGURATION.headOnMaxAcceleration, CONFIGURATION.headOnMaxDeceleration, CONFIGURATION.headOnMaxTurning);
+		UASPerformance intruderPerformance = new UASPerformance(CONFIGURATION.headOnMaxSpeed, CONFIGURATION.headOnMinSpeed,CONFIGURATION.headOnMaxClimb, CONFIGURATION.headOnMaxDescent,CONFIGURATION.headOnMaxTurning, CONFIGURATION.headOnMaxAcceleration, CONFIGURATION.headOnMaxDeceleration);
 		SenseParas intruderSenseParas = new SenseParas(CONFIGURATION.headOnViewingRange,CONFIGURATION.headOnViewingAngle, CONFIGURATION.headOnSensitivityForCollisions);
 		AvoidParas intruderAvoidParas = new AvoidParas(CONFIGURATION.headOnAlpha);
 		
 		UAS intruder = new UAS(state.getNewID(),CONFIGURATION.headOnSafetyRadius,intruderLocation, intruderDestination, intruderVelocity,intruderPerformance, intruderSenseParas,intruderAvoidParas);
+		intruder.setSource(intruderLocation);
 		
 		Sensor sensor = new SimpleSensor();
 		
@@ -96,25 +97,6 @@ public class HeadOnGenerator extends EncounterGenerator
 			case "None":
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, intruder);
 				break;
-//			case "TurnRightAvoidanceAlgorithm":
-//				aa= new TurnRightAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "SmartTurnAvoidanceAlgorithm":
-//				aa= new SmartTurnAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "RIPNAvoidanceAlgorithm":
-//				aa= new RIPNAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "ORCAAvoidanceAlgorithm":
-//				aa= new ORCAAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "RVOAvoidanceAlgorithm":
-//				aa= new RVOAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "HRVOAvoidanceAlgorithm":
-//				aa= new HRVOAvoidanceAlgorithm(state, intruder);
-//				break;
-			
 			default:
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, intruder);
 		}

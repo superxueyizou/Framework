@@ -72,11 +72,12 @@ public class TailApproachGenerator extends EncounterGenerator
 		intruderDestination.setLocation(intruderDestinationLoc);
 		
 		UASVelocity intruderVelocity = new UASVelocity(intruderDestination.getLocation().subtract(intruderLocation).normalize().multiply(intruderSpeed));
-		UASPerformance intruderPerformance = new UASPerformance(CONFIGURATION.tailApproachMaxSpeed, CONFIGURATION.tailApproachMaxAcceleration, CONFIGURATION.tailApproachMaxDeceleration, CONFIGURATION.tailApproachMaxTurning);
+		UASPerformance intruderPerformance = new UASPerformance(CONFIGURATION.tailApproachMaxSpeed, CONFIGURATION.tailApproachMinSpeed,CONFIGURATION.tailApproachMaxClimb, CONFIGURATION.tailApproachMaxDescent,CONFIGURATION.tailApproachMaxTurning, CONFIGURATION.tailApproachMaxAcceleration, CONFIGURATION.tailApproachMaxDeceleration);
 		SenseParas intruderSenseParas = new SenseParas(CONFIGURATION.tailApproachViewingRange,CONFIGURATION.tailApproachViewingAngle, CONFIGURATION.tailApproachSensitivityForCollisions);
 		AvoidParas intruderAvoidParas = new AvoidParas(CONFIGURATION.tailApproachAlpha);
 		
 		UAS intruder = new UAS(state.getNewID(),CONFIGURATION.tailApproachSafetyRadius,intruderLocation, intruderDestination, intruderVelocity,intruderPerformance, intruderSenseParas,intruderAvoidParas);
+		intruder.setSource(intruderLocation);
 		
 		Sensor sensor = new SimpleSensor();
 
@@ -104,25 +105,6 @@ public class TailApproachGenerator extends EncounterGenerator
 			case "None":
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, intruder);
 				break;
-//			case "TurnRightAvoidanceAlgorithm":
-//				aa= new TurnRightAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "SmartTurnAvoidanceAlgorithm":
-//				aa= new SmartTurnAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "RIPNAvoidanceAlgorithm":
-//				aa= new RIPNAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "ORCAAvoidanceAlgorithm":
-//				aa= new ORCAAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "RVOAvoidanceAlgorithm":
-//				aa= new RVOAvoidanceAlgorithm(state, intruder);
-//				break;
-//			case "HRVOAvoidanceAlgorithm":
-//				aa= new HRVOAvoidanceAlgorithm(state, intruder);
-//				break;
-
 			default:
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, intruder);
 		}

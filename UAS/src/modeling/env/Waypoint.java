@@ -12,6 +12,7 @@ public class Waypoint extends Entity
 	private static final long serialVersionUID = 1L;
 	
 	private Waypoint nextPoint; //the id of the point to go to after this waypoint
+	private int action=-1;
 	
 	/** Constructor for Waypoint
 	 * 
@@ -32,4 +33,12 @@ public class Waypoint extends Entity
 	 */
 	public Waypoint getNextWaypoint() {return nextPoint;}
 	public void setNextWaypoint(Waypoint next) {nextPoint = next;}
+
+	public int getAction() {
+		return action;
+	}
+
+	public void setAction(int action) {
+		this.action = action;
+	}
 }

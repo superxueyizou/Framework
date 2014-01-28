@@ -37,124 +37,19 @@ public class Self extends JPanel
 	private JTextField sensitivityForCollisionTextField;
 	private JTextField safetyRadiusTextField;
 	private JTextField alphaTextField;
+	private JTextField minSpeedTextField;
+	private JTextField maxClimbTextField;
+	private JTextField maxDescentTextField;
 
 	public Self() 
 	{
 		setLayout(null);
-		
-		JRadioButton rdbtnCAEnable = new JRadioButton("CA Enable?");
-		rdbtnCAEnable.setBounds(12, 19, 102, 15);
-		this.add(rdbtnCAEnable);
-		rdbtnCAEnable.setSelected(CONFIGURATION.collisionAvoidanceEnabler);
-		rdbtnCAEnable.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(((JRadioButton)e.getSource()).isSelected())
-				{
-					CONFIGURATION.collisionAvoidanceEnabler = true;
-				} else {
-					
-					CONFIGURATION.collisionAvoidanceEnabler = false;
-				}
-			}
-		});
-		
-		
-		JRadioButton rdbtnSSEnable = new JRadioButton("SS Enable?");
-		rdbtnSSEnable.setBounds(164, 19, 102, 15);
-		this.add(rdbtnSSEnable);
-		rdbtnSSEnable.setSelected(CONFIGURATION.selfSeparationEnabler);
-		rdbtnSSEnable.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(((JRadioButton)e.getSource()).isSelected())
-				{
-					CONFIGURATION.selfSeparationEnabler = true;
-				} else {
-					
-					CONFIGURATION.selfSeparationEnabler = false;
-				}
-			}
-		});
-		// TODO Auto-generated constructor stub
-	
-		JLabel lblModelbuilderSetting = new JLabel("ModelBuilder Setting");
-		lblModelbuilderSetting.setBounds(12, 53, 165, 15);
-		this.add(lblModelbuilderSetting);
-			
-		JButton btnLoad = new JButton("Load");
-		btnLoad.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) 
-			{
-				String result = JOptionPane.showInputDialog(null, "copy and paste:", "Genome",JOptionPane.PLAIN_MESSAGE).trim();
-//					System.out.println(result);
-				if(!result.isEmpty())
-				{
-					String[] pArr= result.split("\\s+");
-//						System.out.println(pArr[1]);
-													
-					CONFIGURATION.selfDestDist= Double.parseDouble(pArr[0]);
-					CONFIGURATION.selfDestAngle=Double.parseDouble(pArr[1]);
-					
-					CONFIGURATION.headOnSelected= Double.parseDouble(pArr[2])>0? true: false;
-					CONFIGURATION.headOnOffset=Double.parseDouble(pArr[3]);
-					CONFIGURATION.headOnIsRightSide= Double.parseDouble(pArr[4])>0? true: false;			
-					CONFIGURATION.headOnSpeed=Double.parseDouble(pArr[5]);
-					
-		    		CONFIGURATION.crossingSelected = Double.parseDouble(pArr[6])>0? true: false;
-		    		CONFIGURATION.crossingEncounterAngle=Double.parseDouble(pArr[7]);
-		    		CONFIGURATION.crossingIsRightSide= Double.parseDouble(pArr[8])>0? true: false;
-		    		CONFIGURATION.crossingSpeed =Double.parseDouble(pArr[9]);
-		    		
-		    		CONFIGURATION.tailApproachSelected = Double.parseDouble(pArr[10])>0? true: false;
-		    		CONFIGURATION.tailApproachOffset= Double.parseDouble(pArr[11]);
-		    		CONFIGURATION.tailApproachIsRightSide=Double.parseDouble(pArr[12])>0? true: false;
-		    		CONFIGURATION.tailApproachSpeed =Double.parseDouble(pArr[13]);
-		    		
-				}
-//					System.out.println(CONFIGURATION.selfDestDist);
-			}
-		});
-		btnLoad.setBounds(226, 48, 69, 25);
-		this.add(btnLoad);
-		
-		JLabel lblDestDist = new JLabel("Dest Dist");
-		lblDestDist.setBounds(12, 79, 65, 15);
-		this.add(lblDestDist);
-		
-		JLabel lblDestAngle = new JLabel("Dest Angle");
-		lblDestAngle.setBounds(12, 106, 77, 15);
-		this.add(lblDestAngle);
-		
-		JSlider destDistSlider = new JSlider();
-		destDistSlider.setValue((int)CONFIGURATION.selfDestDist);
-		destDistSlider.setMaximum(70);
-		destDistSlider.setMinimum(20);
-		destDistSlider.setBounds(95, 80, 200, 16);
-		this.add(destDistSlider);
-		destDistSlider.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider) e.getSource();
-				CONFIGURATION.selfDestDist = source.getValue();
-			}
-		});
-		
-		JSlider destAngleSlider = new JSlider();
-		destAngleSlider.setValue((int)Math.toDegrees(CONFIGURATION.selfDestAngle));
-		destAngleSlider.setMinimum(-180);
-		destAngleSlider.setMaximum(180);
-		destAngleSlider.setBounds(95, 106, 200, 16);
-		this.add(destAngleSlider);
-		destAngleSlider.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				JSlider source = (JSlider) e.getSource();
-				CONFIGURATION.selfDestAngle = Math.toRadians(source.getValue());
-			}
-		});
 	
 		
 		{
 			JPanel AvoidanceAlgorithmSelectionPanel = new JPanel();
 			AvoidanceAlgorithmSelectionPanel.setBorder(new TitledBorder(null, "CAA Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			AvoidanceAlgorithmSelectionPanel.setBounds(12, 134, 290, 53);
+			AvoidanceAlgorithmSelectionPanel.setBounds(12, 30, 290, 53);
 			this.add(AvoidanceAlgorithmSelectionPanel);
 			AvoidanceAlgorithmSelectionPanel.setLayout(null);
 			
@@ -192,7 +87,7 @@ public class Self extends JPanel
 		{
 			JPanel selfSeparationAlgorithmSelectionPanel = new JPanel();
 			selfSeparationAlgorithmSelectionPanel.setBorder(new TitledBorder(null, "SSA Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			selfSeparationAlgorithmSelectionPanel.setBounds(12, 199, 290, 62);
+			selfSeparationAlgorithmSelectionPanel.setBounds(12, 102, 290, 62);
 			this.add(selfSeparationAlgorithmSelectionPanel);
 			selfSeparationAlgorithmSelectionPanel.setLayout(null);
 			
@@ -225,91 +120,103 @@ public class Self extends JPanel
 			});
 		}
 		
-		
 		JLabel lblMaxspeed = new JLabel("MaxSpeed");
-		lblMaxspeed.setBounds(12, 285, 73, 15);
+		lblMaxspeed.setBounds(12, 188, 82, 15);
 		this.add(lblMaxspeed);
-		
-		JLabel lblMaxacceleration = new JLabel("MaxAcceleration");
-		lblMaxacceleration.setBounds(12, 312, 116, 15);
-		this.add(lblMaxacceleration);
-		
-		JLabel lblMaxdecceleration = new JLabel("MaxDeceleration");
-		lblMaxdecceleration.setBounds(12, 339, 119, 15);
-		this.add(lblMaxdecceleration);
-		
-		JLabel lblMaxturning = new JLabel("MaxTurning");
-		lblMaxturning.setBounds(12, 365, 82, 15);
-		this.add(lblMaxturning);
-		
-		JLabel lblSpeed = new JLabel("Speed");
-		lblSpeed.setBounds(12, 392, 45, 15);
-		this.add(lblSpeed);
-		
-		JLabel lblViewingRange = new JLabel("ViewingRange");
-		lblViewingRange.setBounds(12, 421, 101, 15);
-		this.add(lblViewingRange);
-		
-		JLabel lblViewingAngle = new JLabel("ViewingAngle");
-		lblViewingAngle.setBounds(12, 448, 96, 15);
-		this.add(lblViewingAngle);
-		
-		JLabel lblSensitivityForCollisions = new JLabel("SensitivityForCollisions");
-		lblSensitivityForCollisions.setBounds(12, 475, 165, 15);
-		this.add(lblSensitivityForCollisions);
-		
-		JLabel lblSafetyradius = new JLabel("SafetyRadius");
-		lblSafetyradius.setBounds(12, 515, 94, 15);
-		this.add(lblSafetyradius);
-		
-		JLabel lblAlpha = new JLabel("Alpha");
-		lblAlpha.setBounds(12, 542, 40, 15);
-		this.add(lblAlpha);
 		
 		
 		maxSpeedTextField = new JTextField();
-		maxSpeedTextField.setText(String.valueOf(CONFIGURATION.selfMaxSpeed));
+		maxSpeedTextField.setText(String.valueOf(CONFIGURATION.selfMaxSpeed/CONFIGURATION.lengthScale));
 		maxSpeedTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				JTextField maxSpeedTextField = (JTextField) e.getSource();
-				CONFIGURATION.selfMaxSpeed = new Double(maxSpeedTextField.getText());
+				CONFIGURATION.selfMaxSpeed = new Double(maxSpeedTextField.getText())*CONFIGURATION.lengthScale;
 			}
 		});
-		
-		
-		maxSpeedTextField.setBounds(189, 285, 114, 19);
+		maxSpeedTextField.setBounds(188, 186, 114, 19);
 		this.add(maxSpeedTextField);
 		maxSpeedTextField.setColumns(10);
 		
-		maxAccelerationTextField = new JTextField();
-		maxAccelerationTextField.setText(String.valueOf(CONFIGURATION.selfMaxAcceleration));
-		maxAccelerationTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				JTextField maxAccelerationTextField = (JTextField) e.getSource();
-				CONFIGURATION.selfMaxAcceleration = new Double(maxAccelerationTextField.getText());
-			}
-		});
-		maxAccelerationTextField.setBounds(189, 312, 114, 19);
-		this.add(maxAccelerationTextField);
-		maxAccelerationTextField.setColumns(10);
 		
-		maxDecelerationTextField = new JTextField();
-		maxDecelerationTextField.setText(String.valueOf(CONFIGURATION.selfMaxDeceleration));
-		maxDecelerationTextField.addKeyListener(new KeyAdapter() {
+		JLabel lblMinspeed = new JLabel("MinSpeed");
+		lblMinspeed.setBounds(12, 217, 70, 19);
+		this.add(lblMinspeed);
+		
+		
+		minSpeedTextField = new JTextField();
+		minSpeedTextField.setText(String.valueOf(CONFIGURATION.selfMinSpeed/CONFIGURATION.lengthScale));
+		minSpeedTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				JTextField maxDecelerationTextField = (JTextField) e.getSource();
-				CONFIGURATION.selfMaxDeceleration = new Double(maxDecelerationTextField.getText());
+				JTextField minSpeedTextField = (JTextField) e.getSource();
+				CONFIGURATION.selfMinSpeed = new Double(minSpeedTextField.getText())*CONFIGURATION.lengthScale;
 			}
 		});
-		maxDecelerationTextField.setBounds(189, 339, 114, 19);
-		this.add(maxDecelerationTextField);
-		maxDecelerationTextField.setColumns(10);
+		
+		JLabel lblSpeed = new JLabel("Speed");
+		lblSpeed.setBounds(12, 244, 45, 15);
+		this.add(lblSpeed);
+		
+		speedTextField = new JTextField();
+		speedTextField.setText(String.valueOf(CONFIGURATION.selfSpeed/CONFIGURATION.lengthScale));
+		speedTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField speedTextField = (JTextField) e.getSource();
+				CONFIGURATION.selfSpeed = new Double(speedTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		speedTextField.setBounds(189, 244, 114, 19);
+		this.add(speedTextField);
+		speedTextField.setColumns(10);
+		minSpeedTextField.setBounds(188, 217, 114, 19);
+		this.add(minSpeedTextField);
+		minSpeedTextField.setColumns(10);
+		
+		
+		JLabel lblMaxClimb = new JLabel("MaxClimb");
+		lblMaxClimb.setBounds(12, 271, 70, 19);
+		this.add(lblMaxClimb);
+		
+		
+		maxClimbTextField = new JTextField();
+		maxClimbTextField.setText(String.valueOf(CONFIGURATION.selfMaxClimb/CONFIGURATION.lengthScale));
+		maxClimbTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField maxClimbTextField = (JTextField) e.getSource();
+				CONFIGURATION.selfMaxClimb = new Double(maxClimbTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		maxClimbTextField.setBounds(188, 271, 114, 19);
+		this.add(maxClimbTextField);
+		maxClimbTextField.setColumns(10);
+		
+		JLabel lblMaxDescent = new JLabel("MaxDescent");
+		lblMaxDescent.setBounds(12, 305, 101, 19);
+		this.add(lblMaxDescent);
+		
+		
+		maxDescentTextField = new JTextField();
+		maxDescentTextField.setText(String.valueOf(CONFIGURATION.selfMaxDescent/CONFIGURATION.lengthScale));
+		maxDescentTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField maxDescentTextField = (JTextField) e.getSource();
+				CONFIGURATION.selfMaxDescent = new Double(maxDescentTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		maxDescentTextField.setBounds(188, 305, 114, 19);
+		this.add(maxDescentTextField);
+		maxDescentTextField.setColumns(10);
+		
+		JLabel lblMaxturning = new JLabel("MaxTurning");
+		lblMaxturning.setBounds(12, 336, 82, 15);
+		this.add(lblMaxturning);
 		
 		maxTurningTextField = new JTextField();
-		maxTurningTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.selfMaxTurning))));
+		maxTurningTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.selfMaxTurning)*100)/100.0));
 		maxTurningTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -317,38 +224,68 @@ public class Self extends JPanel
 				CONFIGURATION.selfMaxTurning = Math.toRadians(new Double(maxTurningTextField.getText()));
 			}
 		});
-		maxTurningTextField.setBounds(189, 365, 114, 19);
+		maxTurningTextField.setBounds(189, 336, 114, 19);
 		this.add(maxTurningTextField);
 		maxTurningTextField.setColumns(10);
 		
-		speedTextField = new JTextField();
-		speedTextField.setText(String.valueOf(CONFIGURATION.selfSpeed));
-		speedTextField.addKeyListener(new KeyAdapter() {
+		
+		JLabel lblMaxacceleration = new JLabel("MaxAcceleration");
+		lblMaxacceleration.setBounds(12, 426, 116, 15);
+		this.add(lblMaxacceleration);
+		
+		maxAccelerationTextField = new JTextField();
+		maxAccelerationTextField.setText(String.valueOf(CONFIGURATION.selfMaxAcceleration/CONFIGURATION.lengthScale));
+		maxAccelerationTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				JTextField speedTextField = (JTextField) e.getSource();
-				CONFIGURATION.selfSpeed = new Double(speedTextField.getText());
+				JTextField maxAccelerationTextField = (JTextField) e.getSource();
+				CONFIGURATION.selfMaxAcceleration = new Double(maxAccelerationTextField.getText())*CONFIGURATION.lengthScale;
 			}
 		});
-		speedTextField.setBounds(189, 392, 114, 19);
-		this.add(speedTextField);
-		speedTextField.setColumns(10);
+		maxAccelerationTextField.setBounds(189, 426, 114, 19);
+		this.add(maxAccelerationTextField);
+		maxAccelerationTextField.setColumns(10);
+		
+		JLabel lblMaxdecceleration = new JLabel("MaxDeceleration");
+		lblMaxdecceleration.setBounds(12, 453, 119, 15);
+		this.add(lblMaxdecceleration);
+		
+		maxDecelerationTextField = new JTextField();
+		maxDecelerationTextField.setText(String.valueOf(CONFIGURATION.selfMaxDeceleration/CONFIGURATION.lengthScale));
+		maxDecelerationTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField maxDecelerationTextField = (JTextField) e.getSource();
+				CONFIGURATION.selfMaxDeceleration = new Double(maxDecelerationTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		maxDecelerationTextField.setBounds(189, 453, 114, 19);
+		this.add(maxDecelerationTextField);
+		maxDecelerationTextField.setColumns(10);
+		
+		JLabel lblViewingRange = new JLabel("ViewingRange");
+		lblViewingRange.setBounds(12, 484, 101, 15);
+		this.add(lblViewingRange);
 		
 		viewingRangeTextField = new JTextField();
-		viewingRangeTextField.setText(String.valueOf(CONFIGURATION.selfViewingRange));
+		viewingRangeTextField.setText(String.valueOf(CONFIGURATION.selfViewingRange/CONFIGURATION.lengthScale));
 		viewingRangeTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				JTextField viewingRangeTextField = (JTextField) e.getSource();
-				CONFIGURATION.selfViewingRange = new Double(viewingRangeTextField.getText());
+				CONFIGURATION.selfViewingRange = new Double(viewingRangeTextField.getText())*CONFIGURATION.lengthScale;
 			}
 		});
-		viewingRangeTextField.setBounds(189, 421, 114, 19);
+		viewingRangeTextField.setBounds(189, 484, 114, 19);
 		this.add(viewingRangeTextField);
 		viewingRangeTextField.setColumns(10);
 		
+		JLabel lblViewingAngle = new JLabel("ViewingAngle");
+		lblViewingAngle.setBounds(12, 511, 96, 15);
+		this.add(lblViewingAngle);
+		
 		viewingAngleTextField = new JTextField();
-		viewingAngleTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.selfViewingAngle))));
+		viewingAngleTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.selfViewingAngle)*100)/100.0));
 		viewingAngleTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -356,35 +293,47 @@ public class Self extends JPanel
 				CONFIGURATION.selfViewingAngle = Math.toRadians(new Double(viewingAngleTextField.getText()));
 			}
 		});
-		viewingAngleTextField.setBounds(189, 448, 114, 19);
+		viewingAngleTextField.setBounds(189, 511, 114, 19);
 		this.add(viewingAngleTextField);
 		viewingAngleTextField.setColumns(10);
 		
+		JLabel lblSensitivityForCollisions = new JLabel("SensitivityForCollisions");
+		lblSensitivityForCollisions.setBounds(12, 538, 165, 15);
+		this.add(lblSensitivityForCollisions);
+		
 		sensitivityForCollisionTextField = new JTextField();
-		sensitivityForCollisionTextField.setText(String.valueOf(CONFIGURATION.selfSensitivityForCollisions));
+		sensitivityForCollisionTextField.setText(String.valueOf(CONFIGURATION.selfSensitivityForCollisions/CONFIGURATION.lengthScale));
 		sensitivityForCollisionTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				JTextField sensitivityForCollisionTextField = (JTextField) e.getSource();
-				CONFIGURATION.selfSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText());
+				CONFIGURATION.selfSensitivityForCollisions = new Double(sensitivityForCollisionTextField.getText())*CONFIGURATION.lengthScale;
 			}
 		});
-		sensitivityForCollisionTextField.setBounds(189, 477, 114, 19);
+		sensitivityForCollisionTextField.setBounds(189, 540, 114, 19);
 		this.add(sensitivityForCollisionTextField);
 		sensitivityForCollisionTextField.setColumns(10);
 		
+		JLabel lblSafetyradius = new JLabel("SafetyRadius");
+		lblSafetyradius.setBounds(12, 578, 94, 15);
+		this.add(lblSafetyradius);
+		
 		safetyRadiusTextField = new JTextField();
-		safetyRadiusTextField.setText(String.valueOf(CONFIGURATION.selfSafetyRadius));
+		safetyRadiusTextField.setText(String.valueOf(CONFIGURATION.selfSafetyRadius/CONFIGURATION.lengthScale));
 		safetyRadiusTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				JTextField safetyRadiusTextField = (JTextField) e.getSource();
-				CONFIGURATION.selfSafetyRadius = new Double(safetyRadiusTextField.getText());
+				CONFIGURATION.selfSafetyRadius = new Double(safetyRadiusTextField.getText())*CONFIGURATION.lengthScale;
 			}
 		});
-		safetyRadiusTextField.setBounds(189, 517, 114, 19);
+		safetyRadiusTextField.setBounds(189, 580, 114, 19);
 		this.add(safetyRadiusTextField);
 		safetyRadiusTextField.setColumns(10);
+		
+		JLabel lblAlpha = new JLabel("Alpha");
+		lblAlpha.setBounds(12, 605, 40, 15);
+		this.add(lblAlpha);
 			
 		alphaTextField = new JTextField();
 		alphaTextField.setText(String.valueOf(CONFIGURATION.selfAlpha));
@@ -396,7 +345,7 @@ public class Self extends JPanel
 				
 			}
 		});
-		alphaTextField.setBounds(189, 544, 114, 19);
+		alphaTextField.setBounds(189, 607, 114, 19);
 		this.add(alphaTextField);
 		alphaTextField.setColumns(10);
 	}

@@ -56,7 +56,7 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 		
 		
        	long time = System.nanoTime();
-		SAAModel simState= new SAAModel(785945568, 150, 100, false); 	
+		SAAModel simState= new SAAModel(785945568, CONFIGURATION.fieldXVal, CONFIGURATION.fieldYVal, false); 	
 		
 		CONFIGURATION.selfDestDist = destDist;
 		CONFIGURATION.selfDestAngle = destAngle;

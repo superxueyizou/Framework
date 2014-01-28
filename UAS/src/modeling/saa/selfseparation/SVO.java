@@ -62,7 +62,8 @@ public class SVO extends SelfSeparationAlgorithm
 		// Specify global time step of the simulation.
 		avoSimulator.setTimeStep(1);
 		// Specify default parameters for agents that are subsequently added.
-		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15, 15, hostUAS.getRadius(),1.0,hostUAS.getSpeed(), hostUAS.getUasPerformance().getCurrentMaxSpeed(),-1,  hostUAS.getUasPerformance().getMaxAcceleration(), new Double2D()); 
+		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15, 15, hostUAS.getRadius(),1.0,hostUAS.getSpeed(),hostUAS.getUasPerformance().getCurrentMaxSpeed(),-1, 
+				hostUAS.getUasPerformance().getMaxAcceleration(),hostUAS.getUasPerformance().getMaxTurning(), new Double2D()); 
 		//orcaSimulator.setAgentDefaults(1.0, 8, 10.0, 20.0f, 0.5, 8.0, new Double());
 
 		for(int i=0; i<state.uasBag.size(); i++)
@@ -73,7 +74,9 @@ public class SVO extends SelfSeparationAlgorithm
 				hostUASIDInAVOSimulator=i;
 			}
 
-			avoSimulator.addAgent(uas.getLocation(), avoSimulator.addGoal(uas.getDestination().getLocation()));			
+			Double2D avoLocation = new Double2D(uas.getLocation().x, -uas.getLocation().y);
+			Double2D avoGoalLocation = new Double2D(uas.getDestination().getLocation().x, -uas.getDestination().getLocation().y);
+			avoSimulator.addAgent(avoLocation, avoSimulator.addGoal(avoGoalLocation));			
 		}
 		
 	}
@@ -82,7 +85,7 @@ public class SVO extends SelfSeparationAlgorithm
 	public Waypoint execute()
 	{		
 		updateSVOSimulator(state);
-		avoSimulator.doStep();
+		int mode = avoSimulator.agentDoStep(hostUASIDInAVOSimulator);
 		
 		if(state.runningWithUI)
 		{
@@ -112,11 +115,44 @@ public class SVO extends SelfSeparationAlgorithm
 			}
 			
 		}
-
-
-		Double2D newLocation = avoSimulator.getAgentPosition(hostUASIDInAVOSimulator);		
+		
 		Waypoint wp = new Waypoint(state.getNewID(), hostUAS.getDestination());
-		wp.setLocation(newLocation);
+		if(mode==1) //avoid
+		{
+			wp.setLocation(hostUAS.getLocation().add(hostUAS.getVelocity().rotate(Math.toRadians(2.5))));
+			wp.setAction(mode);
+			System.out.println("UAV"+hostUASIDInAVOSimulator+": turn right!");
+			
+		}
+		else if (mode==2)//maintain
+		{
+			wp.setLocation(hostUAS.getLocation().add(hostUAS.getVelocity()));
+			wp.setAction(mode);
+			System.out.println("UAV"+hostUASIDInAVOSimulator+": keep!"+ hostUAS.getVelocity());
+		}
+//		else if (mode == 3)//alert
+//		{
+//			if(hostUAS.getVelocity().angle()>0.01 && Math.PI-hostUAS.getVelocity().angle()>Math.toRadians(2.5))
+//			{
+//				wp.setLocation(hostUAS.getLocation().add(hostUAS.getVelocity().rotate(Math.toRadians(-2.5))));
+//			}
+//			else if(hostUAS.getVelocity().angle()<0.01 && -hostUAS.getVelocity().angle()>Math.toRadians(2.5))
+//			{
+//				wp.setLocation(hostUAS.getLocation().add(hostUAS.getVelocity().rotate(Math.toRadians(-2.5))));
+//			}
+//			else
+//			{
+//			}
+//			wp.setAction(mode);
+//			System.out.println("UAV"+hostUASIDInAVOSimulator+": alert!"+ hostUAS.getVelocity());
+//		}
+		else//restore
+		{
+			wp=null;
+//			wp.setLocation(hostUAS.getLocation().add(hostUAS.getVelocity()));
+//			wp.setAction(mode);
+//			System.out.println("UAV"+hostUASIDInAVOSimulator+": restore!"+ hostUAS.getVelocity());
+		}
 		return wp;
 	
 	}
@@ -128,15 +164,15 @@ public class SVO extends SelfSeparationAlgorithm
 		{
 			UAS agent= (UAS)state.uasBag.get(i);
 			
-			Double2D location;
-			Double2D velocity;
-			double   radius;
+			Double2D avoLocation;
+			Double2D avoVelocity;
+			double   avoRadius;
 			
 			if(agent==hostUAS)
 			{
-				location = agent.getLocation();
-				velocity = agent.getVelocity();
-				radius = agent.getRadius();
+				avoLocation = new Double2D(agent.getLocation().x, -agent.getLocation().y);
+				avoVelocity = new Double2D(agent.getVelocity().x, -agent.getVelocity().y);
+				avoRadius = agent.getRadius();
 				
 			}
 			else
@@ -149,19 +185,20 @@ public class SVO extends SelfSeparationAlgorithm
 					continue;
 				}
 				
-				location = new Double2D(agent.getOldLocation().x,agent.getOldLocation().y);
-				velocity= new Double2D(agent.getOldVelocity().x, agent.getOldVelocity().y);
-				radius = agent.getRadius();
+//				avoLocation = new Double2D(agent.getOldLocation().x, -agent.getOldLocation().y);
+//				avoVelocity = new Double2D(agent.getOldVelocity().x, -agent.getOldVelocity().y);
+//				avoRadius = agent.getRadius();
 				
-//				Normal normal = new Normal(0,0.02,state.random);
-//				location = new Double2D(agent.getOldLocation().x*(1+normal.nextDouble()), agent.getOldLocation().y*(1+normal.nextDouble()));
-//				velocity = new Double2D(agent.getOldVelocity().x*(1+normal.nextDouble()), agent.getOldVelocity().y*(1+normal.nextDouble()));
-//				radius = agent.getRadius()*(1+normal.nextDouble());
+				
+				Normal normal = new Normal(0,0.02,state.random);
+				avoLocation = new Double2D(agent.getOldLocation().x*(1+normal.nextDouble()), -agent.getOldLocation().y*(1+normal.nextDouble()));
+				avoVelocity = new Double2D(agent.getOldVelocity().x*(1+normal.nextDouble()), -agent.getOldVelocity().y*(1+normal.nextDouble()));
+				avoRadius = agent.getRadius()*(1+normal.nextDouble());
 			}
 			
-			avoSimulator.setAgentPosition(i, location);
-			avoSimulator.setAgentVelocity(i, velocity);
-			avoSimulator.setAgentRadius(i, radius);
+			avoSimulator.setAgentPosition(i, avoLocation);
+			avoSimulator.setAgentVelocity(i, avoVelocity);
+			avoSimulator.setAgentRadius(i, avoRadius*4);
 			
 		}
 

@@ -2,6 +2,7 @@ package modeling;
 
 import modeling.encountergenerator.CrossingGenerator;
 import modeling.encountergenerator.HeadOnGenerator;
+import modeling.encountergenerator.SelfGenerator;
 import modeling.encountergenerator.TailApproachGenerator;
 import modeling.env.Destination;
 import modeling.saa.collsionavoidance.AVO;
@@ -29,12 +30,10 @@ import tools.CONFIGURATION;
  */
 public class SAAModelBuilder
 {
-	private static String simLength = "1000";
-	
 	public  SAAModel state;
 	
-	public static double worldXVal = 150; //150,000m
-	public static double worldYVal = 105; //105,000m
+	public static double fieldXVal = CONFIGURATION.fieldXVal; 
+	public static double fieldYVal = CONFIGURATION.fieldYVal;
 
 	
 	public SAAModelBuilder(SAAModel simState)
@@ -44,60 +43,23 @@ public class SAAModelBuilder
 	}
 	
 	public  void generateSimulation()
-	{		
-		
-		double x = worldXVal/2.0; ;
-		double y = worldYVal/2.0;		
-
-		Double2D location = new Double2D(x,y);
-		Destination d = generateDestination(x, y, CONFIGURATION.selfDestDist, CONFIGURATION.selfDestAngle,state.obstacles);
-		UASVelocity uasVelocity = new UASVelocity(d.getLocation().subtract(location).normalize().multiply(CONFIGURATION.selfSpeed));
-		UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMaxAcceleration, CONFIGURATION.selfMaxDeceleration, CONFIGURATION.selfMaxTurning);
-		SenseParas senseParas = new SenseParas(CONFIGURATION.selfViewingRange,CONFIGURATION.selfViewingAngle, CONFIGURATION.selfSensitivityForCollisions);
-		AvoidParas avoidParas = new AvoidParas(CONFIGURATION.selfAlpha);
-		
-		UAS self = new UAS(state.getNewID(),CONFIGURATION.selfSafetyRadius,location, d, uasVelocity,uasPerformance, senseParas,avoidParas);
-		
-		Sensor sensor = new SimpleSensor();
-		
-		SelfSeparationAlgorithm ssa; 
-		switch (CONFIGURATION.selfSelfSeparationAlgorithmSelection)
+	{	
+		UAS self;
+		if(CONFIGURATION.tailApproachSelected)
 		{
-			case "SVOAvoidanceAlgorithm":
-				ssa= new SVO(state, self);
-				break;
-			case "None":
-				ssa= new SelfSeparationAlgorithmAdapter(state, self);
-				break;
-			default:
-				ssa= new SelfSeparationAlgorithmAdapter(state, self);
-		
+			double uasX= fieldXVal/9;
+	    	double uasY= fieldYVal/2;
+	    	self = new SelfGenerator(state,uasX, uasY, CONFIGURATION.selfDestDist, CONFIGURATION.selfDestAngle).execute();
+	    	
 		}
-		
-		CollisionAvoidanceAlgorithm caa;
-		switch(CONFIGURATION.selfCollisionAvoidanceAlgorithmSelection)
+		else
 		{
-			case "AVOAvoidanceAlgorithm":
-				caa= new AVO(state, self);
-				break;
-			case "None":
-				caa= new CollisionAvoidanceAlgorithmAdapter(state, self);
-				break;
-			default:
-				caa= new CollisionAvoidanceAlgorithmAdapter(state, self);
+			double uasX= fieldXVal/10;
+	    	double uasY= fieldYVal/2;
+	    	self = new SelfGenerator(state,uasX, uasY, CONFIGURATION.selfDestDist, CONFIGURATION.selfDestAngle).execute();
+	    				
 		}
-		
-		
-		
-		self.init(sensor,ssa,caa);
-				
-		state.uasBag.add(self);
-		state.obstacles.add(self);
-		state.allEntities.add(self);
-		self.setSchedulable(true);
-		state.toSchedule.add(self);
-		
-		
+	
 	    if(CONFIGURATION.headOnSelected)
 	    {
 	    	double offset = CONFIGURATION.headOnOffset ;
@@ -121,6 +83,7 @@ public class SAAModelBuilder
 	    	}
 	    
 	    }
+	    
 	    if(CONFIGURATION.crossingSelected)
 	    {
     		double encounterAngle = CONFIGURATION.crossingEncounterAngle;
@@ -143,6 +106,7 @@ public class SAAModelBuilder
 	    	}
 	    	
 	    }
+	    
 	    if(CONFIGURATION.tailApproachSelected)
 	    {
 	    	double offset = CONFIGURATION.tailApproachOffset;
@@ -179,24 +143,7 @@ public class SAAModelBuilder
 	}
 
 	
-	public Destination generateDestination(double uasX, double uasY, double distance, double angle, Bag obstacles)
-	{
-		int dID = state.getNewID();
-		Destination d = new Destination(dID, null);
-		double desX, desY;
-		double delta=0;
-		do
-		{
-			desX = uasX + (distance+delta)* Math.cos(angle);
-			desY = uasY - (distance+delta)* Math.sin(angle);
-			delta += 1.0;
-		}  while (state.obstacleAtPoint(new Double2D(desX,desY), obstacles));
-		
-		d.setLocation(new Double2D(desX,desY));
-		d.setSchedulable(false);
-		state.allEntities.add(d);
-		return d;
-	}
+
 
 	
 }

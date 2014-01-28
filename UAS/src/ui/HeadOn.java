@@ -125,13 +125,13 @@ public class HeadOn extends JPanel
 			
 			headOnOffsetTextField = new JTextField();
 			headOnOffsetTextField.setBounds(233, 94, 69, 19);
-			headOnOffsetTextField.setText(""+CONFIGURATION.headOnOffset);
+			headOnOffsetTextField.setText(""+CONFIGURATION.headOnOffset/CONFIGURATION.lengthScale);
 			headOnOffsetTextField.setColumns(10);
 			headOnOffsetTextField.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyReleased(KeyEvent e) {
 					JTextField offsetTextField=(JTextField) e.getSource();
-					CONFIGURATION.headOnOffset=Double.parseDouble(offsetTextField.getText());
+					CONFIGURATION.headOnOffset=Double.parseDouble(offsetTextField.getText())*CONFIGURATION.lengthScale;
 				}
 			});
 			this.add(headOnOffsetTextField);
@@ -143,7 +143,7 @@ public class HeadOn extends JPanel
 		{
 			JPanel AvoidanceAlgorithmSelectionPanel = new JPanel();
 			AvoidanceAlgorithmSelectionPanel.setBorder(new TitledBorder(null, "CAA Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			AvoidanceAlgorithmSelectionPanel.setBounds(12, 153, 290, 53);
+			AvoidanceAlgorithmSelectionPanel.setBounds(12, 123, 290, 53);
 			this.add(AvoidanceAlgorithmSelectionPanel);
 			AvoidanceAlgorithmSelectionPanel.setLayout(null);
 			
@@ -181,7 +181,7 @@ public class HeadOn extends JPanel
 		{
 			JPanel selfSeparationAlgorithmSelectionPanel = new JPanel();
 			selfSeparationAlgorithmSelectionPanel.setBorder(new TitledBorder(null, "SSA Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			selfSeparationAlgorithmSelectionPanel.setBounds(12, 234, 290, 59);
+			selfSeparationAlgorithmSelectionPanel.setBounds(12, 185, 290, 59);
 			this.add(selfSeparationAlgorithmSelectionPanel);
 			selfSeparationAlgorithmSelectionPanel.setLayout(null);
 			
@@ -212,6 +212,116 @@ public class HeadOn extends JPanel
 					}
 				}
 			});
+		}
+		
+		{
+			JLabel lblMaxspeed = new JLabel("MaxSpeed");
+			lblMaxspeed.setBounds(12, 271, 82, 15);
+			this.add(lblMaxspeed);
+			
+			
+			JTextField maxSpeedTextField = new JTextField();
+			maxSpeedTextField.setText(String.valueOf(CONFIGURATION.headOnMaxSpeed/CONFIGURATION.lengthScale));
+			maxSpeedTextField.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					JTextField maxSpeedTextField = (JTextField) e.getSource();
+					CONFIGURATION.headOnMaxSpeed = new Double(maxSpeedTextField.getText())*CONFIGURATION.lengthScale;
+				}
+			});
+			maxSpeedTextField.setBounds(188, 269, 114, 19);
+			this.add(maxSpeedTextField);
+			maxSpeedTextField.setColumns(10);
+			
+			
+			JLabel lblMinspeed = new JLabel("MinSpeed");
+			lblMinspeed.setBounds(12, 300, 70, 19);
+			this.add(lblMinspeed);
+			
+			
+			JTextField minSpeedTextField = new JTextField();
+			minSpeedTextField.setText(String.valueOf(CONFIGURATION.headOnMinSpeed/CONFIGURATION.lengthScale));
+			minSpeedTextField.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					JTextField minSpeedTextField = (JTextField) e.getSource();
+					CONFIGURATION.headOnMinSpeed = new Double(minSpeedTextField.getText())*CONFIGURATION.lengthScale;
+				}
+			});
+			
+			JLabel lblSpeed = new JLabel("Speed");
+			lblSpeed.setBounds(12, 327, 45, 15);
+			this.add(lblSpeed);
+			
+			JTextField speedTextField = new JTextField();
+			speedTextField.setText(String.valueOf(CONFIGURATION.headOnSpeed/CONFIGURATION.lengthScale));
+			speedTextField.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					JTextField speedTextField = (JTextField) e.getSource();
+					CONFIGURATION.headOnSpeed = new Double(speedTextField.getText())*CONFIGURATION.lengthScale;
+				}
+			});
+			speedTextField.setBounds(189, 327, 114, 19);
+			this.add(speedTextField);
+			speedTextField.setColumns(10);
+			minSpeedTextField.setBounds(188, 300, 114, 19);
+			this.add(minSpeedTextField);
+			minSpeedTextField.setColumns(10);
+			
+			
+			JLabel lblMaxClimb = new JLabel("MaxClimb");
+			lblMaxClimb.setBounds(12, 354, 70, 19);
+			this.add(lblMaxClimb);
+			
+			
+			JTextField maxClimbTextField = new JTextField();
+			maxClimbTextField.setText(String.valueOf(CONFIGURATION.headOnMaxClimb/CONFIGURATION.lengthScale));
+			maxClimbTextField.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					JTextField maxClimbTextField = (JTextField) e.getSource();
+					CONFIGURATION.headOnMaxClimb = new Double(maxClimbTextField.getText())*CONFIGURATION.lengthScale;
+				}
+			});
+			maxClimbTextField.setBounds(188, 354, 114, 19);
+			this.add(maxClimbTextField);
+			maxClimbTextField.setColumns(10);
+			
+			JLabel lblMaxDescent = new JLabel("MaxDescent");
+			lblMaxDescent.setBounds(12, 388, 101, 19);
+			this.add(lblMaxDescent);
+			
+			
+			JTextField maxDescentTextField = new JTextField();
+			maxDescentTextField.setText(String.valueOf(CONFIGURATION.headOnMaxDescent/CONFIGURATION.lengthScale));
+			maxDescentTextField.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					JTextField maxDescentTextField = (JTextField) e.getSource();
+					CONFIGURATION.headOnMaxDescent = new Double(maxDescentTextField.getText())*CONFIGURATION.lengthScale;
+				}
+			});
+			maxDescentTextField.setBounds(188, 388, 114, 19);
+			this.add(maxDescentTextField);
+			maxDescentTextField.setColumns(10);
+			
+			JLabel lblMaxturning = new JLabel("MaxTurning");
+			lblMaxturning.setBounds(12, 419, 82, 15);
+			this.add(lblMaxturning);
+			
+			JTextField maxTurningTextField = new JTextField();
+			maxTurningTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.headOnMaxTurning)*100)/100.0));
+			maxTurningTextField.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					JTextField maxTurningTextField = (JTextField) e.getSource();
+					CONFIGURATION.headOnMaxTurning = Math.toRadians(new Double(maxTurningTextField.getText()));
+				}
+			});
+			maxTurningTextField.setBounds(189, 419, 114, 19);
+			this.add(maxTurningTextField);
+			maxTurningTextField.setColumns(10);
 		}
 						
 	}
