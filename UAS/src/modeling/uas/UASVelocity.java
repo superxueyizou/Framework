@@ -1,6 +1,7 @@
 package modeling.uas;
 
 import sim.util.Double2D;
+import tools.CALCULATION;
 
 public class UASVelocity 
 {
@@ -13,7 +14,7 @@ public class UASVelocity
 		super();
 		this.velocity = velocity;
 		this.speed = velocity.length();
-		this.bearing = velocity.angle();
+		this.bearing = velocity.masonAngle();
 	}
 
 	public double getSpeed() 
@@ -34,8 +35,9 @@ public class UASVelocity
 
 	public void setBearing(double bearing) 
 	{
+		double oldBearing = this.bearing;
 		this.bearing = bearing;
-		this.velocity = this.velocity.rotate(this.bearing-this.velocity.angle());
+		this.velocity = this.velocity.masonRotate(this.bearing-oldBearing);
 	}
 
 	public Double2D getVelocity() 
@@ -47,7 +49,7 @@ public class UASVelocity
 	{
 		this.velocity = velocity;
 		this.speed = this.velocity.length();
-		this.bearing = this.velocity.angle();
+		this.bearing = velocity.masonAngle();
 	}
 	
 	

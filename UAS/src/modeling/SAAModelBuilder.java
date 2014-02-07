@@ -8,7 +8,7 @@ import modeling.env.Destination;
 import modeling.saa.collsionavoidance.AVO;
 import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithm;
 import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithmAdapter;
-import modeling.saa.selfseparation.SVO;
+import modeling.saa.selfseparation.SVOSep;
 import modeling.saa.selfseparation.SelfSeparationAlgorithm;
 import modeling.saa.selfseparation.SelfSeparationAlgorithmAdapter;
 import modeling.saa.sense.Sensor;

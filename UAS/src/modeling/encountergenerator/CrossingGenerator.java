@@ -10,7 +10,8 @@ import modeling.env.Destination;
 import modeling.saa.collsionavoidance.AVO;
 import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithm;
 import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithmAdapter;
-import modeling.saa.selfseparation.SVO;
+import modeling.saa.collsionavoidance.SVO;
+import modeling.saa.selfseparation.SVOSep;
 import modeling.saa.selfseparation.SelfSeparationAlgorithm;
 import modeling.saa.selfseparation.SelfSeparationAlgorithmAdapter;
 import modeling.saa.sense.Sensor;
@@ -83,7 +84,7 @@ public class CrossingGenerator extends EncounterGenerator
 		switch (CONFIGURATION.crossingSelfSeparationAlgorithmSelection)
 		{
 			case "SVOAvoidanceAlgorithm":
-				ssa= new SVO(state, intruder);
+				ssa= new SVOSep(state, intruder);
 				break;
 			case "None":
 				ssa= new SelfSeparationAlgorithmAdapter(state, intruder);
@@ -98,6 +99,9 @@ public class CrossingGenerator extends EncounterGenerator
 		{
 			case "AVOAvoidanceAlgorithm":
 				caa= new AVO(state, intruder);
+				break;
+			case "SVOAvoidanceAlgorithm":
+				caa= new SVO(state, intruder);
 				break;
 			case "None":
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, intruder);

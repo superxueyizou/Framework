@@ -66,6 +66,21 @@ public class Self extends JPanel
 					}
 				}
 			});
+
+			
+			JRadioButton rdbtnSVOAvoidanceAlgorithm = new JRadioButton("SVO");
+			rdbtnSVOAvoidanceAlgorithm.setBounds(108, 22, 94, 23);
+			rdbtnSVOAvoidanceAlgorithm.setSelected(CONFIGURATION.selfCollisionAvoidanceAlgorithmSelection == "SVOAvoidanceAlgorithm");
+			AvoidanceAlgorithmSelectionPanel.add(rdbtnSVOAvoidanceAlgorithm);
+			selfCollisionAvoidanceAlgorithmGroup.add(rdbtnSVOAvoidanceAlgorithm);
+			rdbtnSVOAvoidanceAlgorithm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(((JRadioButton)e.getSource()).isSelected())
+					{
+						CONFIGURATION.selfCollisionAvoidanceAlgorithmSelection = "SVOAvoidanceAlgorithm";
+					}
+				}
+			});
 			
 			JRadioButton rdbtnNone = new JRadioButton("None");
 			rdbtnNone.setBounds(209, 22, 62, 23);

@@ -86,14 +86,7 @@ public class AccidentDetector implements Constants,Steppable
 			{
 				continue;
 			}
-			
-//			if(uas1.getDistanceToDanger()<=uas1.getRadius())
-//			{
-//				addLog(Constants.AccidentType.CLASHWITHOTHERUAS, uas1.getID(), state.schedule.getSteps(), uas1.getLocation(), "the other UAS's ID is unknown");
-//				noAccidents++;
-//				uas1.isActive=false;
-//				continue ;
-//			}
+
 			/************
 			 * test if there is a collision with circular obstacles (exactly, i.e. not including UAS)
 			 */

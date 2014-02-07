@@ -6,16 +6,13 @@ import modeling.SAAModel;
 import modeling.env.CircleObstacle;
 import modeling.env.Constants;
 import modeling.env.Destination;
-import modeling.env.Obstacle;
 import modeling.env.Waypoint;
 import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithm;
 import modeling.saa.selfseparation.SelfSeparationAlgorithm;
 import modeling.saa.sense.Sensor;
-
 import sim.engine.*;
 import sim.portrayal.Oriented2D;
 import sim.util.*;
-import tools.CALCULATION;
 import tools.CONFIGURATION;
 
 /**
@@ -57,7 +54,11 @@ public class UAS extends CircleObstacle implements Oriented2D
 	
 	
 	//parameters for recording information about simulation
+	private double tempDistanceToDanger = Double.MAX_VALUE; //records the closest distance to danger in each step
 	private double distanceToDanger = Double.MAX_VALUE; //records the closest distance to danger experienced by the uas
+	
+	private double tempOscillation = 0; //records the oscillation in each step
+	private double Oscillation = 0; //records the oscillation in a simulation
 	
 	private double safetyRadius;
 	public boolean isActive;	
@@ -114,10 +115,11 @@ public class UAS extends CircleObstacle implements Oriented2D
 				ssaWp = ssa.execute();
 				
 			}
-								
-			nextWp= this.getNextWp();
-			if (nextWp != null && (nextWp == caaWp || nextWp == ssaWp))
+			
+			
+			if (caaWp != null)
 			{
+				nextWp=caaWp;
 				state.environment.setObjectLocation(nextWp, nextWp.getLocation());
 				oldUASVelocity = uasVelocity;
 				uasVelocity= new UASVelocity(nextWp.getLocation().subtract(location));
@@ -125,35 +127,48 @@ public class UAS extends CircleObstacle implements Oriented2D
 				this.setOldLocation(this.location);
 				this.setLocation(nextWp.getLocation());
 				state.environment.setObjectLocation(this, this.location);
-//				System.out.println("nextWp == caaWp || nextWp == ssaWp" );				
+//				System.out.println("nextWp == caaWp" );	
 			}
-			else if (nextWp != null)
+			else if(ssaWp != null)
 			{
+				nextWp=ssaWp;
+				state.environment.setObjectLocation(nextWp, nextWp.getLocation());
+				oldUASVelocity = uasVelocity;
+				uasVelocity= new UASVelocity(nextWp.getLocation().subtract(location));
+				
+				this.setOldLocation(this.location);
+				this.setLocation(nextWp.getLocation());
+				state.environment.setObjectLocation(this, this.location);
+//				System.out.println("nextWp == ssaWp" );	
+			}
+			else if(wpQueue.size() != 0)
+			{
+				nextWp=(Waypoint)wpQueue.peekFirst();
 				oldUASVelocity = uasVelocity;
 				Double2D candVel = nextWp.getLocation().subtract(location).normalize().multiply(CONFIGURATION.selfSpeed);
 				
-				double angle = CALCULATION.getRotateAngle(oldUASVelocity.getVelocity(), candVel);
-				
-				if(angle > Math.toRadians(2.5))
-				{
-					candVel = CALCULATION.vectorRRotate(candVel, Math.toRadians(2.5));
-				}
-				else if(angle < Math.toRadians(-2.5))
-				{
-					candVel = CALCULATION.vectorLRotate(candVel, Math.toRadians(2.5));
-				}
-				else
-				{
-					candVel = candVel;
-				}
+//				double angle = this.getVelocity().masonRotateAngleToDouble2D(candVel);
+//				
+//				if(Math.abs(angle) > Math.toRadians(2.5))
+//				{
+//					candVel = candVel.masonRotate(Math.toRadians(2.5)*angle/Math.abs(angle));
+//				}
+//				else
+//				{
+//					candVel = candVel.masonRotate(angle);
+//				}
+							
+				Waypoint wp= new Waypoint(state.getNewID(), this.getDestination());
+				wp.setLocation(location.add(candVel));
+				wp.setAction(4);
+				state.environment.setObjectLocation(wp,wp.getLocation());
 				
 				uasVelocity = new UASVelocity(candVel);
 				this.setOldLocation(this.location);
-				this.setLocation(location.add(uasVelocity.getVelocity()));
+				this.setLocation(wp.getLocation());
 				state.environment.setObjectLocation(this, this.location);
-				
-//				System.out.println("approaching the auto-pilot's waypoint!");
-				if (this.location.distance(nextWp.getLocation())<2*CONFIGURATION.selfSafetyRadius)
+
+				if (this.location.distance(nextWp.getLocation())<3*CONFIGURATION.selfSafetyRadius)
 				{
 					wpQueue.poll();
 				}
@@ -162,14 +177,12 @@ public class UAS extends CircleObstacle implements Oriented2D
 			{
 				System.out.println("approaching the destination (impossible)!");
 			}
-
-			proximityToDanger(this.location, state.obstacles);
-			
+		
 //			System.out.println("old location: "+this.oldLocation + "  old Velocity: "+ this.getOldVelocity());
 //			System.out.println("new location: "+this.location+ "  new Velocity: "+ this.getVelocity());
 //			System.out.println((this.getOldLocation()== this.getLocation())+" "+(this.getOldVelocity() == this.getVelocity()));
 			
-			if (this.location.distance(destination.getLocation())<2*CONFIGURATION.selfSafetyRadius)
+			if (this.location.distance(destination.getLocation())<3*CONFIGURATION.selfSafetyRadius)
 			{
 				this.isActive = false;
 				//System.out.println("arrived at the destination!");
@@ -184,63 +197,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 		
 		//System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
-	
-//==================================================navigation methods======================================================
 
-	public Waypoint getNextWp()
-	{
-		
-		if (caaWp != null)
-		{
-			return caaWp;
-		}
-		else if(ssaWp != null)
-		{
-			return ssaWp;
-		}
-		else if(wpQueue.size() != 0)
-		{
-			return (Waypoint)wpQueue.peekFirst();
-		}
-		else
-		{
-			return null;
-		}
-		
-	}
-	
-
-	/**
-	 * A method which measures how far away the closest obstacle to the UAS is (does not subtract UAV's radius)
-	 * 
-	 * @param obstacles 
-	 */
-	private void proximityToDanger(Double2D coord, Bag obstacles)
-	{
-		double tempproximityToDanger;
-		
-		for (int i = 0; i < obstacles.size(); i++)
-		{
-			Obstacle obstacle = (Obstacle) obstacles.get(i);
-		    if(obstacle.equals(this))
-			{
-				continue;
-			}
-    		if(!((UAS)obstacle).isActive)
-			{
-				//System.out.println(obstacles.get(i)+"this obstacle is dead, don't mind!");
-				continue;
-			}
-			tempproximityToDanger = obstacle.pointToObstacle(coord)-safetyRadius;
-			if (tempproximityToDanger < distanceToDanger)
-			{
-				distanceToDanger = tempproximityToDanger;
-				
-			}
-		}
-		
-		//System.out.println(distanceToDanger);
-	}
 //**************************************************************************
 	
 	public SelfSeparationAlgorithm getSsa() {
@@ -366,6 +323,14 @@ public class UAS extends CircleObstacle implements Oriented2D
 	public void setAlpha(double alpha) {
 		this.avoidParas.setAlpha(alpha);
 	}
+	
+	public double getTempDistanceToDanger() {
+		return tempDistanceToDanger;
+	}
+
+	public void setTempDistanceToDanger(double tempDistanceToDanger) {
+		this.tempDistanceToDanger = tempDistanceToDanger;
+	}
 
 	public double getDistanceToDanger() {
 		return distanceToDanger;
@@ -375,6 +340,22 @@ public class UAS extends CircleObstacle implements Oriented2D
 		this.distanceToDanger = distanceToDanger;
 	}
 	
+	public double getTempOscillation() {
+		return tempOscillation;
+	}
+
+	public void setTempOscillation(double tempOscillation) {
+		this.tempOscillation = tempOscillation;
+	}
+
+	public double getOscillation() {
+		return Oscillation;
+	}
+
+	public void setOscillation(double oscillation) {
+		Oscillation = oscillation;
+	}
+
 	public LinkedList<Waypoint> getWpQueue() {
 		return wpQueue;
 	}
@@ -413,9 +394,7 @@ public class UAS extends CircleObstacle implements Oriented2D
 	 */
 	public double orientation2D()
 	{
-		return this.uasVelocity.getBearing();
+		return this.uasVelocity.getVelocity().angle(); // this is different from the angle definition in other parts. reverse the sign.
 	}
-
-
 
 }

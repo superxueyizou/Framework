@@ -1,15 +1,15 @@
 package modeling;
 
-import ec.util.MersenneTwisterFast;
 import modeling.env.Entity;
 import modeling.env.Obstacle;
 import modeling.observer.AccidentDetector;
+import modeling.observer.OscillationCalculator;
+import modeling.observer.ProximityMeasurer;
 import modeling.uas.UAS;
 import sim.util.*;
 import sim.field.continuous.*;
 import sim.engine.*;
 import sim.field.network.Network;
-import tools.CONFIGURATION;
 
 public class SAAModel extends SimState
 {
@@ -30,9 +30,10 @@ public class SAAModel extends SimState
     public Continuous2D environment;
     public Network voField;	
 	
-	public AccidentDetector aDetector= new AccidentDetector();
-	
-	private long seed;
+    public AccidentDetector aDetector= new AccidentDetector();
+    public ProximityMeasurer pMeasurer= new ProximityMeasurer();
+    public OscillationCalculator oCalculator= new OscillationCalculator();
+    	
 	/**
 	 * Constructor used for setting up a simulation from the COModelBuilder object.
 	 * 
@@ -44,7 +45,6 @@ public class SAAModel extends SimState
 	public SAAModel(long seed, double x, double y, boolean UI)
     {
 		super(seed);
-		this.seed=seed;
 		environment = new Continuous2D(1.0, x, y);
 		voField = new Network(false);
 		runningWithUI = UI;
@@ -80,8 +80,6 @@ public class SAAModel extends SimState
 		
 		environment.clear(); //clear the environment
 		voField.clear();
-//		random.setSeed(this.seed);
-//		System.out.print(random.nextDouble());
 
 	}
 	
@@ -126,8 +124,9 @@ public class SAAModel extends SimState
 		{
 			schedule.scheduleRepeating((Entity) toSchedule.get(i), i, 1.0);
 		}	
-		schedule.scheduleRepeating(aDetector,i+1, 1.0);
-	
+		schedule.scheduleRepeating(pMeasurer,i+1, 1.0);
+		schedule.scheduleRepeating(oCalculator,i+2, 1.0);
+		schedule.scheduleRepeating(aDetector,i+3, 1.0);	
 		
 	}
 
@@ -144,7 +143,7 @@ public class SAAModel extends SimState
 		for (int i = 0; i < obstacles.size(); i++)
 		{
 			//for all of the obstacles check if the provided point is in it
-			if (((Obstacle) (obstacles.get(i))).pointInShape(coord)) //[TODO] this might not work it depends on if whatever the object is will override inShape
+			if (((Obstacle) (obstacles.get(i))).pointInShape(coord)) 
 			{
 				return true;
 			}

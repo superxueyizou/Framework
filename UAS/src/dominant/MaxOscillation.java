@@ -36,30 +36,30 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
       
         DoubleVectorIndividual ind2 = (DoubleVectorIndividual)ind;
                 
-        double destDist= ind2.genome[0];
-        double destAngle= ind2.genome[1];
+        double selfDestDist= ind2.genome[0];
+        double selfSpeed= ind2.genome[1];
         
-        boolean headOnSelected = (ind2.genome[2]>0)? true: false;
+        boolean headOnSelected = (ind2.genome[2]==1)? true: false;
         double  headOnOffset = ind2.genome[3];
-    	boolean headOnIsRightSide = (ind2.genome[4]>0)? true: false;		
+    	boolean headOnIsRightSide = (ind2.genome[4]==1)? true: false;		
 		double  headOnSpeed = ind2.genome[5];
 		
-        boolean crossingSelected = (ind2.genome[6]>0)? true: false;
+        boolean crossingSelected = (ind2.genome[6]==1)? true: false;
         double  crossingEncounterAngle = ind2.genome[7];
-   		boolean crossingIsRightSide = (ind2.genome[8]>0)? true: false;		
+   		boolean crossingIsRightSide = (ind2.genome[8]==1)? true: false;		
 		double  crossingSpeed = ind2.genome[9];
 		
-        boolean tailApproachSelected = (ind2.genome[10]>0)? true: false;    	
+        boolean tailApproachSelected = (ind2.genome[10]==1)? true: false;    	
 		double  tailApproachOffset = ind2.genome[11];
-		boolean tailApproachIsRightSide = (ind2.genome[12]>0)? true: false;
+		boolean tailApproachIsRightSide = (ind2.genome[12]==1)? true: false;
 		double  tailApproachSpeed = ind2.genome[13];
 		
 		
        	long time = System.nanoTime();
 		SAAModel simState= new SAAModel(785945568, CONFIGURATION.fieldXVal, CONFIGURATION.fieldYVal, false); 	
 		
-		CONFIGURATION.selfDestDist = destDist;
-		CONFIGURATION.selfDestAngle = destAngle;
+		CONFIGURATION.selfDestDist = selfDestDist;
+		CONFIGURATION.selfSpeed = selfSpeed;
 		
 		CONFIGURATION.headOnSelected = headOnSelected;
 		CONFIGURATION.headOnOffset=headOnOffset;
@@ -102,30 +102,24 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 		}
 		
 		simState.start();	
-		
-		double totalArea =0;
+
 		do
 		{
-			boolean simResult = simState.schedule.step(simState);
-			for(int j=0; j<simState.uasBag.size(); j++)
-    		{
-    			UAS uas = (UAS)simState.uasBag.get(j);
-    			Double2D oldVelocity = uas.getOldVelocity();
-    			Double2D newVelocity = uas.getVelocity();
-    			double area =Math.abs(0.5*oldVelocity.negate().perpDot(newVelocity));
-    			totalArea += area;    			
-    		}
-			
-			if (!simResult)
+			if (!simState.schedule.step(simState))
 			{
 				break;
 			}
-		} while(simState.schedule.getSteps()< 1000);  		
+		} while(simState.schedule.getSteps()< 1000);
 		
-		System.out.println("total area: "+ totalArea +"total steps: "+simState.schedule.getSteps());
-    
-		System.out.println("total accidents: "+simState.aDetector.getNoAccidents());
-        
+		double totalArea = 0;
+		for(int j=1; j<simState.uasBag.size(); j++)
+		{
+			UAS uas = (UAS)simState.uasBag.get(j);
+			System.out.println(uas.getOscillation());
+ 
+			totalArea += uas.getOscillation();
+		}
+
 		float rawFitness= (float)totalArea/simState.schedule.getSteps();  
 		float fitness = rawFitness;
         
@@ -138,7 +132,7 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 										           false);///... is the individual ideal?  Indicate here...
         
         ind2.evaluated = true;
-        System.out.println("individual result: selfDestDist("+destDist+ "), selfDestAngle("+destAngle+ "), isRightSide("+headOnIsRightSide+"), offset("+ headOnOffset+"), speed("+ headOnSpeed + "); fitness[[ " + fitness +" ]]" );
+        System.out.println("individual result: selfDestDist("+selfDestDist+ "), selfDestAngle("+selfSpeed+ "), isRightSide("+headOnIsRightSide+"), offset("+ headOnOffset+"), speed("+ headOnSpeed + "); fitness[[ " + fitness +" ]]" );
         System.out.println();
         
         

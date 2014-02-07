@@ -8,10 +8,12 @@ import sim.util.Double2D;
 import tools.CONFIGURATION;
 import modeling.SAAModel;
 import modeling.env.Destination;
+import modeling.env.Source;
 import modeling.saa.collsionavoidance.AVO;
 import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithm;
 import modeling.saa.collsionavoidance.CollisionAvoidanceAlgorithmAdapter;
-import modeling.saa.selfseparation.SVO;
+import modeling.saa.collsionavoidance.SVO;
+import modeling.saa.selfseparation.SVOSep;
 import modeling.saa.selfseparation.SelfSeparationAlgorithm;
 import modeling.saa.selfseparation.SelfSeparationAlgorithmAdapter;
 import modeling.saa.sense.Sensor;
@@ -62,13 +64,14 @@ public class SelfGenerator
 		
 		UAS self = new UAS(state.getNewID(),CONFIGURATION.selfSafetyRadius,location, d, uasVelocity,uasPerformance, senseParas,avoidParas);
 		self.setSource(location);
+		
 		Sensor sensor = new SimpleSensor();
 		
 		SelfSeparationAlgorithm ssa; 
 		switch (CONFIGURATION.selfSelfSeparationAlgorithmSelection)
 		{
 			case "SVOAvoidanceAlgorithm":
-				ssa= new SVO(state, self);
+				ssa= new SVOSep(state, self);
 				break;
 			case "None":
 				ssa= new SelfSeparationAlgorithmAdapter(state, self);
@@ -84,14 +87,15 @@ public class SelfGenerator
 			case "AVOAvoidanceAlgorithm":
 				caa= new AVO(state, self);
 				break;
+			case "SVOAvoidanceAlgorithm":
+				caa= new SVO(state, self);
+				break;
 			case "None":
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, self);
 				break;
 			default:
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, self);
-		}
-		
-		
+		}	
 		
 		self.init(sensor,ssa,caa);
 				

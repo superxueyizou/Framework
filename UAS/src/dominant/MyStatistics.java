@@ -5,7 +5,7 @@ import ec.simple.SimpleShortStatistics;
 
 public class MyStatistics extends SimpleShortStatistics 
 {
-	protected static int[] accidents= new int[200];
+	protected static int[] accidents= new int[500];
 
 	public MyStatistics() 
 	{

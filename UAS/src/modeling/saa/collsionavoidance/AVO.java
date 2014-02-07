@@ -13,6 +13,8 @@ import modeling.uas.UAS;
 import sim.engine.SimState;
 import sim.util.Double2D;
 import sim.util.distribution.Normal;
+import tools.CALCULATION;
+import tools.CONFIGURATION;
 
 /**
  * @author Xueyi
@@ -26,9 +28,6 @@ public class AVO extends CollisionAvoidanceAlgorithm
 	private SAAModel state; 
 	private UAS hostUAS;
 	
-	private Destination destination;
-	Double2D destinationCoor;
-
 	public AVOSimulator avoSimulator;
 	private int hostUASIDInAVOSimulator =0;
 
@@ -40,9 +39,6 @@ public class AVO extends CollisionAvoidanceAlgorithm
 	{
 		state = (SAAModel) simstate;
 		hostUAS = uas;
-		
-		destination = hostUAS.getDestination();
-		destinationCoor = destination.getLocation();
 		
 	}
 	
@@ -62,8 +58,8 @@ public class AVO extends CollisionAvoidanceAlgorithm
 		// Specify global time step of the simulation.
 		avoSimulator.setTimeStep(1);
 		// Specify default parameters for agents that are subsequently added.
-		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 150, 150, hostUAS.getRadius()*100,10.0,hostUAS.getSpeed(), 
-				hostUAS.getUasPerformance().getCurrentMaxSpeed(),hostUAS.getAlpha(), 
+		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 10000, 10000,
+				hostUAS.getRadius(),1.0,hostUAS.getSpeed(),hostUAS.getUasPerformance().getMaxSpeed(),hostUAS.getUasPerformance().getMinSpeed(),hostUAS.getAlpha(), 
 				hostUAS.getUasPerformance().getMaxAcceleration(),hostUAS.getUasPerformance().getMaxTurning(), new Double2D()); 
 		
 		for(int i=0; i<state.uasBag.size(); i++)
@@ -73,9 +69,10 @@ public class AVO extends CollisionAvoidanceAlgorithm
 			{
 				hostUASIDInAVOSimulator=i;
 			}
+
 			Double2D avoLocation = new Double2D(uas.getLocation().x, -uas.getLocation().y);
 			Double2D avoGoalLocation = new Double2D(uas.getDestination().getLocation().x, -uas.getDestination().getLocation().y);
-			avoSimulator.addAgent(avoLocation, avoSimulator.addGoal(avoGoalLocation));				
+			avoSimulator.addAgent(avoLocation, avoSimulator.addGoal(avoGoalLocation));			
 		}
 		
 	}
@@ -83,7 +80,7 @@ public class AVO extends CollisionAvoidanceAlgorithm
 	
 	public Waypoint execute()
 	{		
-		updateAVOSimulator(state);
+		updateAVOSimulator();
 		avoSimulator.agentDoStep(hostUASIDInAVOSimulator);
 		
 		if(state.runningWithUI)
@@ -109,13 +106,12 @@ public class AVO extends CollisionAvoidanceAlgorithm
 				
 				state.voField.addEdge(apex, side1End, null);
 				state.voField.addEdge(apex, side2End, null);			
-				System.out.println("dddddddddddddd"+avoSimulator.getAgentVelocityObstacles(hostUASIDInAVOSimulator).size());
+//				System.out.println("dddddddddddddd"+avoSimulator.getAgentVelocityObstacles(hostUASIDInAVOSimulator).size());
 				
 			}
 			
 		}
-
-		
+	
 		Double2D newLocation = avoSimulator.getAgentPosition(hostUASIDInAVOSimulator);		
 		Waypoint wp = new Waypoint(state.getNewID(), hostUAS.getDestination());
 		wp.setLocation(new Double2D(newLocation.x, -newLocation.y));
@@ -124,7 +120,7 @@ public class AVO extends CollisionAvoidanceAlgorithm
 	}
 
 	
-	public void updateAVOSimulator(SAAModel state)
+	public void updateAVOSimulator()
 	{
 		for(int i=0; i<state.uasBag.size(); i++)
 		{
@@ -138,7 +134,7 @@ public class AVO extends CollisionAvoidanceAlgorithm
 			{
 				avoLocation = new Double2D(agent.getLocation().x, -agent.getLocation().y);
 				avoVelocity = new Double2D(agent.getVelocity().x, -agent.getVelocity().y);
-				avoRadius = agent.getRadius()*1000;
+				avoRadius = agent.getRadius();
 				
 			}
 			else
@@ -151,9 +147,13 @@ public class AVO extends CollisionAvoidanceAlgorithm
 					continue;
 				}
 				
+//				avoLocation = new Double2D(agent.getLocation().x, -agent.getLocation().y);
+//				avoVelocity = new Double2D(agent.getVelocity().x, -agent.getVelocity().y);
+//				avoRadius = agent.getRadius();
+				
 				avoLocation = new Double2D(agent.getOldLocation().x, -agent.getOldLocation().y);
 				avoVelocity = new Double2D(agent.getOldVelocity().x, -agent.getOldVelocity().y);
-				avoRadius = agent.getRadius()*1000;
+				avoRadius = agent.getRadius();
 				
 				
 //				Normal normal = new Normal(0,0.02,state.random);

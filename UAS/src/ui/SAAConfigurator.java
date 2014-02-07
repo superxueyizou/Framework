@@ -30,6 +30,8 @@ import javax.swing.JSplitPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import sim.display.GUIState;
+import sim.engine.SimState;
 import tools.CONFIGURATION;
 import tools.UTILS;
 
@@ -49,7 +51,7 @@ public class SAAConfigurator extends JFrame
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SAAConfigurator frame = new SAAConfigurator();
+					SAAConfigurator frame = new SAAConfigurator(null,null);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -61,7 +63,7 @@ public class SAAConfigurator extends JFrame
 	/**
 	 * Create the frame.
 	 */
-	public SAAConfigurator() 
+	public SAAConfigurator(SimState state, GUIState stateWithUI) 
 	{
 		super("SAA Configurator");
 		this.setBounds(1500+80, 404, 340,742);
@@ -75,7 +77,7 @@ public class SAAConfigurator extends JFrame
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(0, 12, 326, 818);
 				
-		JPanel modelBuilderConfigPanel = new ModelBuilder();
+		JPanel modelBuilderConfigPanel = new ModelBuilder(state, stateWithUI);
 		tabbedPane.addTab("ModelBuilder", null, modelBuilderConfigPanel, null);
 		modelBuilderConfigPanel.setLayout(null);
 		

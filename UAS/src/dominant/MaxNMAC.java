@@ -36,23 +36,24 @@ public class MaxNMAC extends Problem implements SimpleProblemForm
       
         DoubleVectorIndividual ind2 = (DoubleVectorIndividual)ind;
         double distanceToDangerSum=0;
+//      System.out.println(ind2.genome[0]);  
         
-        double destDist= ind2.genome[0];
-        double destAngle= ind2.genome[1];
+        double selfDestDist= ind2.genome[0];
+        double selfSpeed= ind2.genome[1];
         
-        boolean headOnSelected = (ind2.genome[2]>0)? true: false;
+        boolean headOnSelected = (ind2.genome[2]==1)? true: false;
         double  headOnOffset = ind2.genome[3];
-    	boolean headOnIsRightSide = (ind2.genome[4]>0)? true: false;		
+    	boolean headOnIsRightSide = (ind2.genome[4]==1)? true: false;		
 		double  headOnSpeed = ind2.genome[5];
 		
-        boolean crossingSelected = (ind2.genome[6]>0)? true: false;
+        boolean crossingSelected = (ind2.genome[6]==1)? true: false;
         double  crossingEncounterAngle = ind2.genome[7];
-   		boolean crossingIsRightSide = (ind2.genome[8]>0)? true: false;		
+   		boolean crossingIsRightSide = (ind2.genome[8]==1)? true: false;		
 		double  crossingSpeed = ind2.genome[9];
 		
-        boolean tailApproachSelected = (ind2.genome[10]>0)? true: false;    	
+        boolean tailApproachSelected = (ind2.genome[10]==1)? true: false;    	
 		double  tailApproachOffset = ind2.genome[11];
-		boolean tailApproachIsRightSide = (ind2.genome[12]>0)? true: false;
+		boolean tailApproachIsRightSide = (ind2.genome[12]==1)? true: false;
 		double  tailApproachSpeed = ind2.genome[13];
 		
 		long time = System.nanoTime();
@@ -61,8 +62,8 @@ public class MaxNMAC extends Problem implements SimpleProblemForm
 		int times =1, dividend=0;
         for(int i=0;i<times; i++)
         {
-    		CONFIGURATION.selfDestDist = destDist;
-    		CONFIGURATION.selfDestAngle = destAngle;
+    		CONFIGURATION.selfDestDist = selfDestDist;
+    		CONFIGURATION.selfSpeed = selfSpeed;
     		
     		CONFIGURATION.headOnSelected = headOnSelected;
     		CONFIGURATION.headOnOffset=headOnOffset;
@@ -81,27 +82,27 @@ public class MaxNMAC extends Problem implements SimpleProblemForm
     		
  	   		SAAModelBuilder sBuilder = new SAAModelBuilder(simState);
     		sBuilder.generateSimulation();
-    		   		
-    		for(int m=0; m<simState.uasBag.size(); m++)
-    		{
-    			UAS uas1 = (UAS)simState.uasBag.get(m);
-    			for(int n=m+1; n<simState.uasBag.size(); n++)
-    			{
-    				UAS uas2 = (UAS)simState.uasBag.get(n);
-    				if(uas1.getLocation().distance(uas2.getLocation())<=7)
-    				{
-    	    			
-						 ((SimpleFitness)ind2.fitness).setFitness(   state,            
-						            0,/// ...the fitness...
-						            false);///... is the individual ideal?  Indicate here...
-	
-						 ind2.evaluated = true;
-    					return;
-    				}
     				
-    			}
-    			
-    		}
+//    		for(int m=0; m<simState.uasBag.size(); m++)
+//    		{
+//    			UAS uas1 = (UAS)simState.uasBag.get(m);
+//    			for(int n=m+1; n<simState.uasBag.size(); n++)
+//    			{
+//    				UAS uas2 = (UAS)simState.uasBag.get(n);
+//    				if(uas1.getLocation().distance(uas2.getLocation())<=7)
+//    				{
+//    	    			
+//						 ((SimpleFitness)ind2.fitness).setFitness(   state,            
+//						            0,/// ...the fitness...
+//						            false);///... is the individual ideal?  Indicate here...
+//	
+//						 ind2.evaluated = true;
+//    					return;
+//    				}
+//    				
+//    			}
+//    			
+//    		}
     		
     		simState.start();
     		
@@ -117,15 +118,15 @@ public class MaxNMAC extends Problem implements SimpleProblemForm
     		{
     			UAS uas = (UAS)simState.uasBag.get(j);
     			System.out.println(uas.getDistanceToDanger());
-//    			distanceToDangerSum += uas.getDistanceToDanger()-uas.getRadius();
-    			
+
     			if(uas.getDistanceToDanger()>0)
 				{
     				distanceToDangerSum += uas.getDistanceToDanger();
 				}
     			else
     			{
-    				distanceToDangerSum += 0;
+    				distanceToDangerSum += uas.getDistanceToDanger();
+//    				distanceToDangerSum += 0;
     			}
     			
     			dividend++;
@@ -145,7 +146,7 @@ public class MaxNMAC extends Problem implements SimpleProblemForm
 										            false);///... is the individual ideal?  Indicate here...
         
         ind2.evaluated = true;
-        System.out.println("individual result: selfDestDist("+destDist+ "), selfDestAngle("+destAngle+ "), isRightSide("+headOnIsRightSide+"), offset("+ headOnOffset+"), speed("+ headOnSpeed + "); fitness[[ " + fitness +" ]]" );
+        System.out.println("individual result: selfDestDist("+selfDestDist+ "), selfSpeed("+selfSpeed+ "), isRightSide("+headOnIsRightSide+"), offset("+ headOnOffset+"), speed("+ headOnSpeed + "); fitness[[ " + fitness +" ]]" );
         System.out.println();
         
         //if(fitness >0.9)

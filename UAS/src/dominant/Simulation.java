@@ -29,14 +29,14 @@ public class Simulation
 	 */
 	public static void main(String[] args) throws Exception
 	{
-		String[] params = new String[]{"-file", "src/dominant/MaxNMAC.params"}; //MaxOscillation, MaxNMAC
+		String[] params = new String[]{"-file", "src/dominant/MaxOscillation.params"}; //MaxOscillation, MaxNMAC, RandMaxNMAC, RandMaxOscillation
 		ParameterDatabase database = Evolve.loadParameterDatabase(params);
 		EvolutionState eState= Evolve.initialize(database, 0);
 		eState.startFresh();
 		int result=EvolutionState.R_NOTDONE;
 		
 		
-		String title = "generation,selfDestDist,selfDestAngle,"+
+		String title = "generation,selfDestDist,selfSpeed,"+
 				   "headOnSelected,headOnOffset,headOnIsRightSide,headOnSpeed,"+
                 "crossingSelected,crossingEncounterAngle,crossingIsRightSide,crossingSpeed,"+
 				   "tailApproachSelected,tailApproachOffset,tailApproachIsRightSide,tailApproachSpeed,"+
@@ -77,21 +77,21 @@ public class Simulation
 			//System.out.println(pArr[3]);
 					
 			CONFIGURATION.selfDestDist= Double.parseDouble(pArr[0]);
-			CONFIGURATION.selfDestAngle=Double.parseDouble(pArr[1]);
+			CONFIGURATION.selfSpeed=Double.parseDouble(pArr[1]);
 			
-			CONFIGURATION.headOnSelected= Double.parseDouble(pArr[2])>0? true: false;
+			CONFIGURATION.headOnSelected= Double.parseDouble(pArr[2])==1? true: false;
 			CONFIGURATION.headOnOffset=Double.parseDouble(pArr[3]);
-			CONFIGURATION.headOnIsRightSide= Double.parseDouble(pArr[4])>0? true: false;			
+			CONFIGURATION.headOnIsRightSide= Double.parseDouble(pArr[4])==1? true: false;			
 			CONFIGURATION.headOnSpeed=Double.parseDouble(pArr[5]);
 			
-    		CONFIGURATION.crossingSelected = Double.parseDouble(pArr[6])>0? true: false;
+    		CONFIGURATION.crossingSelected = Double.parseDouble(pArr[6])==1? true: false;
     		CONFIGURATION.crossingEncounterAngle=Double.parseDouble(pArr[7]);
-    		CONFIGURATION.crossingIsRightSide= Double.parseDouble(pArr[8])>0? true: false;
+    		CONFIGURATION.crossingIsRightSide= Double.parseDouble(pArr[8])==1? true: false;
     		CONFIGURATION.crossingSpeed =Double.parseDouble(pArr[9]);
     		
-    		CONFIGURATION.tailApproachSelected = Double.parseDouble(pArr[10])>0? true: false;
+    		CONFIGURATION.tailApproachSelected = Double.parseDouble(pArr[10])==1? true: false;
     		CONFIGURATION.tailApproachOffset= Double.parseDouble(pArr[11]);
-    		CONFIGURATION.tailApproachIsRightSide=Double.parseDouble(pArr[12])>0? true: false;
+    		CONFIGURATION.tailApproachIsRightSide=Double.parseDouble(pArr[12])==1? true: false;
     		CONFIGURATION.tailApproachSpeed =Double.parseDouble(pArr[13]);
 			
 			System.out.println("\nRecurrenceWithGUI");
@@ -107,11 +107,7 @@ public class Simulation
 		{
 			Evolve.cleanup(eState);	
 		}
-				
-	
 		
 	}
 	
-
-
 }

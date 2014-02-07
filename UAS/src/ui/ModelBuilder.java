@@ -13,10 +13,15 @@ import javax.swing.JButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.border.TitledBorder;
+
+import sim.display.GUIState;
+import sim.engine.SimState;
 import tools.CONFIGURATION;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+
+import modeling.SAAModelWithUI;
 
 public class ModelBuilder extends JPanel
 {
@@ -27,7 +32,10 @@ public class ModelBuilder extends JPanel
 	private final ButtonGroup selfCollisionAvoidanceAlgorithmGroup = new ButtonGroup();
 	private final ButtonGroup selfSelfSeparationAlgorithmGroup = new ButtonGroup();
 
-	public ModelBuilder() 
+	/**
+	 * @wbp.parser.constructor
+	 */
+	public ModelBuilder(SimState state, GUIState stateWithUI) 
 	{
 		setLayout(null);
 		
@@ -89,29 +97,30 @@ public class ModelBuilder extends JPanel
 		btnLoad.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) 
 			{
-				String result = JOptionPane.showInputDialog(null, "copy and paste:", "Genome",JOptionPane.PLAIN_MESSAGE).trim();
-//					System.out.println(result);
-				if(!result.isEmpty())
+				String result = JOptionPane.showInputDialog(null, "copy and paste:", "Genome",JOptionPane.PLAIN_MESSAGE);
+
+				if(result!=null && !result.isEmpty())
 				{
+					result = result.trim();
 					String[] pArr= result.split("\\s+");
 //						System.out.println(pArr[1]);
 													
 					CONFIGURATION.selfDestDist= Double.parseDouble(pArr[0]);
-					CONFIGURATION.selfDestAngle=Double.parseDouble(pArr[1]);
+					CONFIGURATION.selfSpeed=Double.parseDouble(pArr[1]);
 					
-					CONFIGURATION.headOnSelected= Double.parseDouble(pArr[2])>0? true: false;
+					CONFIGURATION.headOnSelected= Double.parseDouble(pArr[2])==1? true: false;
 					CONFIGURATION.headOnOffset=Double.parseDouble(pArr[3]);
-					CONFIGURATION.headOnIsRightSide= Double.parseDouble(pArr[4])>0? true: false;			
+					CONFIGURATION.headOnIsRightSide= Double.parseDouble(pArr[4])==10? true: false;			
 					CONFIGURATION.headOnSpeed=Double.parseDouble(pArr[5]);
 					
-		    		CONFIGURATION.crossingSelected = Double.parseDouble(pArr[6])>0? true: false;
+		    		CONFIGURATION.crossingSelected = Double.parseDouble(pArr[6])==10? true: false;
 		    		CONFIGURATION.crossingEncounterAngle=Double.parseDouble(pArr[7]);
-		    		CONFIGURATION.crossingIsRightSide= Double.parseDouble(pArr[8])>0? true: false;
+		    		CONFIGURATION.crossingIsRightSide= Double.parseDouble(pArr[8])==10? true: false;
 		    		CONFIGURATION.crossingSpeed =Double.parseDouble(pArr[9]);
 		    		
-		    		CONFIGURATION.tailApproachSelected = Double.parseDouble(pArr[10])>0? true: false;
+		    		CONFIGURATION.tailApproachSelected = Double.parseDouble(pArr[10])==1? true: false;
 		    		CONFIGURATION.tailApproachOffset= Double.parseDouble(pArr[11]);
-		    		CONFIGURATION.tailApproachIsRightSide=Double.parseDouble(pArr[12])>0? true: false;
+		    		CONFIGURATION.tailApproachIsRightSide=Double.parseDouble(pArr[12])==1? true: false;
 		    		CONFIGURATION.tailApproachSpeed =Double.parseDouble(pArr[13]);
 		    		
 				}
@@ -131,10 +140,10 @@ public class ModelBuilder extends JPanel
 		
 		JSlider destDistSlider = new JSlider();
 		destDistSlider.setSnapToTicks(true);
-		destDistSlider.setPaintLabels(true);
-		destDistSlider.setValue((int)(CONFIGURATION.selfDestDist/CONFIGURATION.lengthScale));
+		destDistSlider.setPaintLabels(true);		
 		destDistSlider.setMaximum((int)(1.1*CONFIGURATION.selfDestDist/CONFIGURATION.lengthScale));
 		destDistSlider.setMinimum((int)(0.5*CONFIGURATION.selfDestDist/CONFIGURATION.lengthScale));
+		destDistSlider.setValue((int)(CONFIGURATION.selfDestDist/CONFIGURATION.lengthScale));
 		destDistSlider.setBounds(95, 103, 200, 16);
 		this.add(destDistSlider);
 		destDistSlider.addChangeListener(new ChangeListener() {
@@ -156,6 +165,9 @@ public class ModelBuilder extends JPanel
 				CONFIGURATION.selfDestAngle = Math.toRadians(source.getValue());
 			}
 		});
+		
+		
+		
 	}
 
 	public ModelBuilder(LayoutManager layout) {

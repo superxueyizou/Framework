@@ -153,6 +153,20 @@ public class TailApproach extends JPanel
 				}
 			});
 			
+			JRadioButton rdbtnSVOAvoidanceAlgorithm = new JRadioButton("SVO");
+			rdbtnSVOAvoidanceAlgorithm.setBounds(108, 22, 94, 23);
+			rdbtnSVOAvoidanceAlgorithm.setSelected(CONFIGURATION.tailApproachCollisionAvoidanceAlgorithmSelection == "SVOAvoidanceAlgorithm");
+			AvoidanceAlgorithmSelectionPanel.add(rdbtnSVOAvoidanceAlgorithm);
+			tailApproachCollisionAvoidanceAlgorithmGroup.add(rdbtnSVOAvoidanceAlgorithm);
+			rdbtnSVOAvoidanceAlgorithm.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(((JRadioButton)e.getSource()).isSelected())
+					{
+						CONFIGURATION.tailApproachCollisionAvoidanceAlgorithmSelection = "SVOAvoidanceAlgorithm";
+					}
+				}
+			});
+			
 			JRadioButton rdbtnNone = new JRadioButton("None");
 			rdbtnNone.setBounds(209, 22, 62, 23);
 			rdbtnNone.setSelected(CONFIGURATION.tailApproachCollisionAvoidanceAlgorithmSelection == "None");
