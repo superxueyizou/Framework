@@ -163,11 +163,11 @@ public class SAAModelWithUI extends GUIState
 
               };
               
-        OrientedPortrayal2D op = new OrientedPortrayal2D(cp,1, 6, new Color(0,0,0), OrientedPortrayal2D.SHAPE_KITE);
+        OrientedPortrayal2D op = new OrientedPortrayal2D(cp,0, 20, new Color(0,0,0), OrientedPortrayal2D.SHAPE_KITE);
 		
 		environmentPortrayal.setPortrayalForClass(UAS.class, op);
 		
-		environmentPortrayal.setPortrayalForClass(Destination.class, new LabelledPortrayal2D( new OvalPortrayal2D(30.0*CONFIGURATION.lengthScale)
+		environmentPortrayal.setPortrayalForClass(Destination.class, new LabelledPortrayal2D( new OvalPortrayal2D(50.0*CONFIGURATION.lengthScale)
 		{
 			/**
 			 * 
@@ -184,7 +184,7 @@ public class SAAModelWithUI extends GUIState
 		);
 		
 		
-		environmentPortrayal.setPortrayalForClass(Waypoint.class, new OvalPortrayal2D(12.0*CONFIGURATION.lengthScale)
+		environmentPortrayal.setPortrayalForClass(Waypoint.class, new OvalPortrayal2D(40.0*CONFIGURATION.lengthScale)
 		{
 			/**
 			 * 
@@ -197,11 +197,15 @@ public class SAAModelWithUI extends GUIState
 				{
 					//red for avoid
 					paint = new Color(255, 0, 0);	
+					scale =20;
+					filled =true;
 				}
 				else if(((Waypoint) object).getAction()==2)
 				{
 					//yellow for maintain
 					paint = new Color(255, 155, 0);	
+					scale =10;
+					filled =true;
 				}
 				else if(((Waypoint) object).getAction()==3)
 				{
@@ -212,6 +216,8 @@ public class SAAModelWithUI extends GUIState
 				{
 					//black for normal
 					paint = new Color(0, 0, 0);
+					scale =15;
+					filled =false;
 				}
 							
 			    super.draw(object, graphics, info);
@@ -248,7 +254,8 @@ public class SAAModelWithUI extends GUIState
     {
         super.init(c);
         // make the displayer
-        display = new Display2D(displayX,displayY,this);       
+        display = new Display2D(displayX,displayY,this);    
+        display.setScale(0.25);
         // turn off clipping
         display.setClipping(true);
 //      display.setBackdrop(new Color(0,0,0));

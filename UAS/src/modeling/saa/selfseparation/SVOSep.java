@@ -3,6 +3,7 @@
  */
 package modeling.saa.selfseparation;
 
+import ec.util.MersenneTwisterFast;
 import avo.AVOSimulator;
 import avo.VelocityObstacle;
 import modeling.SAAModel;
@@ -22,6 +23,10 @@ import tools.CONFIGURATION;
  */
 public class SVOSep extends SelfSeparationAlgorithm
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * 
 	 */
@@ -64,8 +69,8 @@ public class SVOSep extends SelfSeparationAlgorithm
 		// Specify global time step of the simulation.
 		avoSimulator.setTimeStep(1);
 		// Specify default parameters for agents that are subsequently added.
-		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 15, 15, 
-				hostUAS.getRadius(),1.0,hostUAS.getSpeed(),hostUAS.getUasPerformance().getMaxSpeed(),hostUAS.getUasPerformance().getMinSpeed(),-1, 
+		avoSimulator.setAgentDefaults(hostUAS.getSensorSet().range, 8, 15, 15,
+				hostUAS.getRadius(),1.0,hostUAS.getUasPerformance().getPrefSpeed(),hostUAS.getUasPerformance().getMaxSpeed(),hostUAS.getUasPerformance().getMinSpeed(),-1, 
 				hostUAS.getUasPerformance().getMaxAcceleration(),hostUAS.getUasPerformance().getMaxTurning(), new Double2D()); 
 		//orcaSimulator.setAgentDefaults(1.0, 8, 10.0, 20.0f, 0.5, 8.0, new Double());
 
@@ -84,10 +89,20 @@ public class SVOSep extends SelfSeparationAlgorithm
 		
 	}
 	
+	@Override
+	public void step(SimState simState)
+	{
+		if(hostUAS.isActive == true)
+		{				
+			hostUAS.setSsaWp(execute());			
+		}
+		 
+	}
+	
 	
 	public Waypoint execute()
 	{		
-		updateSVOSimulator(state);
+		updateSVOSimulator();
 		int mode = avoSimulator.agentDoStep(hostUASIDInAVOSimulator);
 		
 		if(state.runningWithUI)
@@ -99,9 +114,9 @@ public class SVOSep extends SelfSeparationAlgorithm
 			if(!avoSimulator.getAgentVelocityObstacles(hostUASIDInAVOSimulator).isEmpty())
 			{
 				VelocityObstacle vo =  avoSimulator.getAgentVelocityObstacles(hostUASIDInAVOSimulator).get(0);
-				Double2D apexLoc = hostUAS.getLocation().add(new Double2D(vo.apex.getX(),vo.apex.getY())) ;
-				Double2D side1EndLoc = apexLoc.add(new Double2D(100*vo.side1.getX(),100*vo.side1.getY()));
-				Double2D side2EndLoc = apexLoc.add(new Double2D(100*vo.side2.getX(),100*vo.side2.getY()));
+				Double2D apexLoc = hostUAS.getLocation().add(new Double2D(vo.apex.getX(),-vo.apex.getY())) ;
+				Double2D side1EndLoc = apexLoc.add(new Double2D(10000*vo.side1.getX(),-10000*vo.side1.getY()));
+				Double2D side2EndLoc = apexLoc.add(new Double2D(10000*vo.side2.getX(),-10000*vo.side2.getY()));
 				
 				state.environment.setObjectLocation(apex, apexLoc);
 				state.environment.setObjectLocation(side1End, side1EndLoc);
@@ -113,8 +128,8 @@ public class SVOSep extends SelfSeparationAlgorithm
 				
 				state.voField.addEdge(apex, side1End, null);
 				state.voField.addEdge(apex, side2End, null);			
+//				System.out.println("dddddddddddddd"+avoSimulator.getAgentVelocityObstacles(hostUASIDInAVOSimulator).size());
 				
-//				System.out.println(avoSimulator.getAgentVelocityObstacles(hostUASIDInavoSimulator).size());
 			}
 			
 		}
@@ -122,7 +137,8 @@ public class SVOSep extends SelfSeparationAlgorithm
 		Waypoint wp = new Waypoint(state.getNewID(), hostUAS.getDestination());
 		if(mode==1) //avoid
 		{
-			wp.setLocation(hostUAS.getLocation().add(hostUAS.getVelocity().masonRotate(-Math.toRadians(2.5))));
+			Double2D newLocation = avoSimulator.getAgentPosition(hostUASIDInAVOSimulator);		
+			wp.setLocation(new Double2D(newLocation.x, -newLocation.y));
 			wp.setAction(mode);
 			//System.out.println("UAV"+hostUASIDInAVOSimulator+": turn right!");
 			
@@ -141,26 +157,6 @@ public class SVOSep extends SelfSeparationAlgorithm
 //		}
 		else//restore
 		{
-//			Double2D candVel = hostUAS.getDestination().getLocation().subtract(hostUAS.getLocation()).normalize().multiply(CONFIGURATION.selfSpeed);
-//			
-//			double angle = CALCULATION.getRotateAngle(hostUAS.getVelocity(), candVel);
-//			
-//			if(angle > Math.toRadians(2.5))
-//			{
-//				candVel = CALCULATION.vectorLRotate(candVel, Math.toRadians(2.5));
-//			}
-//			else if(angle < Math.toRadians(-2.5))
-//			{
-//				candVel = CALCULATION.vectorRRotate(candVel, Math.toRadians(2.5));
-//			}
-//			else
-//			{
-//				candVel = CALCULATION.vectorLRotate(candVel, angle);
-//			}
-//						
-//			wp.setLocation(hostUAS.getLocation().add(candVel));
-//			wp.setAction(3);
-
 			wp=null;
 //			System.out.println("UAV"+hostUASIDInAVOSimulator+": restore!"+ hostUAS.getVelocity());
 		}
@@ -169,8 +165,9 @@ public class SVOSep extends SelfSeparationAlgorithm
 	}
 
 	
-	public void updateSVOSimulator(SAAModel state)
+	public void updateSVOSimulator()
 	{
+		MersenneTwisterFast rdn=state.random;
 		for(int i=0; i<state.uasBag.size(); i++)
 		{
 			UAS agent= (UAS)state.uasBag.get(i);
@@ -196,10 +193,36 @@ public class SVOSep extends SelfSeparationAlgorithm
 					continue;
 				}
 				
-				avoLocation = new Double2D(agent.getOldLocation().x, -agent.getOldLocation().y);
-				avoVelocity = new Double2D(agent.getOldVelocity().x, -agent.getOldVelocity().y);
-				avoRadius = agent.getRadius();
+				if(rdn.nextDouble()<= hostUAS.getSensorSet().falseNegative)
+				{
+					avoSimulator.setAgentPosition(i, new Double2D(Double.MAX_VALUE, Double.MAX_VALUE));
+					avoSimulator.setAgentVelocity(i, new Double2D(0,0));
+					avoSimulator.setAgentRadius(i, 0);
+					continue;
+				}
 				
+				
+				
+				Normal normal = new Normal(0,0.05,rdn);
+				
+				if(!CONFIGURATION.sensorValueUncertainty)
+				{
+					avoLocation = new Double2D(agent.getLocation().x, -agent.getLocation().y);
+					avoVelocity = new Double2D(agent.getVelocity().x, -agent.getVelocity().y);
+					avoRadius = agent.getRadius();					
+				}
+				else
+				{					
+					avoLocation = new Double2D(agent.getLocation().x*(1+normal.nextDouble()), -agent.getLocation().y*(1+normal.nextDouble()));
+					avoVelocity = new Double2D(agent.getVelocity().x*(1+normal.nextDouble()), -agent.getVelocity().y*(1+normal.nextDouble()));
+					avoRadius = agent.getRadius()*(1+normal.nextDouble());
+				}
+			
+				
+//				avoLocation = new Double2D(agent.getOldLocation().x, -agent.getOldLocation().y);
+//				avoVelocity = new Double2D(agent.getOldVelocity().x, -agent.getOldVelocity().y);
+//				avoRadius = agent.getRadius();		
+
 				
 //				Normal normal = new Normal(0,0.02,state.random);
 //				avoLocation = new Double2D(agent.getOldLocation().x*(1+normal.nextDouble()), -agent.getOldLocation().y*(1+normal.nextDouble()));
@@ -209,12 +232,19 @@ public class SVOSep extends SelfSeparationAlgorithm
 			
 			avoSimulator.setAgentPosition(i, avoLocation);
 			avoSimulator.setAgentVelocity(i, avoVelocity);
-			avoSimulator.setAgentRadius(i, avoRadius*4);
+			avoSimulator.setAgentRadius(i, avoRadius*3);
 			
+		}
+		
+		if(rdn.nextDouble()<= hostUAS.getSensorSet().falsePositive)
+		{
+//			avoSimulator.setAgentPosition(i, new Double2D(Double.MAX_VALUE, Double.MAX_VALUE));
+//			avoSimulator.setAgentVelocity(i, new Double2D(0,0));
+//			avoSimulator.setAgentRadius(i, 0);
+//			continue;
 		}
 
 	}
-
 
 
 }

@@ -14,8 +14,12 @@ import modeling.saa.collsionavoidance.SVO;
 import modeling.saa.selfseparation.SVOSep;
 import modeling.saa.selfseparation.SelfSeparationAlgorithm;
 import modeling.saa.selfseparation.SelfSeparationAlgorithmAdapter;
-import modeling.saa.sense.Sensor;
-import modeling.saa.sense.SimpleSensor;
+import modeling.saa.sense.ADS_B;
+import modeling.saa.sense.EOIR;
+import modeling.saa.sense.PerfectSensor;
+import modeling.saa.sense.Radar;
+import modeling.saa.sense.SensorSet;
+import modeling.saa.sense.TCAS;
 import modeling.uas.AvoidParas;
 import modeling.uas.SenseParas;
 import modeling.uas.UAS;
@@ -51,7 +55,7 @@ public class TailApproachGenerator extends EncounterGenerator
 		// TODO Auto-generated constructor stub
 		this.state=state;
 		this.self=uas;
-		this.offset=offset;
+		this.offset=offset;		
 		this.intruderSpeed = intruderSpeed;
 		this.sideFactor = isRightSide? +1:-1;
 	}
@@ -68,19 +72,50 @@ public class TailApproachGenerator extends EncounterGenerator
 		Double2D intruderMiddle = selfMiddle.add(offsetVector);
 				
 		Double2D intruderLocation = intruderMiddle.subtract(intruderVector.multiply(0.5));
-		Double2D intruderDestinationLoc = intruderMiddle.add(intruderVector.multiply(0.5));
+		Double2D intruderDestinationLoc;
+		if(intruderSpeed>self.getUasPerformance().getPrefSpeed())
+		{
+			intruderDestinationLoc = intruderMiddle.add(intruderVector.multiply(1));
+		}
+		else
+		{
+			intruderDestinationLoc = intruderMiddle.add(intruderVector.multiply(0.4));
+		}
+		
 		Destination intruderDestination = new Destination(state.getNewID(), null);
 		intruderDestination.setLocation(intruderDestinationLoc);
 		
 		UASVelocity intruderVelocity = new UASVelocity(intruderDestination.getLocation().subtract(intruderLocation).normalize().multiply(intruderSpeed));
-		UASPerformance intruderPerformance = new UASPerformance(CONFIGURATION.tailApproachMaxSpeed, CONFIGURATION.tailApproachMinSpeed,CONFIGURATION.tailApproachMaxClimb, CONFIGURATION.tailApproachMaxDescent,CONFIGURATION.tailApproachMaxTurning, CONFIGURATION.tailApproachMaxAcceleration, CONFIGURATION.tailApproachMaxDeceleration);
+		UASPerformance intruderPerformance = new UASPerformance(CONFIGURATION.tailApproachMaxSpeed, CONFIGURATION.tailApproachMinSpeed, intruderSpeed, CONFIGURATION.tailApproachMaxClimb, CONFIGURATION.tailApproachMaxDescent,CONFIGURATION.tailApproachMaxTurning, CONFIGURATION.tailApproachMaxAcceleration, CONFIGURATION.tailApproachMaxDeceleration);
 		SenseParas intruderSenseParas = new SenseParas(CONFIGURATION.tailApproachViewingRange,CONFIGURATION.tailApproachViewingAngle, CONFIGURATION.tailApproachSensitivityForCollisions);
 		AvoidParas intruderAvoidParas = new AvoidParas(CONFIGURATION.tailApproachAlpha);
 		
 		UAS intruder = new UAS(state.getNewID(),CONFIGURATION.tailApproachSafetyRadius,intruderLocation, intruderDestination, intruderVelocity,intruderPerformance, intruderSenseParas,intruderAvoidParas);
 		intruder.setSource(intruderLocation);
 		
-		Sensor sensor = new SimpleSensor();
+		SensorSet sensorSet = new SensorSet();
+		if((CONFIGURATION.tailApproachSensorSelection&0B10000) == 0B10000)
+		{
+			sensorSet.perfectSensor=new PerfectSensor();
+		}
+		if((CONFIGURATION.tailApproachSensorSelection&0B01000) == 0B01000)
+		{
+			sensorSet.ads_b=new ADS_B();
+		}
+		if((CONFIGURATION.tailApproachSensorSelection&0B00100) == 0B00100)
+		{
+			sensorSet.tcas=new TCAS();
+		}
+		if((CONFIGURATION.tailApproachSensorSelection&0B00010) == 0B00010)
+		{
+			sensorSet.radar=new Radar();
+		}
+		if((CONFIGURATION.tailApproachSensorSelection&0B00001) == 0B00001)
+		{
+			sensorSet.eoir=new EOIR();
+		}
+		sensorSet.synthesize();
+		
 
 		SelfSeparationAlgorithm ssa; 
 		switch (CONFIGURATION.tailApproachSelfSeparationAlgorithmSelection)
@@ -113,7 +148,7 @@ public class TailApproachGenerator extends EncounterGenerator
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, intruder);
 		}
 
-		intruder.init(sensor,ssa,caa);
+		intruder.init(sensorSet,ssa,caa);
 		
 		
 		state.uasBag.add(intruder);

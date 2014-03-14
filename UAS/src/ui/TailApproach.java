@@ -17,6 +17,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.border.TitledBorder;
 import tools.CONFIGURATION;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class TailApproach extends JPanel 
 {
@@ -33,17 +37,98 @@ public class TailApproach extends JPanel
 	public TailApproach()
 	{   
 		setLayout(null);
+		
+		{
+			JPanel sensorSelectionPanel = new JPanel();
+			sensorSelectionPanel.setBorder(new TitledBorder(null, "Sensor Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			sensorSelectionPanel.setBounds(12, 95, 297, 125);
+			add(sensorSelectionPanel);
+			sensorSelectionPanel.setLayout(null);
+			
+			JCheckBox chckbxPerfectSensor = new JCheckBox("Perfect");
+			chckbxPerfectSensor.setBounds(8, 20, 129, 23);
+			sensorSelectionPanel.add(chckbxPerfectSensor);
+			chckbxPerfectSensor.setSelected((CONFIGURATION.tailApproachSensorSelection&0B10000) == 0B10000);
+			chckbxPerfectSensor.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.tailApproachSensorSelection |= 0B10000;
+					}
+				}
+			});
+			
+			
+			JCheckBox chckbxAdsb = new JCheckBox("ADS-B");
+			chckbxAdsb.setBounds(144, 20, 129, 23);
+			sensorSelectionPanel.add(chckbxAdsb);
+			chckbxAdsb.setSelected((CONFIGURATION.tailApproachSensorSelection&0B01000) == 0B01000);
+			chckbxAdsb.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.tailApproachSensorSelection |= 0B01000;
+					}
+				}
+			});
+			
+			JCheckBox chckbxTcas = new JCheckBox("TCAS");
+			chckbxTcas.setBounds(8, 47, 129, 23);
+			sensorSelectionPanel.add(chckbxTcas);
+			chckbxTcas.setSelected((CONFIGURATION.tailApproachSensorSelection&0B00100) == 0B00100);
+			chckbxTcas.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.tailApproachSensorSelection |= 0B00100;
+					}
+				}
+			});
+			
+			JCheckBox chckbxRadar = new JCheckBox("Radar");
+			chckbxRadar.setBounds(144, 47, 129, 23);
+			sensorSelectionPanel.add(chckbxRadar);
+			chckbxRadar.setSelected((CONFIGURATION.tailApproachSensorSelection&0B00010) == 0B00010);
+			chckbxRadar.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.tailApproachSensorSelection |= 0B00010;
+					}
+				}
+			});
+			
+			JCheckBox chckbxEoir = new JCheckBox("EO/IR");
+			chckbxEoir.setBounds(8, 74, 129, 23);
+			sensorSelectionPanel.add(chckbxEoir);
+			chckbxEoir.setSelected((CONFIGURATION.tailApproachSensorSelection&0B00001) == 0B00001);
+			chckbxEoir.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.tailApproachSensorSelection |= 0B00001;
+					}
+				}
+			});
+		}
+		
+		
 		{
 			JSplitPane splitPane = new JSplitPane();
-			splitPane.setBounds(10, 26, 290, 31);
+			splitPane.setBounds(12, 12, 290, 31);
 			this.add(splitPane);
 			
 			JCheckBox chckbxTailApproachEncounter = new JCheckBox("TailApproach");
-			chckbxTailApproachEncounter.setSelected(CONFIGURATION.tailApproachSelected);
+			chckbxTailApproachEncounter.setSelected(CONFIGURATION.tailApproachSelected==1);
 			chckbxTailApproachEncounter.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					JCheckBox chckbxTailApproachEncounter = (JCheckBox)e.getSource();
-					CONFIGURATION.tailApproachSelected=chckbxTailApproachEncounter.isSelected();
+					CONFIGURATION.tailApproachSelected=chckbxTailApproachEncounter.isSelected()?1:0;
 				}
 			});
 			splitPane.setLeftComponent(chckbxTailApproachEncounter);
@@ -72,6 +157,7 @@ public class TailApproach extends JPanel
 			txtTailApproachTimes.setColumns(5);
 			
 			JButton btnConfig = new JButton("Config");
+			btnConfig.setEnabled(false);
 			btnConfig.setHorizontalAlignment(SwingConstants.RIGHT);
 			btnConfig.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -96,28 +182,28 @@ public class TailApproach extends JPanel
 			
 		{
 			JRadioButton rdbtnIsrightside_2 = new JRadioButton("IsRightSide");
-			rdbtnIsrightside_2.setBounds(10, 66, 105, 23);
-			rdbtnIsrightside_2.setSelected(CONFIGURATION.tailApproachIsRightSide);
+			rdbtnIsrightside_2.setBounds(12, 52, 105, 23);
+			rdbtnIsrightside_2.setSelected(CONFIGURATION.tailApproachIsRightSide==1);
 			this.add(rdbtnIsrightside_2);
 			rdbtnIsrightside_2.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if(((JRadioButton)e.getSource()).isSelected())
 					{
-						CONFIGURATION.tailApproachIsRightSide = true;
+						CONFIGURATION.tailApproachIsRightSide = 1;
 					}
 					else
 					{
-						CONFIGURATION.tailApproachIsRightSide = false;
+						CONFIGURATION.tailApproachIsRightSide = 0;
 					}
 				}
 			});
 			
 			JLabel lblOffset_1 = new JLabel("Offset");
-			lblOffset_1.setBounds(174, 70, 44, 15);
+			lblOffset_1.setBounds(176, 56, 44, 15);
 			this.add(lblOffset_1);
 			
 			tailApproachOffsetTextField = new JTextField();
-			tailApproachOffsetTextField.setBounds(236, 68, 64, 19);
+			tailApproachOffsetTextField.setBounds(238, 54, 64, 19);
 			tailApproachOffsetTextField.setText(""+CONFIGURATION.tailApproachOffset/CONFIGURATION.lengthScale);
 			this.add(tailApproachOffsetTextField);
 			tailApproachOffsetTextField.setColumns(10);
@@ -135,7 +221,7 @@ public class TailApproach extends JPanel
 		{
 			JPanel AvoidanceAlgorithmSelectionPanel = new JPanel();
 			AvoidanceAlgorithmSelectionPanel.setBorder(new TitledBorder(null, "CAA Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			AvoidanceAlgorithmSelectionPanel.setBounds(10, 97, 290, 53);
+			AvoidanceAlgorithmSelectionPanel.setBounds(12, 232, 297, 53);
 			this.add(AvoidanceAlgorithmSelectionPanel);
 			AvoidanceAlgorithmSelectionPanel.setLayout(null);
 			
@@ -186,7 +272,7 @@ public class TailApproach extends JPanel
 		{
 			JPanel selfSeparationAlgorithmSelectionPanel = new JPanel();
 			selfSeparationAlgorithmSelectionPanel.setBorder(new TitledBorder(null, "SSA Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			selfSeparationAlgorithmSelectionPanel.setBounds(10, 162, 290, 59);
+			selfSeparationAlgorithmSelectionPanel.setBounds(12, 297, 297, 59);
 			this.add(selfSeparationAlgorithmSelectionPanel);
 			selfSeparationAlgorithmSelectionPanel.setLayout(null);
 			
@@ -219,116 +305,147 @@ public class TailApproach extends JPanel
 			});
 		}
 		
+		JPanel performancePanel = new JPanel();
+		performancePanel.setBounds(12, 368, 297, 209);
+		add(performancePanel);
+		performancePanel.setLayout(null);
+		JLabel lblMaxspeed = new JLabel("MaxSpeed");
+		lblMaxspeed.setBounds(12, 14, 82, 15);
+		performancePanel.add(lblMaxspeed);
+		
+		
+		JTextField maxSpeedTextField_1 = new JTextField();
+		maxSpeedTextField_1.setBounds(170, 12, 114, 19);
+		performancePanel.add(maxSpeedTextField_1);
+		maxSpeedTextField_1.setText(String.valueOf(CONFIGURATION.tailApproachMaxSpeed/CONFIGURATION.lengthScale));
+		maxSpeedTextField_1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField maxSpeedTextField = (JTextField) e.getSource();
+				CONFIGURATION.tailApproachMaxSpeed = new Double(maxSpeedTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		maxSpeedTextField_1.setColumns(10);
+		
+		
+		JLabel lblMinspeed = new JLabel("MinSpeed");
+		lblMinspeed.setBounds(12, 43, 70, 19);
+		performancePanel.add(lblMinspeed);
+		
+		
+		JTextField minSpeedTextField_1 = new JTextField();
+		minSpeedTextField_1.setBounds(170, 43, 114, 19);
+		performancePanel.add(minSpeedTextField_1);
+		minSpeedTextField_1.setText(String.valueOf(CONFIGURATION.tailApproachMinSpeed/CONFIGURATION.lengthScale));
+		minSpeedTextField_1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField minSpeedTextField = (JTextField) e.getSource();
+				CONFIGURATION.tailApproachMinSpeed = new Double(minSpeedTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		minSpeedTextField_1.setColumns(10);
+		
+		JLabel lblPrefSpeed = new JLabel("PrefSpeed");
+		lblPrefSpeed.setBounds(12, 70, 103, 15);
+		performancePanel.add(lblPrefSpeed);
+		
+		final JTextField prefSpeedTextField_1 = new JTextField();
+		prefSpeedTextField_1.setBounds(171, 70, 114, 19);
+		performancePanel.add(prefSpeedTextField_1);
+		prefSpeedTextField_1.setText(String.valueOf(CONFIGURATION.tailApproachPrefSpeed/CONFIGURATION.lengthScale));
+		prefSpeedTextField_1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField prefSpeedTextField = (JTextField) e.getSource();
+				CONFIGURATION.tailApproachPrefSpeed = new Double(prefSpeedTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		prefSpeedTextField_1.setColumns(10);
+		
+//			JSpinner spinner_1 = new JSpinner();
+//			spinner_1.addChangeListener(new ChangeListener() 
+//			{
+//				public void stateChanged(ChangeEvent e)
+//				{
+//					JSpinner spinner = (JSpinner)e.getSource();
+//					CONFIGURATION.tailApproachPrefSpeedCoef = Double.parseDouble(spinner.getValue().toString());	
+//					double prefSpeed;
+//					if(CONFIGURATION.tailApproachPrefSpeedCoef>0)
+//					{
+//						prefSpeed=CONFIGURATION.selfPrefSpeed + CONFIGURATION.tailApproachPrefSpeedCoef *(CONFIGURATION.tailApproachMaxSpeed-CONFIGURATION.selfPrefSpeed);
+//					}
+//					else
+//					{
+//						prefSpeed=CONFIGURATION.selfPrefSpeed + CONFIGURATION.tailApproachPrefSpeedCoef *(CONFIGURATION.selfPrefSpeed-CONFIGURATION.tailApproachMinSpeed);
+//					}
+//					
+//					prefSpeedTextField.setText(String.valueOf(Math.round(prefSpeed/CONFIGURATION.lengthScale*100)/100.0));
+//				}
+//			});
+//			spinner_1.setModel(new SpinnerNumberModel(1, -1, 1, 0.05));
+//			spinner_1.setBounds(120, 325, 57, 20);
+//			add(spinner_1);
+		
+		
+		
+		JLabel lblMaxClimb = new JLabel("MaxClimb");
+		lblMaxClimb.setBounds(12, 97, 70, 19);
+		performancePanel.add(lblMaxClimb);
+		
+		
+		JTextField maxClimbTextField_1 = new JTextField();
+		maxClimbTextField_1.setBounds(170, 97, 114, 19);
+		performancePanel.add(maxClimbTextField_1);
+		maxClimbTextField_1.setText(String.valueOf(CONFIGURATION.tailApproachMaxClimb/CONFIGURATION.lengthScale));
+		maxClimbTextField_1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField maxClimbTextField = (JTextField) e.getSource();
+				CONFIGURATION.tailApproachMaxClimb = new Double(maxClimbTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		maxClimbTextField_1.setColumns(10);
+		
+		JLabel lblMaxDescent = new JLabel("MaxDescent");
+		lblMaxDescent.setBounds(12, 131, 101, 19);
+		performancePanel.add(lblMaxDescent);
+		
+		
+		JTextField maxDescentTextField_1 = new JTextField();
+		maxDescentTextField_1.setBounds(170, 131, 114, 19);
+		performancePanel.add(maxDescentTextField_1);
+		maxDescentTextField_1.setText(String.valueOf(CONFIGURATION.tailApproachMaxDescent/CONFIGURATION.lengthScale));
+		maxDescentTextField_1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField maxDescentTextField = (JTextField) e.getSource();
+				CONFIGURATION.tailApproachMaxDescent = new Double(maxDescentTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		maxDescentTextField_1.setColumns(10);
+		
+		JLabel lblMaxturning = new JLabel("MaxTurning");
+		lblMaxturning.setBounds(12, 162, 82, 15);
+		performancePanel.add(lblMaxturning);
+		
 		
 		{
-			JLabel lblMaxspeed = new JLabel("MaxSpeed");
-			lblMaxspeed.setBounds(12, 271, 82, 15);
-			this.add(lblMaxspeed);
 			
-			
-			JTextField maxSpeedTextField = new JTextField();
-			maxSpeedTextField.setText(String.valueOf(CONFIGURATION.tailApproachMaxSpeed/CONFIGURATION.lengthScale));
-			maxSpeedTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField maxSpeedTextField = (JTextField) e.getSource();
-					CONFIGURATION.tailApproachMaxSpeed = new Double(maxSpeedTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			maxSpeedTextField.setBounds(188, 269, 114, 19);
-			this.add(maxSpeedTextField);
-			maxSpeedTextField.setColumns(10);
-			
-			
-			JLabel lblMinspeed = new JLabel("MinSpeed");
-			lblMinspeed.setBounds(12, 300, 70, 19);
-			this.add(lblMinspeed);
-			
-			
-			JTextField minSpeedTextField = new JTextField();
-			minSpeedTextField.setText(String.valueOf(CONFIGURATION.tailApproachMinSpeed/CONFIGURATION.lengthScale));
-			minSpeedTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField minSpeedTextField = (JTextField) e.getSource();
-					CONFIGURATION.tailApproachMinSpeed = new Double(minSpeedTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			
-			JLabel lblSpeed = new JLabel("Speed");
-			lblSpeed.setBounds(12, 327, 45, 15);
-			this.add(lblSpeed);
-			
-			JTextField speedTextField = new JTextField();
-			speedTextField.setText(String.valueOf(CONFIGURATION.tailApproachSpeed/CONFIGURATION.lengthScale));
-			speedTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField speedTextField = (JTextField) e.getSource();
-					CONFIGURATION.tailApproachSpeed = new Double(speedTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			speedTextField.setBounds(189, 327, 114, 19);
-			this.add(speedTextField);
-			speedTextField.setColumns(10);
-			minSpeedTextField.setBounds(188, 300, 114, 19);
-			this.add(minSpeedTextField);
-			minSpeedTextField.setColumns(10);
-			
-			
-			JLabel lblMaxClimb = new JLabel("MaxClimb");
-			lblMaxClimb.setBounds(12, 354, 70, 19);
-			this.add(lblMaxClimb);
-			
-			
-			JTextField maxClimbTextField = new JTextField();
-			maxClimbTextField.setText(String.valueOf(CONFIGURATION.tailApproachMaxClimb/CONFIGURATION.lengthScale));
-			maxClimbTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField maxClimbTextField = (JTextField) e.getSource();
-					CONFIGURATION.tailApproachMaxClimb = new Double(maxClimbTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			maxClimbTextField.setBounds(188, 354, 114, 19);
-			this.add(maxClimbTextField);
-			maxClimbTextField.setColumns(10);
-			
-			JLabel lblMaxDescent = new JLabel("MaxDescent");
-			lblMaxDescent.setBounds(12, 388, 101, 19);
-			this.add(lblMaxDescent);
-			
-			
-			JTextField maxDescentTextField = new JTextField();
-			maxDescentTextField.setText(String.valueOf(CONFIGURATION.tailApproachMaxDescent/CONFIGURATION.lengthScale));
-			maxDescentTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField maxDescentTextField = (JTextField) e.getSource();
-					CONFIGURATION.tailApproachMaxDescent = new Double(maxDescentTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			maxDescentTextField.setBounds(188, 388, 114, 19);
-			this.add(maxDescentTextField);
-			maxDescentTextField.setColumns(10);
-			
-			JLabel lblMaxturning = new JLabel("MaxTurning");
-			lblMaxturning.setBounds(12, 419, 82, 15);
-			this.add(lblMaxturning);
-			
-			JTextField maxTurningTextField = new JTextField();
-			maxTurningTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.tailApproachMaxTurning)*100)/100.0));
-			maxTurningTextField.addKeyListener(new KeyAdapter() {
+			JTextField maxTurningTextField_1 = new JTextField();
+			maxTurningTextField_1.setBounds(171, 162, 114, 19);
+			performancePanel.add(maxTurningTextField_1);
+			maxTurningTextField_1.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.tailApproachMaxTurning)*100)/100.0));
+			maxTurningTextField_1.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyReleased(KeyEvent e) {
 					JTextField maxTurningTextField = (JTextField) e.getSource();
 					CONFIGURATION.tailApproachMaxTurning = Math.toRadians(new Double(maxTurningTextField.getText()));
 				}
 			});
-			maxTurningTextField.setBounds(189, 419, 114, 19);
-			this.add(maxTurningTextField);
-			maxTurningTextField.setColumns(10);
+			maxTurningTextField_1.setColumns(10);
 		}
+
 
     }
 
@@ -347,5 +464,4 @@ public class TailApproach extends JPanel
 		super(layout, isDoubleBuffered);
 		// TODO Auto-generated constructor stub
 	}
-
 }

@@ -36,15 +36,94 @@ public class HeadOn extends JPanel
 		setLayout(null);
 		
 		{
+			JPanel sensorSelectionPanel = new JPanel();
+			sensorSelectionPanel.setBorder(new TitledBorder(null, "Sensor Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			sensorSelectionPanel.setBounds(12, 101, 297, 125);
+			add(sensorSelectionPanel);
+			sensorSelectionPanel.setLayout(null);
+			
+			JCheckBox chckbxPerfectSensor = new JCheckBox("Perfect");
+			chckbxPerfectSensor.setBounds(8, 20, 129, 23);
+			sensorSelectionPanel.add(chckbxPerfectSensor);
+			chckbxPerfectSensor.setSelected((CONFIGURATION.headOnSensorSelection&0B10000) == 0B10000);
+			chckbxPerfectSensor.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.headOnSensorSelection |= 0B10000;
+					}
+				}
+			});
+			
+			
+			JCheckBox chckbxAdsb = new JCheckBox("ADS-B");
+			chckbxAdsb.setBounds(144, 20, 129, 23);
+			sensorSelectionPanel.add(chckbxAdsb);
+			chckbxAdsb.setSelected((CONFIGURATION.headOnSensorSelection&0B01000) == 0B01000);
+			chckbxAdsb.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.headOnSensorSelection |= 0B01000;
+					}
+				}
+			});
+			
+			JCheckBox chckbxTcas = new JCheckBox("TCAS");
+			chckbxTcas.setBounds(8, 47, 129, 23);
+			sensorSelectionPanel.add(chckbxTcas);
+			chckbxTcas.setSelected((CONFIGURATION.headOnSensorSelection&0B00100) == 0B00100);
+			chckbxTcas.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.headOnSensorSelection |= 0B00100;
+					}
+				}
+			});
+			
+			JCheckBox chckbxRadar = new JCheckBox("Radar");
+			chckbxRadar.setBounds(144, 47, 129, 23);
+			sensorSelectionPanel.add(chckbxRadar);
+			chckbxRadar.setSelected((CONFIGURATION.headOnSensorSelection&0B00010) == 0B00010);
+			chckbxRadar.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.headOnSensorSelection |= 0B00010;
+					}
+				}
+			});
+			
+			JCheckBox chckbxEoir = new JCheckBox("EO/IR");
+			chckbxEoir.setBounds(8, 74, 129, 23);
+			sensorSelectionPanel.add(chckbxEoir);
+			chckbxEoir.setSelected((CONFIGURATION.headOnSensorSelection&0B00001) == 0B00001);
+			chckbxEoir.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent e) {
+					if(((JCheckBox)e.getSource()).isSelected())
+					{
+						CONFIGURATION.headOnSensorSelection |= 0B00001;
+					}
+				}
+			});
+		}
+		
+		{
 			JSplitPane splitPane = new JSplitPane();
-			splitPane.setBounds(12, 39, 290, 31);
+			splitPane.setBounds(12, 12, 290, 31);
 			
 			JCheckBox chckbxHeadonencounter = new JCheckBox("HeadOn");
-			chckbxHeadonencounter.setSelected(CONFIGURATION.headOnSelected);
+			chckbxHeadonencounter.setSelected(CONFIGURATION.headOnSelected==1);
 			chckbxHeadonencounter.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					JCheckBox chckbxHeadonencounter = (JCheckBox)e.getSource();
-					CONFIGURATION.headOnSelected=chckbxHeadonencounter.isSelected();
+					CONFIGURATION.headOnSelected=chckbxHeadonencounter.isSelected()?1:0;
 				}
 			});
 			splitPane.setLeftComponent(chckbxHeadonencounter);
@@ -103,28 +182,28 @@ public class HeadOn extends JPanel
 		
 		{
 			JRadioButton rdbtnIsrightside = new JRadioButton("IsRightSide");
-			rdbtnIsrightside.setBounds(12, 92, 105, 23);
-			rdbtnIsrightside.setSelected(CONFIGURATION.headOnIsRightSide);
+			rdbtnIsrightside.setBounds(12, 58, 105, 23);
+			rdbtnIsrightside.setSelected(CONFIGURATION.headOnIsRightSide==1);
 			rdbtnIsrightside.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if(((JRadioButton)e.getSource()).isSelected())
 					{
-						CONFIGURATION.headOnIsRightSide = true;
+						CONFIGURATION.headOnIsRightSide = 1;
 					}
 					else
 					{
-						CONFIGURATION.headOnIsRightSide = false;
+						CONFIGURATION.headOnIsRightSide = 0;
 					}
 				}
 			});
 			this.add(rdbtnIsrightside);
 			
 			JLabel lblOffset = new JLabel("Offset");
-			lblOffset.setBounds(171, 96, 44, 15);
+			lblOffset.setBounds(171, 62, 44, 15);
 			this.add(lblOffset);
 			
 			headOnOffsetTextField = new JTextField();
-			headOnOffsetTextField.setBounds(233, 94, 69, 19);
+			headOnOffsetTextField.setBounds(233, 60, 69, 19);
 			headOnOffsetTextField.setText(""+CONFIGURATION.headOnOffset/CONFIGURATION.lengthScale);
 			headOnOffsetTextField.setColumns(10);
 			headOnOffsetTextField.addKeyListener(new KeyAdapter() {
@@ -143,7 +222,7 @@ public class HeadOn extends JPanel
 		{
 			JPanel AvoidanceAlgorithmSelectionPanel = new JPanel();
 			AvoidanceAlgorithmSelectionPanel.setBorder(new TitledBorder(null, "CAA Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			AvoidanceAlgorithmSelectionPanel.setBounds(12, 123, 290, 53);
+			AvoidanceAlgorithmSelectionPanel.setBounds(12, 238, 297, 53);
 			this.add(AvoidanceAlgorithmSelectionPanel);
 			AvoidanceAlgorithmSelectionPanel.setLayout(null);
 			
@@ -195,7 +274,7 @@ public class HeadOn extends JPanel
 		{
 			JPanel selfSeparationAlgorithmSelectionPanel = new JPanel();
 			selfSeparationAlgorithmSelectionPanel.setBorder(new TitledBorder(null, "SSA Selection", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			selfSeparationAlgorithmSelectionPanel.setBounds(12, 185, 290, 59);
+			selfSeparationAlgorithmSelectionPanel.setBounds(12, 303, 297, 59);
 			this.add(selfSeparationAlgorithmSelectionPanel);
 			selfSeparationAlgorithmSelectionPanel.setLayout(null);
 			
@@ -228,114 +307,121 @@ public class HeadOn extends JPanel
 			});
 		}
 		
+		JPanel performancePanel = new JPanel();
+		performancePanel.setBounds(12, 374, 297, 188);
+		add(performancePanel);
+		performancePanel.setLayout(null);
+		JLabel lblMaxspeed = new JLabel("MaxSpeed");
+		lblMaxspeed.setBounds(12, 14, 82, 15);
+		performancePanel.add(lblMaxspeed);
+		
+		
+		JTextField maxSpeedTextField_1 = new JTextField();
+		maxSpeedTextField_1.setBounds(170, 14, 114, 19);
+		performancePanel.add(maxSpeedTextField_1);
+		maxSpeedTextField_1.setText(String.valueOf(CONFIGURATION.headOnMaxSpeed/CONFIGURATION.lengthScale));
+		maxSpeedTextField_1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField maxSpeedTextField = (JTextField) e.getSource();
+				CONFIGURATION.headOnMaxSpeed = new Double(maxSpeedTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		maxSpeedTextField_1.setColumns(10);
+		
+		
+		JLabel lblMinspeed = new JLabel("MinSpeed");
+		lblMinspeed.setBounds(12, 43, 70, 19);
+		performancePanel.add(lblMinspeed);
+		
+		
+		JTextField minSpeedTextField_1 = new JTextField();
+		minSpeedTextField_1.setBounds(170, 45, 114, 19);
+		performancePanel.add(minSpeedTextField_1);
+		minSpeedTextField_1.setText(String.valueOf(CONFIGURATION.headOnMinSpeed/CONFIGURATION.lengthScale));
+		minSpeedTextField_1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField minSpeedTextField = (JTextField) e.getSource();
+				CONFIGURATION.headOnMinSpeed = new Double(minSpeedTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		minSpeedTextField_1.setColumns(10);
+		
+		JLabel lblPrefSpeed = new JLabel("PrefSpeed");
+		lblPrefSpeed.setBounds(12, 70, 105, 15);
+		performancePanel.add(lblPrefSpeed);
+		
+		JTextField prefSpeedTextField = new JTextField();
+		prefSpeedTextField.setBounds(171, 72, 114, 19);
+		performancePanel.add(prefSpeedTextField);
+		prefSpeedTextField.setText(String.valueOf(CONFIGURATION.headOnPrefSpeed/CONFIGURATION.lengthScale));
+		prefSpeedTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField speedTextField = (JTextField) e.getSource();
+				CONFIGURATION.headOnPrefSpeed = new Double(speedTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		prefSpeedTextField.setColumns(10);
+		
+		
+		
+		
+		JLabel lblMaxClimb = new JLabel("MaxClimb");
+		lblMaxClimb.setBounds(12, 97, 70, 19);
+		performancePanel.add(lblMaxClimb);
+		
+		
+		JTextField maxClimbTextField_1 = new JTextField();
+		maxClimbTextField_1.setBounds(170, 99, 114, 19);
+		performancePanel.add(maxClimbTextField_1);
+		maxClimbTextField_1.setText(String.valueOf(CONFIGURATION.headOnMaxClimb/CONFIGURATION.lengthScale));
+		maxClimbTextField_1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField maxClimbTextField = (JTextField) e.getSource();
+				CONFIGURATION.headOnMaxClimb = new Double(maxClimbTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		maxClimbTextField_1.setColumns(10);
+		
+		JLabel lblMaxDescent = new JLabel("MaxDescent");
+		lblMaxDescent.setBounds(12, 131, 101, 19);
+		performancePanel.add(lblMaxDescent);
+		
+		
+		JTextField maxDescentTextField_1 = new JTextField();
+		maxDescentTextField_1.setBounds(170, 133, 114, 19);
+		performancePanel.add(maxDescentTextField_1);
+		maxDescentTextField_1.setText(String.valueOf(CONFIGURATION.headOnMaxDescent/CONFIGURATION.lengthScale));
+		maxDescentTextField_1.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField maxDescentTextField = (JTextField) e.getSource();
+				CONFIGURATION.headOnMaxDescent = new Double(maxDescentTextField.getText())*CONFIGURATION.lengthScale;
+			}
+		});
+		maxDescentTextField_1.setColumns(10);
+		
+		JLabel lblMaxturning = new JLabel("MaxTurning");
+		lblMaxturning.setBounds(12, 162, 82, 15);
+		performancePanel.add(lblMaxturning);
+		
 		{
-			JLabel lblMaxspeed = new JLabel("MaxSpeed");
-			lblMaxspeed.setBounds(12, 271, 82, 15);
-			this.add(lblMaxspeed);
 			
-			
-			JTextField maxSpeedTextField = new JTextField();
-			maxSpeedTextField.setText(String.valueOf(CONFIGURATION.headOnMaxSpeed/CONFIGURATION.lengthScale));
-			maxSpeedTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField maxSpeedTextField = (JTextField) e.getSource();
-					CONFIGURATION.headOnMaxSpeed = new Double(maxSpeedTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			maxSpeedTextField.setBounds(188, 269, 114, 19);
-			this.add(maxSpeedTextField);
-			maxSpeedTextField.setColumns(10);
-			
-			
-			JLabel lblMinspeed = new JLabel("MinSpeed");
-			lblMinspeed.setBounds(12, 300, 70, 19);
-			this.add(lblMinspeed);
-			
-			
-			JTextField minSpeedTextField = new JTextField();
-			minSpeedTextField.setText(String.valueOf(CONFIGURATION.headOnMinSpeed/CONFIGURATION.lengthScale));
-			minSpeedTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField minSpeedTextField = (JTextField) e.getSource();
-					CONFIGURATION.headOnMinSpeed = new Double(minSpeedTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			
-			JLabel lblSpeed = new JLabel("Speed");
-			lblSpeed.setBounds(12, 327, 45, 15);
-			this.add(lblSpeed);
-			
-			JTextField speedTextField = new JTextField();
-			speedTextField.setText(String.valueOf(CONFIGURATION.headOnSpeed/CONFIGURATION.lengthScale));
-			speedTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField speedTextField = (JTextField) e.getSource();
-					CONFIGURATION.headOnSpeed = new Double(speedTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			speedTextField.setBounds(189, 327, 114, 19);
-			this.add(speedTextField);
-			speedTextField.setColumns(10);
-			minSpeedTextField.setBounds(188, 300, 114, 19);
-			this.add(minSpeedTextField);
-			minSpeedTextField.setColumns(10);
-			
-			
-			JLabel lblMaxClimb = new JLabel("MaxClimb");
-			lblMaxClimb.setBounds(12, 354, 70, 19);
-			this.add(lblMaxClimb);
-			
-			
-			JTextField maxClimbTextField = new JTextField();
-			maxClimbTextField.setText(String.valueOf(CONFIGURATION.headOnMaxClimb/CONFIGURATION.lengthScale));
-			maxClimbTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField maxClimbTextField = (JTextField) e.getSource();
-					CONFIGURATION.headOnMaxClimb = new Double(maxClimbTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			maxClimbTextField.setBounds(188, 354, 114, 19);
-			this.add(maxClimbTextField);
-			maxClimbTextField.setColumns(10);
-			
-			JLabel lblMaxDescent = new JLabel("MaxDescent");
-			lblMaxDescent.setBounds(12, 388, 101, 19);
-			this.add(lblMaxDescent);
-			
-			
-			JTextField maxDescentTextField = new JTextField();
-			maxDescentTextField.setText(String.valueOf(CONFIGURATION.headOnMaxDescent/CONFIGURATION.lengthScale));
-			maxDescentTextField.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent e) {
-					JTextField maxDescentTextField = (JTextField) e.getSource();
-					CONFIGURATION.headOnMaxDescent = new Double(maxDescentTextField.getText())*CONFIGURATION.lengthScale;
-				}
-			});
-			maxDescentTextField.setBounds(188, 388, 114, 19);
-			this.add(maxDescentTextField);
-			maxDescentTextField.setColumns(10);
-			
-			JLabel lblMaxturning = new JLabel("MaxTurning");
-			lblMaxturning.setBounds(12, 419, 82, 15);
-			this.add(lblMaxturning);
-			
-			JTextField maxTurningTextField = new JTextField();
-			maxTurningTextField.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.headOnMaxTurning)*100)/100.0));
-			maxTurningTextField.addKeyListener(new KeyAdapter() {
+			JTextField maxTurningTextField_1 = new JTextField();
+			maxTurningTextField_1.setBounds(171, 164, 114, 19);
+			performancePanel.add(maxTurningTextField_1);
+			maxTurningTextField_1.setText(String.valueOf(Math.round(Math.toDegrees(CONFIGURATION.headOnMaxTurning)*100)/100.0));
+			maxTurningTextField_1.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyReleased(KeyEvent e) {
 					JTextField maxTurningTextField = (JTextField) e.getSource();
 					CONFIGURATION.headOnMaxTurning = Math.toRadians(new Double(maxTurningTextField.getText()));
 				}
 			});
-			maxTurningTextField.setBounds(189, 419, 114, 19);
-			this.add(maxTurningTextField);
-			maxTurningTextField.setColumns(10);
+			maxTurningTextField_1.setColumns(10);
 		}
 						
 	}

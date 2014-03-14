@@ -47,16 +47,10 @@ public class CircleObstacle extends Obstacle
 	}	
 	
 	@Override
-	public boolean inCollision(Double2D coord, double safeMargin)
+	public boolean inCollisionWith(Double2D coord, double safeMargin)
 	{
-		if (location.distance(coord) <= radius + safeMargin)
-		{
-			return true;
-		} 
-		else 
-		{
-			return false;
-		}
+		return location.distance(coord) <= radius + safeMargin;
+		
 	}
 
 	/**

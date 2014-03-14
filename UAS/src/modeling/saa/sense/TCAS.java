@@ -1,9 +1,8 @@
 package modeling.saa.sense;
 
-public class SimpleSensor extends Sensor
-{
+public class TCAS extends Sensor {
 
-	public SimpleSensor() {
+	public TCAS() {
 		// TODO Auto-generated constructor stub
 	}
 

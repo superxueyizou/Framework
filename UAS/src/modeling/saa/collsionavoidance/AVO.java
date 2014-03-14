@@ -59,7 +59,7 @@ public class AVO extends CollisionAvoidanceAlgorithm
 		avoSimulator.setTimeStep(1);
 		// Specify default parameters for agents that are subsequently added.
 		avoSimulator.setAgentDefaults(hostUAS.getViewingRange(), 8, 10000, 10000,
-				hostUAS.getRadius(),1.0,hostUAS.getSpeed(),hostUAS.getUasPerformance().getMaxSpeed(),hostUAS.getUasPerformance().getMinSpeed(),hostUAS.getAlpha(), 
+				hostUAS.getRadius(),1.0,hostUAS.getUasPerformance().getPrefSpeed(),hostUAS.getUasPerformance().getMaxSpeed(),hostUAS.getUasPerformance().getMinSpeed(),hostUAS.getAlpha(), 
 				hostUAS.getUasPerformance().getMaxAcceleration(),hostUAS.getUasPerformance().getMaxTurning(), new Double2D()); 
 		
 		for(int i=0; i<state.uasBag.size(); i++)
@@ -77,6 +77,15 @@ public class AVO extends CollisionAvoidanceAlgorithm
 		
 	}
 	
+	@Override
+	public void step(SimState simState)
+	{
+		if(hostUAS.isActive == true)
+		{	
+			hostUAS.setCaaWp(execute());
+			
+		}
+	}	
 	
 	public Waypoint execute()
 	{		
@@ -115,6 +124,14 @@ public class AVO extends CollisionAvoidanceAlgorithm
 		Double2D newLocation = avoSimulator.getAgentPosition(hostUASIDInAVOSimulator);		
 		Waypoint wp = new Waypoint(state.getNewID(), hostUAS.getDestination());
 		wp.setLocation(new Double2D(newLocation.x, -newLocation.y));
+		if(hostUAS.getVelocity().masonRotateAngleToDouble2D(wp.getLocation().subtract(hostUAS.getLocation()))>0)
+		{
+			wp.setAction(1);//turn left
+		}
+		else
+		{
+			wp.setAction(3);//turn right
+		}
 		return wp;
 	
 	}

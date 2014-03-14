@@ -8,7 +8,8 @@ public class UASPerformance
 {
 	//the maximum possible values of the uasBag statistics
 	private double maxSpeed;
-	private double minSpeed;	
+	private double minSpeed;
+	private double prefSpeed;
 	private double maxClimb;
 	private double maxDescent;
 	private double maxTurning;
@@ -19,6 +20,7 @@ public class UASPerformance
 	//the current limits of speed, etc for the uas.
 	private double currentMaxSpeed;
 	private double currentMinSpeed;	
+	private double currentPrefSpeed;
 	private double currentMaxClimb;
 	private double currentMaxDescent;
 	private double currentMaxTurning;
@@ -26,10 +28,11 @@ public class UASPerformance
 	private double currentMaxDeceleration;
 	
 	
-	public UASPerformance(double maxUASSpeed, double minUASSpeed, double maxUASClimb, double maxUASDescent, double maxUASTurning, double maxUASAcceleration, double maxUASDeceleration)
+	public UASPerformance(double maxUASSpeed, double minUASSpeed,double prefUASSpeed, double maxUASClimb, double maxUASDescent, double maxUASTurning, double maxUASAcceleration, double maxUASDeceleration)
 	{
 		maxSpeed = maxUASSpeed;
 		minSpeed = minUASSpeed;
+		prefSpeed = prefUASSpeed;
 		maxClimb = maxUASClimb;
 		maxDescent = maxUASDescent;
 		maxTurning = maxUASTurning;
@@ -39,6 +42,7 @@ public class UASPerformance
 		
 		currentMaxSpeed = maxSpeed;
 		currentMinSpeed = minSpeed;
+		setCurrentPrefSpeed(prefSpeed);
 		currentMaxClimb	= maxClimb;
 		currentMaxDescent = maxDescent;
 		currentMaxTurning = maxTurning;
@@ -82,7 +86,15 @@ public class UASPerformance
 	public void setMinSpeed(double minSpeed) {
 		this.minSpeed = minSpeed;
 	}
+	
+	public double getPrefSpeed() {
+		return prefSpeed;
+	}
 
+	public void setPrefSpeed(double prefSpeed) {
+		this.prefSpeed = prefSpeed;
+	}
+	
 	public double getMaxClimb() {
 		return maxClimb;
 	}
@@ -105,6 +117,14 @@ public class UASPerformance
 
 	public void setCurrentMinSpeed(double currentMinSpeed) {
 		this.currentMinSpeed = currentMinSpeed;
+	}
+
+	public double getCurrentPrefSpeed() {
+		return currentPrefSpeed;
+	}
+
+	public void setCurrentPrefSpeed(double currentPrefSpeed) {
+		this.currentPrefSpeed = currentPrefSpeed;
 	}
 
 	public double getCurrentMaxClimb() {
@@ -162,6 +182,7 @@ public class UASPerformance
 		currentMaxDeceleration = maxDeceleration;
 		
 	}
-	
+
+
 
 }

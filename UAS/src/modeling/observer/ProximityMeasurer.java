@@ -1,6 +1,7 @@
 package modeling.observer;
 
 import modeling.SAAModel;
+import modeling.env.CircleObstacle;
 import modeling.env.Constants;
 import modeling.env.Obstacle;
 import modeling.uas.UAS;
@@ -43,6 +44,7 @@ public class ProximityMeasurer implements Constants,Steppable
 			for(int j=0; j<state.obstacles.size(); j++)
 			{
 				obstacle=(Obstacle)state.obstacles.get(j);
+								
 				if(obstacle.type == Constants.EntityType.TUAS && !((UAS)obstacle).isActive)
 				{
 						//System.out.println(state.obstacles.get(j)+": this obstacle is UAS, don't mind!");
@@ -53,9 +55,33 @@ public class ProximityMeasurer implements Constants,Steppable
 				{
 			    	continue;
 				}
-	  
+			    
 			    double tempProximityToDanger=Double.MAX_VALUE;
-			    tempProximityToDanger = obstacle.pointToObstacle(uas1.getLocation())-uas1.getSafetyRadius();
+			    
+			    if(obstacle.type == Constants.EntityType.TUAS)
+				{
+					UAS uas2=(UAS)obstacle;
+					tempProximityToDanger= uas1.getLocation().distance(uas2.getLocation())-uas1.getSafetyRadius()-uas2.getSafetyRadius();
+					if(tempProximityToDanger<0)
+					{
+						tempProximityToDanger=0;
+					}
+						
+				}
+				else if (obstacle.type == Constants.EntityType.TCIROBSTACLE)
+				{
+					CircleObstacle o=(CircleObstacle)obstacle;
+					tempProximityToDanger= uas1.getLocation().distance(o.getLocation())-uas1.getSafetyRadius()-o.getRadius();
+					if(tempProximityToDanger<0)
+					{
+						tempProximityToDanger=0;
+					}
+				}
+				else
+				{
+					System.err.println("please decide how to judge collision with non-circular obstacle!");
+					
+				}
 //			    System.out.println(uas1+"--"+obstacle+"-------*"+tempProximityToDanger);
 			    
 				uas1.setTempDistanceToDanger(tempProximityToDanger);

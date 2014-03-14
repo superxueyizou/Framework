@@ -39,13 +39,13 @@ public class SAAModelBuilder
 	public SAAModelBuilder(SAAModel simState)
 	{
 		state = simState;
-		System.out.println("COModelBuilder(COModel simState) is being called!!!!!!!!!! the simstate is：" + state.toString());
+//		System.out.println("COModelBuilder(COModel simState) is being called!!!!!!!!!! the simstate is：" + state.toString());
 	}
 	
 	public  void generateSimulation()
 	{	
 		UAS self;
-		if(CONFIGURATION.tailApproachSelected)
+		if(CONFIGURATION.tailApproachSelected==1)
 		{
 			double uasX= fieldXVal/9;
 	    	double uasY= fieldYVal/2;
@@ -60,11 +60,11 @@ public class SAAModelBuilder
 	    				
 		}
 	
-	    if(CONFIGURATION.headOnSelected)
+	    if(CONFIGURATION.headOnSelected==1)
 	    {
 	    	double offset = CONFIGURATION.headOnOffset ;
-	    	boolean isRightSide = CONFIGURATION.headOnIsRightSide;
-	    	double speed= CONFIGURATION.headOnSpeed;
+	    	boolean isRightSide = (CONFIGURATION.headOnIsRightSide==1);
+	    	double speed= CONFIGURATION.headOnPrefSpeed;
 	    	
 	    	if(state.runningWithUI)
 	    	{
@@ -84,11 +84,11 @@ public class SAAModelBuilder
 	    
 	    }
 	    
-	    if(CONFIGURATION.crossingSelected)
+	    if(CONFIGURATION.crossingSelected==1)
 	    {
     		double encounterAngle = CONFIGURATION.crossingEncounterAngle;
-    		boolean isRightSide = CONFIGURATION.crossingIsRightSide;
-    		double speed= CONFIGURATION.crossingSpeed;
+    		boolean isRightSide = (CONFIGURATION.crossingIsRightSide==1);
+    		double speed= CONFIGURATION.crossingPrefSpeed;
 	   
 	       	if(state.runningWithUI)
 	    	{
@@ -107,11 +107,11 @@ public class SAAModelBuilder
 	    	
 	    }
 	    
-	    if(CONFIGURATION.tailApproachSelected)
+	    if(CONFIGURATION.tailApproachSelected==1)
 	    {
 	    	double offset = CONFIGURATION.tailApproachOffset;
-	    	boolean isRightSide = CONFIGURATION.tailApproachIsRightSide;
-	    	double speed= CONFIGURATION.tailApproachSpeed;
+	    	boolean isRightSide = (CONFIGURATION.tailApproachIsRightSide==1);
+	    	double speed= CONFIGURATION.tailApproachPrefSpeed;
 	     	if(state.runningWithUI)
 	    	{	     		
 		    	for(int i=0; i<CONFIGURATION.tailApproachTimes; i++)
@@ -119,7 +119,7 @@ public class SAAModelBuilder
 		    		new TailApproachGenerator(state, self, offset, isRightSide, speed).execute();
 		    		offset += 2;
 		    		isRightSide = !isRightSide;
-		    		speed += 0.2*speed;
+		    		speed *= 1.02;
 		    	}
 	    	}
 	    	else

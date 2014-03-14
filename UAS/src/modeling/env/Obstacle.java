@@ -22,7 +22,7 @@ public abstract class Obstacle extends Entity
 	 */
 	public abstract boolean pointInShape(Double2D coord);
 	
-	public abstract boolean inCollision(Double2D coord, double safeMargin);
+	public abstract boolean inCollisionWith(Double2D coord, double safeMargin);
 
 	/**
 	 * Returns the distance from the closest part of the obstacle to the coord provided.

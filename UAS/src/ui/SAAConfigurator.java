@@ -40,7 +40,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 
 
-public class SAAConfigurator extends JFrame 
+public class SAAConfigurator extends JFrame implements ActionListener
 {	
 
 	private JPanel contentPane;
@@ -100,6 +100,17 @@ public class SAAConfigurator extends JFrame
 		getContentPane().add(tabbedPane);
 		contentPane.add(tabbedPane);
 
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		// TODO Auto-generated method stub
+		if(e.getActionCommand()=="Refresh")
+		{
+			this.dispose();
+		}
+		
 	}
 }
 

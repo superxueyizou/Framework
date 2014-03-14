@@ -3,6 +3,7 @@
  */
 package modeling.saa.selfseparation;
 
+import sim.engine.Steppable;
 import modeling.env.Waypoint;
 
 
@@ -10,7 +11,7 @@ import modeling.env.Waypoint;
  * @author Xueyi
  *
  */
-public abstract class SelfSeparationAlgorithm 
+public abstract class SelfSeparationAlgorithm implements Steppable
 {
 
 	/**

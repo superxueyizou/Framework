@@ -2,7 +2,7 @@ package modeling.env;
 
 /**
  *
- * @author Robert Lee
+ * @author Xueyi Zou
  */
 public class Destination extends Waypoint
 {	

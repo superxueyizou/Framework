@@ -14,8 +14,14 @@ import modeling.saa.collsionavoidance.SVO;
 import modeling.saa.selfseparation.SVOSep;
 import modeling.saa.selfseparation.SelfSeparationAlgorithm;
 import modeling.saa.selfseparation.SelfSeparationAlgorithmAdapter;
+import modeling.saa.sense.ADS_B;
+import modeling.saa.sense.EOIR;
+import modeling.saa.sense.PerfectSensor;
+import modeling.saa.sense.Radar;
 import modeling.saa.sense.Sensor;
+import modeling.saa.sense.SensorSet;
 import modeling.saa.sense.SimpleSensor;
+import modeling.saa.sense.TCAS;
 import modeling.uas.AvoidParas;
 import modeling.uas.SenseParas;
 import modeling.uas.UAS;
@@ -71,14 +77,35 @@ public class CrossingGenerator extends EncounterGenerator
 		Destination intruderDestination = new Destination(state.getNewID(), null);
 		intruderDestination.setLocation(intruderDestinationLoc);
 		UASVelocity intruderVelocity = new UASVelocity(intruderDestination.getLocation().subtract(intruderLocation).normalize().multiply(intruderSpeed));
-		UASPerformance intruderPerformance = new UASPerformance(CONFIGURATION.crossingMaxSpeed, CONFIGURATION.crossingMinSpeed,CONFIGURATION.crossingMaxClimb, CONFIGURATION.crossingMaxDescent,CONFIGURATION.crossingMaxTurning, CONFIGURATION.crossingMaxAcceleration, CONFIGURATION.crossingMaxDeceleration);
+		UASPerformance intruderPerformance = new UASPerformance(CONFIGURATION.crossingMaxSpeed, CONFIGURATION.crossingMinSpeed, intruderSpeed, CONFIGURATION.crossingMaxClimb, CONFIGURATION.crossingMaxDescent,CONFIGURATION.crossingMaxTurning, CONFIGURATION.crossingMaxAcceleration, CONFIGURATION.crossingMaxDeceleration);
 		SenseParas intruderSenseParas = new SenseParas(CONFIGURATION.crossingViewingRange,CONFIGURATION.crossingViewingAngle, CONFIGURATION.crossingSensitivityForCollisions);
 		AvoidParas intruderAvoidParas = new AvoidParas(CONFIGURATION.crossingAlpha);
 		
 		UAS intruder = new UAS(state.getNewID(),CONFIGURATION.crossingSafetyRadius,intruderLocation, intruderDestination, intruderVelocity,intruderPerformance, intruderSenseParas,intruderAvoidParas);
 		intruder.setSource(intruderLocation);
 		
-		Sensor sensor = new SimpleSensor();
+		SensorSet sensorSet = new SensorSet();
+		if((CONFIGURATION.crossingSensorSelection&0B10000) == 0B10000)
+		{
+			sensorSet.perfectSensor=new PerfectSensor();
+		}
+		if((CONFIGURATION.crossingSensorSelection&0B01000) == 0B01000)
+		{
+			sensorSet.ads_b=new ADS_B();
+		}
+		if((CONFIGURATION.crossingSensorSelection&0B00100) == 0B00100)
+		{
+			sensorSet.tcas=new TCAS();
+		}
+		if((CONFIGURATION.crossingSensorSelection&0B00010) == 0B00010)
+		{
+			sensorSet.radar=new Radar();
+		}
+		if((CONFIGURATION.crossingSensorSelection&0B00001) == 0B00001)
+		{
+			sensorSet.eoir=new EOIR();
+		}
+		sensorSet.synthesize();
 
 		SelfSeparationAlgorithm ssa; 
 		switch (CONFIGURATION.crossingSelfSeparationAlgorithmSelection)
@@ -110,7 +137,7 @@ public class CrossingGenerator extends EncounterGenerator
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, intruder);
 		}
 
-		intruder.init(sensor, ssa,caa);
+		intruder.init(sensorSet, ssa,caa);
 		
 		
 		state.uasBag.add(intruder);

@@ -59,4 +59,5 @@ public class Entity implements Steppable, Constants
 	
 	public EntityType getType() {return type;}
 	public int getID() {return ID;}
+
 }

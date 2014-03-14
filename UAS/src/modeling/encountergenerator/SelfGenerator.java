@@ -16,8 +16,14 @@ import modeling.saa.collsionavoidance.SVO;
 import modeling.saa.selfseparation.SVOSep;
 import modeling.saa.selfseparation.SelfSeparationAlgorithm;
 import modeling.saa.selfseparation.SelfSeparationAlgorithmAdapter;
+import modeling.saa.sense.ADS_B;
+import modeling.saa.sense.EOIR;
+import modeling.saa.sense.PerfectSensor;
+import modeling.saa.sense.Radar;
 import modeling.saa.sense.Sensor;
+import modeling.saa.sense.SensorSet;
 import modeling.saa.sense.SimpleSensor;
+import modeling.saa.sense.TCAS;
 import modeling.uas.AvoidParas;
 import modeling.uas.SenseParas;
 import modeling.uas.UAS;
@@ -56,8 +62,8 @@ public class SelfGenerator
 	{
 		Double2D location = new Double2D(uasX,uasY);
 		Destination d = generateDestination(uasX, uasY,distance,angle,state.obstacles);
-		UASVelocity uasVelocity = new UASVelocity(d.getLocation().subtract(location).normalize().multiply(CONFIGURATION.selfSpeed));
-		UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMinSpeed,CONFIGURATION.selfMaxClimb, 
+		UASVelocity uasVelocity = new UASVelocity(d.getLocation().subtract(location).normalize().multiply(CONFIGURATION.selfPrefSpeed));
+		UASPerformance uasPerformance = new UASPerformance(CONFIGURATION.selfMaxSpeed, CONFIGURATION.selfMinSpeed, CONFIGURATION.selfPrefSpeed,CONFIGURATION.selfMaxClimb, 
 				CONFIGURATION.selfMaxDescent,CONFIGURATION.selfMaxTurning, CONFIGURATION.selfMaxAcceleration, CONFIGURATION.selfMaxDeceleration);
 		SenseParas senseParas = new SenseParas(CONFIGURATION.selfViewingRange,CONFIGURATION.selfViewingAngle, CONFIGURATION.selfSensitivityForCollisions);
 		AvoidParas avoidParas = new AvoidParas(CONFIGURATION.selfAlpha);
@@ -65,7 +71,28 @@ public class SelfGenerator
 		UAS self = new UAS(state.getNewID(),CONFIGURATION.selfSafetyRadius,location, d, uasVelocity,uasPerformance, senseParas,avoidParas);
 		self.setSource(location);
 		
-		Sensor sensor = new SimpleSensor();
+		SensorSet sensorSet = new SensorSet();
+		if((CONFIGURATION.selfSensorSelection&0B10000) == 0B10000)
+		{
+			sensorSet.perfectSensor=new PerfectSensor();
+		}
+		if((CONFIGURATION.selfSensorSelection&0B01000) == 0B01000)
+		{
+			sensorSet.ads_b=new ADS_B();
+		}
+		if((CONFIGURATION.selfSensorSelection&0B00100) == 0B00100)
+		{
+			sensorSet.tcas=new TCAS();
+		}
+		if((CONFIGURATION.selfSensorSelection&0B00010) == 0B00010)
+		{
+			sensorSet.radar=new Radar();
+		}
+		if((CONFIGURATION.selfSensorSelection&0B00001) == 0B00001)
+		{
+			sensorSet.eoir=new EOIR();
+		}
+		sensorSet.synthesize();
 		
 		SelfSeparationAlgorithm ssa; 
 		switch (CONFIGURATION.selfSelfSeparationAlgorithmSelection)
@@ -97,7 +124,7 @@ public class SelfGenerator
 				caa= new CollisionAvoidanceAlgorithmAdapter(state, self);
 		}	
 		
-		self.init(sensor,ssa,caa);
+		self.init(sensorSet,ssa,caa);
 				
 		state.uasBag.add(self);
 		state.obstacles.add(self);

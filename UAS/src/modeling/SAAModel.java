@@ -2,14 +2,17 @@ package modeling;
 
 import modeling.env.Entity;
 import modeling.env.Obstacle;
+import modeling.env.Waypoint;
 import modeling.observer.AccidentDetector;
 import modeling.observer.OscillationCalculator;
+import modeling.observer.OscillationCounter;
 import modeling.observer.ProximityMeasurer;
 import modeling.uas.UAS;
 import sim.util.*;
 import sim.field.continuous.*;
 import sim.engine.*;
 import sim.field.network.Network;
+import tools.CONFIGURATION;
 
 public class SAAModel extends SimState
 {
@@ -33,6 +36,7 @@ public class SAAModel extends SimState
     public AccidentDetector aDetector= new AccidentDetector();
     public ProximityMeasurer pMeasurer= new ProximityMeasurer();
     public OscillationCalculator oCalculator= new OscillationCalculator();
+    public OscillationCounter oCounter= new OscillationCounter();
     	
 	/**
 	 * Constructor used for setting up a simulation from the COModelBuilder object.
@@ -48,7 +52,7 @@ public class SAAModel extends SimState
 		environment = new Continuous2D(1.0, x, y);
 		voField = new Network(false);
 		runningWithUI = UI;
-		System.out.println("COModel(long seed, double x, double y, boolean UI) is being called!!!!!!!!!!!! the simstate is :" + this.toString());
+//		System.out.println("COModel(long seed, double x, double y, boolean UI) is being called!!!!!!!!!!!! the simstate is :" + this.toString());
 
 	}    
 		
@@ -60,7 +64,7 @@ public class SAAModel extends SimState
 		voField.clear();
 		
 		loadEntities();
-		scheduleEntities();	
+		scheduleEntities();			
 	}
 		
 
@@ -81,6 +85,13 @@ public class SAAModel extends SimState
 		environment.clear(); //clear the environment
 		voField.clear();
 
+	}
+	
+	public void finish()
+	{
+		super.finish();		
+		OscillationCounter oCounter = new OscillationCounter();
+		oCounter.step(this);
 	}
 	
 	
@@ -119,15 +130,31 @@ public class SAAModel extends SimState
 	public void scheduleEntities()
 	{
 		//loop across all items in toSchedule and add them all to the schedule
-		int i ;
-		for(i = 0; i < toSchedule.size(); i++)
+		int c = 0;	
+		if (CONFIGURATION.collisionAvoidanceEnabler)
 		{
-			schedule.scheduleRepeating((Entity) toSchedule.get(i), i, 1.0);
+			for(int i = 0; i < toSchedule.size(); i++, c++)
+			{
+				schedule.scheduleRepeating(((UAS)toSchedule.get(i)).getCaa(), c, 1.0);
+			}	
+			
+		}
+		if (CONFIGURATION.selfSeparationEnabler)
+		{
+			for(int j=0; j < toSchedule.size(); j++,c++)
+			{
+				schedule.scheduleRepeating(((UAS)toSchedule.get(j)).getSsa(), c, 1.0);			
+			}
+		}
+	
+		for(int k=0; k < toSchedule.size(); k++,c++)
+		{
+			schedule.scheduleRepeating((Entity) toSchedule.get(k), c, 1.0);
 		}	
-		schedule.scheduleRepeating(pMeasurer,i+1, 1.0);
-		schedule.scheduleRepeating(oCalculator,i+2, 1.0);
-		schedule.scheduleRepeating(aDetector,i+3, 1.0);	
-		
+		schedule.scheduleRepeating(pMeasurer,c++, 1.0);
+		schedule.scheduleRepeating(oCalculator,c++, 1.0);	
+		schedule.scheduleRepeating(aDetector,c++, 1.0);	
+			
 	}
 
 	/**

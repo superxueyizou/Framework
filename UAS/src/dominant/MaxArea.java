@@ -20,7 +20,7 @@ import ec.vector.DoubleVectorIndividual;
  * @author Xueyi Zou
  *
  */
-public class MaxOscillation extends Problem implements SimpleProblemForm 
+public class MaxArea extends Problem implements SimpleProblemForm 
 {
 
 	/* (non-Javadoc)
@@ -154,16 +154,16 @@ public class MaxOscillation extends Problem implements SimpleProblemForm
 //		System.out.println(simState.schedule.getSteps());
 //****************************************************************************************
 		
-		double totalOscillaitonNo = 0;				
+		double totalArea = 0;				
 		for(int j=0; j<simState.uasBag.size(); j++)
 		{
 			UAS uas = (UAS)simState.uasBag.get(j);
-			System.out.println(uas.getOscillationNo());
+			System.out.println(uas.getOscillation());
  
-			totalOscillaitonNo += uas.getOscillationNo();
+			totalArea += uas.getOscillation();
 		}
-		float rawFitness= (float)totalOscillaitonNo/(simState.uasBag.size()*simState.schedule.getSteps());  
-
+		float rawFitness= (float)totalArea/(simState.uasBag.size()*simState.schedule.getSteps());  
+		
 		float fitness = rawFitness;
         
         

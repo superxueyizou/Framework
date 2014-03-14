@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import modeling.SAAModel;
+import modeling.env.CircleObstacle;
 import modeling.env.Constants;
 import modeling.env.Obstacle;
 import modeling.uas.UAS;
@@ -143,12 +144,24 @@ public class AccidentDetector implements Constants,Steppable
 	private boolean detectCollisionWithObstacle(UAS uAS, Obstacle obstacle)
 	{
 		//return false;
-		return obstacle.inCollision(uAS.getLocation(), uAS.getRadius());//inShape(uAS.getLocation());
+		if(obstacle.type == Constants.EntityType.TCIROBSTACLE)
+		{
+			CircleObstacle o=(CircleObstacle)obstacle;
+			return uAS.getLocation().distance(o.getLocation())<= uAS.getSafetyRadius()+o.getRadius();
+		}
+		else
+		{
+			System.err.println("please decide how to judge collision with non-circular obstacle!");
+			return true;
+		}
+		
 	}
 
 	private boolean detectCollisionWithOtherUAS(UAS uas1, UAS uas2)
 	{
-		return uas1.inCollision(uas2.getLocation(), uas2.getRadius());
+	
+		return uas1.getLocation().distance(uas2.getLocation())<=uas1.getSafetyRadius()+uas2.getSafetyRadius();	
+		
 	}
 	
 

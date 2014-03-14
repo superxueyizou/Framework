@@ -1,9 +1,8 @@
 package modeling.saa.sense;
 
-public class SimpleSensor extends Sensor
-{
+public class EOIR extends Sensor {
 
-	public SimpleSensor() {
+	public EOIR() {
 		// TODO Auto-generated constructor stub
 	}
 

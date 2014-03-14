@@ -10,6 +10,7 @@ import modeling.uas.UAS;
 import sim.engine.SimState;
 import sim.util.Double2D;
 import sim.util.MutableDouble2D;
+import tools.CONFIGURATION;
 
 /**
  * @author Xueyi
@@ -39,6 +40,15 @@ public class CollisionAvoidanceAlgorithmAdapter extends CollisionAvoidanceAlgori
 	public void init()
 	{
 		
+	}
+	
+	@Override
+	public void step(SimState simState)
+	{
+		if(hostUAS.isActive == true)
+		{	
+				hostUAS.setCaaWp(execute());		
+		}
 	}
 	
 	public Waypoint execute()
